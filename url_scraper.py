@@ -83,10 +83,7 @@ class SpecScraper:
         log.info('Starting requests session for Robots.txt')
         self.robot_session = requests.Session()
         self.robot_session.headers.update(self.headers)
-
-        chrome_binary_path = 'usr/bin/google-chrome'  # Path to Chrome binary
-        chrome_driver_path = '/usr/local/bin/chromedriver'  # Path to ChromeDriver
-
+        
         # SELENIUM FOR RETRIEVING FULL HTML W/ HEADLESS CHROME
         log.info('Starting Selenium')
         selenium_user_agent = self.headers['User-Agent']
@@ -95,9 +92,6 @@ class SpecScraper:
         self.chrome_options.add_argument('--no-sandbox')
         self.chrome_options.add_argument('--disable-dev-shm-usage')
         self.chrome_options.add_argument(f'user-agent={selenium_user_agent}')
-        self.chrome_options.binary_location = chrome_binary_path
-        service = Service(executable_path=chrome_driver_path)
-
 
         try:
             self.driver = webdriver.Chrome(options=self.chrome_options)

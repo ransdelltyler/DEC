@@ -3,7 +3,7 @@ pip install --upgrade pip
 pip install UUID
 
 pip install pyperclip
-pip install bs4
+pip install BeautifulSoup4
 pip install numpy
 
 pip install requests
