@@ -1,0 +1,443 @@
+2025-11-08 23:24:29,546 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:24:29,547 - INFO - ⓘ This is an info message. ⓘ
+2025-11-08 23:24:29,547 - SUCCESS - 💯 This is a success message. 💯
+2025-11-08 23:24:29,547 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:24:29,549 - ERROR - 😵 This is an error message. 😵
+2025-11-08 23:24:29,549 - CRITICAL - ☄ This is a critical message. ☄
+2025-11-08 23:24:29,549 - WATCHDOG - 🛃 This is a watchdog message. 🛃
+2025-11-08 23:24:44,637 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:24:44,638 - INFO - ⓘ This is an info message. ⓘ
+2025-11-08 23:24:44,638 - SUCCESS - 💯 This is a success message. 💯
+2025-11-08 23:24:44,639 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:24:44,641 - ERROR - 😵 This is an error message. 😵
+2025-11-08 23:24:44,641 - CRITICAL - ☄ This is a critical message. ☄
+2025-11-08 23:24:44,642 - WATCHDOG - 🛃 This is a watchdog message. 🛃
+2025-11-08 23:26:12,297 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:26:12,298 - INFO - ⛨ This is an info message. ⛨
+2025-11-08 23:26:12,298 - SUCCESS - 💯 This is a success message. 💯
+2025-11-08 23:26:12,298 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:26:12,298 - ERROR - 😵 This is an error message. 😵
+2025-11-08 23:26:12,298 - CRITICAL - ☄ This is a critical message. ☄
+2025-11-08 23:26:12,298 - WATCHDOG - 🛃 This is a watchdog message. 🛃
+2025-11-08 23:35:07,128 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:35:07,129 - INFO - Δ This is an info message. Δ
+2025-11-08 23:35:07,129 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:35:07,129 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:35:07,129 - ERROR - 😵 This is an error message. 😵
+2025-11-08 23:35:07,129 - CRITICAL - ☄ This is a critical message. ☄
+2025-11-08 23:35:07,129 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:37:12,366 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:37:12,367 - INFO - Δ This is an info message. Δ
+2025-11-08 23:37:12,367 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:37:12,367 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:37:12,367 - ERROR - 😵 This is an error message. 😵
+2025-11-08 23:37:12,367 - CRITICAL - ☄ This is a critical message. ☄
+2025-11-08 23:37:12,368 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:37:12,368 - BORDER - ☄ This is a border message. ☄
+2025-11-08 23:39:00,754 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:39:00,755 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:39:00,755 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:39:00,755 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:39:00,755 - ERROR - ⊘ This is an error message. ⊘
+2025-11-08 23:39:00,756 - CRITICAL - ☄ This is a critical message. ☄
+2025-11-08 23:39:00,756 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:39:00,756 - BORDER - ☄ This is a border message. ☄
+2025-11-08 23:39:19,091 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:39:19,092 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:39:19,092 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:39:19,092 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:39:19,092 - ERROR - ⦸ This is an error message. ⦸
+2025-11-08 23:39:19,092 - CRITICAL - ☄ This is a critical message. ☄
+2025-11-08 23:39:19,093 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:39:19,093 - BORDER - ☄ This is a border message. ☄
+2025-11-08 23:40:15,687 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:40:15,687 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:40:15,687 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:40:15,687 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:40:15,687 - ERROR - ‼ This is an error message. ‼
+2025-11-08 23:40:15,687 - CRITICAL - ☄ This is a critical message. ☄
+2025-11-08 23:40:15,688 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:40:15,688 - BORDER - ☄ This is a border message. ☄
+2025-11-08 23:40:36,902 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:40:36,902 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:40:36,903 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:40:36,903 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:40:36,903 - ERROR - ‼ This is an error message. ‼
+2025-11-08 23:40:36,926 - CRITICAL - ☄ This is a critical message. ☄
+2025-11-08 23:40:36,926 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:40:36,926 - BORDER - ☄ This is a border message. ☄
+2025-11-08 23:40:49,167 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:40:49,167 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:40:49,167 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:40:49,167 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:40:49,168 - ERROR - ‼ This is an error message. ‼
+2025-11-08 23:40:49,168 - CRITICAL - ☄ This is a critical message. ☄
+2025-11-08 23:40:49,168 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:40:49,168 - BORDER - ☄ This is a border message. ☄
+2025-11-08 23:41:05,482 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:41:05,482 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:41:05,483 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:41:05,483 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:41:05,483 - ERROR - ‼ This is an error message. ‼
+2025-11-08 23:41:05,483 - CRITICAL - ☄ This is a critical message. ☄
+2025-11-08 23:41:05,483 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:41:05,494 - BORDER - ☄ This is a border message. ☄
+2025-11-08 23:42:50,941 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:42:50,942 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:42:50,942 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:42:50,942 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:42:50,943 - ERROR - ‼ This is an error message. ‼
+2025-11-08 23:42:50,943 - CRITICAL - ☄ This is a critical message. ☄
+2025-11-08 23:42:50,943 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:42:50,943 - BORDER - ☄ This is a border message. ☄
+2025-11-08 23:44:45,516 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:44:45,517 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:44:45,518 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:44:45,519 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:44:45,519 - ERROR - ‼ This is an error message. ‼
+2025-11-08 23:44:45,520 - CRITICAL - ☄ This is a critical message. ☄
+2025-11-08 23:44:45,520 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:44:45,520 - BORDER - ☄ This is a border message. ☄
+2025-11-08 23:45:01,525 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:45:01,528 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:45:01,528 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:45:01,528 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:45:01,529 - ERROR - ‼ This is an error message. ‼
+2025-11-08 23:45:01,529 - CRITICAL - ☄ This is a critical message. ☄
+2025-11-08 23:45:01,530 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:45:01,530 - BORDER - ☄ This is a border message. ☄
+2025-11-08 23:45:31,128 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:45:31,128 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:45:31,129 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:45:31,129 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:45:31,130 - ERROR - ‼ This is an error message. ‼
+2025-11-08 23:45:31,130 - CRITICAL - ☄ This is a critical message. ☄
+2025-11-08 23:45:31,130 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:45:31,130 - BORDER - ☄ This is a border message. ☄
+2025-11-08 23:45:38,772 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:45:38,773 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:45:38,773 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:45:38,773 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:45:38,774 - ERROR - ‼ This is an error message. ‼
+2025-11-08 23:45:38,775 - CRITICAL - ☄ This is a critical message. ☄
+2025-11-08 23:45:38,775 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:45:38,776 - BORDER - ☄ This is a border message. ☄
+2025-11-08 23:45:47,870 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:45:47,870 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:45:47,870 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:45:47,871 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:45:47,871 - ERROR - ‼ This is an error message. ‼
+2025-11-08 23:45:47,871 - CRITICAL - ☄ This is a critical message. ☄
+2025-11-08 23:45:47,871 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:45:47,871 - BORDER - ☄ This is a border message. ☄
+2025-11-08 23:46:29,134 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:46:29,134 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:46:29,135 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:46:29,135 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:46:29,135 - ERROR - ‼ This is an error message. ‼
+2025-11-08 23:46:29,135 - CRITICAL - ☄ This is a critical message. ☄
+2025-11-08 23:46:29,145 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:46:29,145 - BORDER - ☄ This is a border message. ☄
+2025-11-08 23:46:42,197 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:46:42,197 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:46:42,198 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:46:42,198 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:46:42,198 - ERROR - ‼ This is an error message. ‼
+2025-11-08 23:46:42,198 - CRITICAL - ☄ This is a critical message. ☄
+2025-11-08 23:46:42,198 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:46:42,198 - BORDER - ☄ This is a border message. ☄
+2025-11-08 23:47:07,580 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:47:07,580 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:47:07,580 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:47:07,581 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:47:07,581 - ERROR - ‼ This is an error message. ‼
+2025-11-08 23:47:07,581 - CRITICAL - × This is a critical message. ×
+2025-11-08 23:47:07,581 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:47:07,581 - BORDER - ☄ This is a border message. ☄
+2025-11-08 23:47:25,464 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:47:25,464 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:47:25,465 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:47:25,465 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:47:25,465 - ERROR - ‼ This is an error message. ‼
+2025-11-08 23:47:25,465 - CRITICAL - × This is a critical message. ×
+2025-11-08 23:47:25,466 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:47:25,466 - BORDER - ☄ This is a border message. ☄
+2025-11-08 23:48:57,203 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:48:57,204 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:48:57,204 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:48:57,204 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:48:57,204 - ERROR - ⚠⚠ This is an error message. ⚠⚠
+2025-11-08 23:48:57,205 - CRITICAL - × This is a critical message. ×
+2025-11-08 23:48:57,206 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:48:57,206 - BORDER - ☄ This is a border message. ☄
+2025-11-08 23:49:08,890 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:49:08,891 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:49:08,891 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:49:08,891 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:49:08,892 - ERROR - ⚠⚠ This is an error message. ⚠⚠
+2025-11-08 23:49:08,892 - CRITICAL - × This is a critical message. ×
+2025-11-08 23:49:08,893 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:49:08,893 - BORDER - ☄ This is a border message. ☄
+2025-11-08 23:49:24,232 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:49:24,232 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:49:24,232 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:49:24,233 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:49:24,233 - ERROR - ⚠⚠ This is an error message. ⚠⚠
+2025-11-08 23:49:24,233 - CRITICAL - × This is a critical message. ×
+2025-11-08 23:49:24,233 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:49:24,233 - BORDER - ⫘⫘⫘⫘⫘⫘ This is a border message. ⫘⫘⫘⫘⫘⫘
+2025-11-08 23:50:04,841 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:50:04,842 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:50:04,842 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:50:04,843 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:50:04,844 - ERROR - ⚠⚠ This is an error message. ⚠⚠
+2025-11-08 23:50:04,845 - CRITICAL - ⛌⛌⛌× This is a critical message. ⛌⛌⛌×
+2025-11-08 23:50:04,846 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:50:04,846 - BORDER - ⫘⫘⫘⫘⫘⫘ This is a border message. ⫘⫘⫘⫘⫘⫘
+2025-11-08 23:50:14,700 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:50:14,700 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:50:14,701 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:50:14,701 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:50:14,701 - ERROR - ⚠⚠ This is an error message. ⚠⚠
+2025-11-08 23:50:14,701 - CRITICAL - ⛌ ⛌ ⛌ This is a critical message. ⛌ ⛌ ⛌
+2025-11-08 23:50:14,702 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:50:14,702 - BORDER - ⫘⫘⫘⫘⫘⫘ This is a border message. ⫘⫘⫘⫘⫘⫘
+2025-11-08 23:50:22,728 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:50:22,728 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:50:22,728 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:50:22,729 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:50:22,729 - ERROR - ⚠⚠ This is an error message. ⚠⚠
+2025-11-08 23:50:22,730 - CRITICAL -   ⛌ ⛌ ⛌   This is a critical message.   ⛌ ⛌ ⛌  
+2025-11-08 23:50:22,730 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:50:22,731 - BORDER - ⫘⫘⫘⫘⫘⫘ This is a border message. ⫘⫘⫘⫘⫘⫘
+2025-11-08 23:51:07,336 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:51:07,337 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:51:07,337 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:51:07,337 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:51:07,337 - ERROR - ⚠⚠ This is an error message. ⚠⚠
+2025-11-08 23:51:07,337 - CRITICAL -   ⛌ ⛌ ⛌   This is a critical message.   ⛌ ⛌ ⛌  
+2025-11-08 23:51:07,338 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:51:07,338 - BORDER - ⫘ This is a border message. ⫘
+2025-11-08 23:51:16,317 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:51:16,317 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:51:16,317 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:51:16,318 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:51:16,318 - ERROR - ⚠⚠ This is an error message. ⚠⚠
+2025-11-08 23:51:16,318 - CRITICAL -   ⛌ ⛌ ⛌   This is a critical message.   ⛌ ⛌ ⛌  
+2025-11-08 23:51:16,318 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:51:16,318 - BORDER - ⌞ ⌝ This is a border message. ⌞ ⌝
+2025-11-08 23:51:39,852 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:51:39,852 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:51:39,853 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:51:39,854 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:51:39,854 - ERROR - ⚠⚠ This is an error message. ⚠⚠
+2025-11-08 23:51:39,854 - CRITICAL -   ⛌ ⛌ ⛌   This is a critical message.   ⛌ ⛌ ⛌  
+2025-11-08 23:51:39,854 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:51:39,855 - BORDER - ] ⌞ ⌝ [ This is a border message. ] ⌞ ⌝ [
+2025-11-08 23:52:10,730 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:52:10,730 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:52:10,731 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:52:10,731 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:52:10,732 - ERROR - ⚠⚠ This is an error message. ⚠⚠
+2025-11-08 23:52:10,733 - CRITICAL -   ⛌ ⛌ ⛌   This is a critical message.   ⛌ ⛌ ⛌  
+2025-11-08 23:52:10,733 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:52:10,733 - BORDER - ⌞                ⌝  This is a border message. ⌞                ⌝ 
+2025-11-08 23:53:52,767 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-08 23:53:52,768 - INFO - 🛈 This is an info message. 🛈
+2025-11-08 23:53:52,768 - SUCCESS - ☀ This is a success message. ☀
+2025-11-08 23:53:52,768 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-08 23:53:52,768 - ERROR - ⚠⚠ This is an error message. ⚠⚠
+2025-11-08 23:53:52,769 - CRITICAL -   ⛌ ⛌ ⛌   This is a critical message.   ⛌ ⛌ ⛌  
+2025-11-08 23:53:52,769 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-08 23:53:52,769 - BORDER -  ⌞ ___ 𓃵 ___ ⌝   This is a border message.  ⌞ ___ 𓃵 ___ ⌝  
+2025-11-09 02:30:45,713 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-09 02:30:45,714 - INFO - 🛈 This is an info message. 🛈
+2025-11-09 02:30:45,714 - SUCCESS - ☀ This is a success message. ☀
+2025-11-09 02:30:45,714 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-09 02:30:45,715 - ERROR - ⚠⚠ This is an error message. ⚠⚠
+2025-11-09 02:30:45,716 - CRITICAL -   ⛌ ⛌ ⛌   This is a critical message.   ⛌ ⛌ ⛌  
+2025-11-09 02:30:45,716 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-09 02:30:45,717 - BORDER -  ⌞ ___ 𓃵 ___ ⌝   This is a border message.  ⌞ ___ 𓃵 ___ ⌝  
+2025-11-09 02:30:47,089 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-09 02:30:47,089 - INFO - 🛈 Starting Selenium 🛈
+2025-11-09 02:31:06,374 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-09 02:31:06,374 - INFO - 🛈 This is an info message. 🛈
+2025-11-09 02:31:06,375 - SUCCESS - ☀ This is a success message. ☀
+2025-11-09 02:31:06,376 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-09 02:31:06,376 - ERROR - ⚠⚠ This is an error message. ⚠⚠
+2025-11-09 02:31:06,378 - CRITICAL -   ⛌ ⛌ ⛌   This is a critical message.   ⛌ ⛌ ⛌  
+2025-11-09 02:31:06,378 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-09 02:31:06,378 - BORDER -  ⌞ ___ 𓃵 ___ ⌝   This is a border message.  ⌞ ___ 𓃵 ___ ⌝  
+2025-11-09 02:31:07,020 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-09 02:31:07,020 - INFO - 🛈 Starting Selenium 🛈
+2025-11-09 02:31:18,012 - DEBUG - ⚕ This is a debug message. ⚕
+2025-11-09 02:31:18,013 - INFO - 🛈 This is an info message. 🛈
+2025-11-09 02:31:18,013 - SUCCESS - ☀ This is a success message. ☀
+2025-11-09 02:31:18,013 - WARNING - ⚠ This is a warning message. ⚠
+2025-11-09 02:31:18,014 - ERROR - ⚠⚠ This is an error message. ⚠⚠
+2025-11-09 02:31:18,014 - CRITICAL -   ⛌ ⛌ ⛌   This is a critical message.   ⛌ ⛌ ⛌  
+2025-11-09 02:31:18,014 - WATCHDOG - ⛨ This is a watchdog message. ⛨
+2025-11-09 02:31:18,014 - BORDER -  ⌞ ___ 𓃵 ___ ⌝   This is a border message.  ⌞ ___ 𓃵 ___ ⌝  
+2025-11-09 02:31:19,106 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-09 02:31:19,106 - INFO - 🛈 Starting Selenium 🛈
+2025-11-09 02:33:25,403 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-09 02:33:25,403 - INFO - 🛈 Starting Selenium 🛈
+2025-11-09 02:34:10,419 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-09 02:34:10,419 - INFO - 🛈 Starting Selenium 🛈
+2025-11-09 02:34:10,420 - CRITICAL -   ⛌ ⛌ ⛌   Failed to INIT Webdriver. Check the path: drivers/chromedriver   ⛌ ⛌ ⛌  
+2025-11-09 02:34:10,580 - SUCCESS - ☀ Allowed to scrape : https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html as per robots.txt ☀
+2025-11-09 02:34:10,581 - CRITICAL -   ⛌ ⛌ ⛌   Webdriver not available. Cannot fetch URL   ⛌ ⛌ ⛌  
+2025-11-09 02:34:10,581 - CRITICAL -   ⛌ ⛌ ⛌   HTML recieved from: https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html, was empty   ⛌ ⛌ ⛌  
+2025-11-09 02:34:10,582 - ERROR - ⚠⚠ Scraping failed on : None ⚠⚠
+2025-11-09 02:34:10,582 - SUCCESS - ☀ Shutdown Success - Exiting Script ☀
+2025-11-09 02:34:59,046 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-09 02:34:59,046 - INFO - 🛈 Starting Selenium 🛈
+2025-11-09 02:34:59,047 - CRITICAL -   ⛌ ⛌ ⛌   Failed to INIT Webdriver. Check the path: drivers/chromedriver   ⛌ ⛌ ⛌  
+2025-11-09 02:34:59,181 - SUCCESS - ☀ Allowed to scrape : https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html as per robots.txt ☀
+2025-11-09 02:34:59,181 - CRITICAL -   ⛌ ⛌ ⛌   Webdriver not available. Cannot fetch URL   ⛌ ⛌ ⛌  
+2025-11-09 02:34:59,182 - CRITICAL -   ⛌ ⛌ ⛌   HTML recieved from: https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html, was empty   ⛌ ⛌ ⛌  
+2025-11-09 02:34:59,182 - ERROR - ⚠⚠ Scraping failed on : None ⚠⚠
+2025-11-09 02:34:59,182 - SUCCESS - ☀ Shutdown Success - Exiting Script ☀
+2025-11-09 02:35:02,793 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-09 02:35:02,793 - INFO - 🛈 Starting Selenium 🛈
+2025-11-09 02:35:02,794 - CRITICAL -   ⛌ ⛌ ⛌   Failed to INIT Webdriver. Check the path: drivers/chromedriver   ⛌ ⛌ ⛌  
+2025-11-09 02:35:02,945 - SUCCESS - ☀ Allowed to scrape : https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html as per robots.txt ☀
+2025-11-09 02:35:02,946 - CRITICAL -   ⛌ ⛌ ⛌   Webdriver not available. Cannot fetch URL   ⛌ ⛌ ⛌  
+2025-11-09 02:35:02,947 - CRITICAL -   ⛌ ⛌ ⛌   HTML recieved from: https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html, was empty   ⛌ ⛌ ⛌  
+2025-11-09 02:35:02,948 - ERROR - ⚠⚠ Scraping failed on : None ⚠⚠
+2025-11-09 02:35:02,948 - SUCCESS - ☀ Shutdown Success - Exiting Script ☀
+2025-11-09 02:35:35,839 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-09 02:35:35,840 - INFO - 🛈 Starting Selenium 🛈
+2025-11-09 02:35:35,840 - CRITICAL -   ⛌ ⛌ ⛌   Failed to INIT Webdriver. Check the path: drivers/chromedriver   ⛌ ⛌ ⛌  
+2025-11-09 02:35:35,940 - SUCCESS - ☀ Allowed to scrape : https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html as per robots.txt ☀
+2025-11-09 02:35:35,940 - CRITICAL -   ⛌ ⛌ ⛌   Webdriver not available. Cannot fetch URL   ⛌ ⛌ ⛌  
+2025-11-09 02:35:35,941 - WARNING - ⚠ HTML recieved from: https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html, was empty ⚠
+2025-11-09 02:35:35,941 - ERROR - ⚠⚠ Scraping failed on : None ⚠⚠
+2025-11-09 02:35:35,942 - SUCCESS - ☀ Shutdown Success - Exiting Script ☀
+2025-11-09 02:43:02,806 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-09 02:43:02,806 - INFO - 🛈 Starting Selenium 🛈
+2025-11-09 02:43:02,807 - CRITICAL -   ⛌ ⛌ ⛌   Failed to INIT Webdriver. Check the path: drivers/chromedriver   ⛌ ⛌ ⛌  
+2025-11-09 02:43:02,807 - DEBUG - ⚕ WebDriverException: Message: Unable to obtain driver for chrome; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors/driver_location
+ ⚕
+2025-11-09 02:43:02,914 - SUCCESS - ☀ Allowed to scrape : https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html as per robots.txt ☀
+2025-11-09 02:43:02,914 - CRITICAL -   ⛌ ⛌ ⛌   Webdriver not available. Cannot fetch URL   ⛌ ⛌ ⛌  
+2025-11-09 02:43:02,914 - WARNING - ⚠ HTML recieved from: https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html, was empty ⚠
+2025-11-09 02:43:02,914 - ERROR - ⚠⚠ Scraping failed on : None ⚠⚠
+2025-11-09 02:43:02,915 - SUCCESS - ☀ Shutdown Success - Exiting Script ☀
+2025-11-09 02:45:59,568 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-09 02:45:59,569 - INFO - 🛈 Starting Selenium 🛈
+2025-11-09 02:46:19,886 - CRITICAL -   ⛌ ⛌ ⛌   Failed to INIT Webdriver. Check the path: drivers/chromedriver   ⛌ ⛌ ⛌  
+2025-11-09 02:46:19,886 - DEBUG - ⚕ WebDriverException: Message: Service /home/vscode/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver unexpectedly exited. Status code was: 127
+ ⚕
+2025-11-09 02:46:19,988 - SUCCESS - ☀ Allowed to scrape : https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html as per robots.txt ☀
+2025-11-09 02:46:19,988 - CRITICAL -   ⛌ ⛌ ⛌   Webdriver not available. Cannot fetch URL   ⛌ ⛌ ⛌  
+2025-11-09 02:46:19,989 - WARNING - ⚠ HTML recieved from: https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html, was empty ⚠
+2025-11-09 02:46:19,989 - ERROR - ⚠⚠ Scraping failed on : None ⚠⚠
+2025-11-09 02:46:19,989 - SUCCESS - ☀ Shutdown Success - Exiting Script ☀
+2025-11-09 02:46:29,877 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-09 02:46:29,878 - INFO - 🛈 Starting Selenium 🛈
+2025-11-09 02:51:05,855 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-09 02:51:05,855 - INFO - 🛈 Starting Selenium 🛈
+2025-11-09 02:51:05,941 - DEBUG - ⚕ WebDriverException: Message: Service /home/vscode/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver unexpectedly exited. Status code was: 127
+ ⚕
+2025-11-09 02:51:06,202 - SUCCESS - ☀ Allowed to scrape : https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html as per robots.txt ☀
+2025-11-09 02:51:06,203 - CRITICAL -   ⛌ ⛌ ⛌   Webdriver not available. Cannot fetch URL   ⛌ ⛌ ⛌  
+2025-11-09 02:51:06,203 - WARNING - ⚠ HTML recieved from: https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html, was empty ⚠
+2025-11-09 02:51:06,205 - ERROR - ⚠⚠ Scraping failed on : None ⚠⚠
+2025-11-09 02:51:06,205 - SUCCESS - ☀ Shutdown Success - Exiting Script ☀
+2025-11-09 02:52:45,381 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-09 02:52:45,381 - INFO - 🛈 Starting Selenium 🛈
+2025-11-09 02:52:45,468 - DEBUG - ⚕ WebDriverException: Message: Service /home/vscode/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver unexpectedly exited. Status code was: 127
+ ⚕
+2025-11-09 02:52:45,715 - SUCCESS - ☀ Allowed to scrape : https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html as per robots.txt ☀
+2025-11-09 02:52:45,716 - CRITICAL -   ⛌ ⛌ ⛌   Webdriver not available. Cannot fetch URL   ⛌ ⛌ ⛌  
+2025-11-09 02:52:45,717 - WARNING - ⚠ HTML recieved from: https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html, was empty ⚠
+2025-11-09 02:52:45,718 - ERROR - ⚠⚠ Scraping failed on : None ⚠⚠
+2025-11-09 02:52:45,719 - SUCCESS - ☀ Shutdown Success - Exiting Script ☀
+2025-11-09 02:54:22,255 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-09 02:54:22,255 - INFO - 🛈 Starting Selenium 🛈
+2025-11-09 02:54:22,348 - DEBUG - ⚕ WebDriverException: Message: Service /home/vscode/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver unexpectedly exited. Status code was: 127
+ ⚕
+2025-11-09 02:54:22,457 - SUCCESS - ☀ Allowed to scrape : https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html as per robots.txt ☀
+2025-11-09 02:54:22,458 - CRITICAL -   ⛌ ⛌ ⛌   Webdriver not available. Cannot fetch URL   ⛌ ⛌ ⛌  
+2025-11-09 02:54:22,459 - WARNING - ⚠ HTML recieved from: https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html, was empty ⚠
+2025-11-09 02:54:22,460 - ERROR - ⚠⚠ Scraping failed on : None ⚠⚠
+2025-11-09 02:54:22,461 - SUCCESS - ☀ Shutdown Success - Exiting Script ☀
+2025-11-09 03:02:27,823 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-09 03:02:27,823 - INFO - 🛈 Starting Selenium 🛈
+2025-11-09 03:02:27,918 - DEBUG - ⚕ WebDriverException: Message: Service /home/vscode/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver unexpectedly exited. Status code was: 127
+ ⚕
+2025-11-09 03:02:28,047 - SUCCESS - ☀ Allowed to scrape : https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html as per robots.txt ☀
+2025-11-09 03:02:28,049 - CRITICAL -   ⛌ ⛌ ⛌   Webdriver not available. Cannot fetch URL   ⛌ ⛌ ⛌  
+2025-11-09 03:02:28,050 - WARNING - ⚠ HTML recieved from: https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html, was empty ⚠
+2025-11-09 03:02:28,051 - ERROR - ⚠⚠ Scraping failed on : None ⚠⚠
+2025-11-09 03:02:28,052 - SUCCESS - ☀ Shutdown Success - Exiting Script ☀
+2025-11-09 03:02:36,083 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-09 03:02:36,083 - INFO - 🛈 Starting Selenium 🛈
+2025-11-09 03:02:36,173 - DEBUG - ⚕ WebDriverException: Message: Service /home/vscode/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver unexpectedly exited. Status code was: 127
+ ⚕
+2025-11-09 03:02:36,320 - SUCCESS - ☀ Allowed to scrape : https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html as per robots.txt ☀
+2025-11-09 03:02:36,321 - CRITICAL -   ⛌ ⛌ ⛌   Webdriver not available. Cannot fetch URL   ⛌ ⛌ ⛌  
+2025-11-09 03:02:36,321 - WARNING - ⚠ HTML recieved from: https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html, was empty ⚠
+2025-11-09 03:02:36,322 - ERROR - ⚠⚠ Scraping failed on : None ⚠⚠
+2025-11-09 03:02:36,322 - SUCCESS - ☀ Shutdown Success - Exiting Script ☀
+2025-11-09 03:12:39,847 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-09 03:12:39,848 - INFO - 🛈 Starting Selenium 🛈
+2025-11-09 03:12:42,001 - SUCCESS - ☀ Allowed to scrape : https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html as per robots.txt ☀
+2025-11-09 03:12:52,157 - INFO - 🛈 Shutting down Selenium WebDriver 🛈
+2025-11-10 02:19:09,710 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-10 02:19:09,710 - INFO - 🛈 Starting Selenium 🛈
+2025-11-10 02:19:13,478 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-10 02:19:13,478 - INFO - 🛈 Starting Selenium 🛈
+2025-11-10 02:19:14,103 - SUCCESS - ☀ Allowed to scrape : https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html as per robots.txt ☀
+2025-11-10 02:19:16,913 - DEBUG - ⚕ Waiting for element: ('class name', 'product-detail-content')... ⚕
+2025-11-10 02:19:17,332 - INFO - 🛈 Shutting down Selenium WebDriver 🛈
+2025-11-10 02:19:17,392 - SUCCESS - ☀ Shutdown Success - Exiting Script ☀
+2025-11-10 03:37:08,083 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-10 03:37:08,083 - INFO - 🛈 Starting Selenium 🛈
+2025-11-10 03:37:09,219 - INFO - 🛈 Created folder: environmentallights 🛈
+2025-11-10 03:37:09,220 - INFO - 🛈 No saved HTML for URL: https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html. Retrieving from web... 🛈
+2025-11-10 03:37:09,343 - SUCCESS - ☀ Allowed to scrape : https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html as per robots.txt ☀
+2025-11-10 03:37:12,563 - DEBUG - ⚕ Waiting for element: ('class name', 'product-detail-content')... ⚕
+2025-11-10 03:37:12,995 - INFO - 🛈 Shutting down Selenium WebDriver 🛈
+2025-11-10 03:37:13,105 - SUCCESS - ☀ Shutdown Success - Exiting Script ☀
+2025-11-10 03:37:49,738 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-10 03:37:49,738 - INFO - 🛈 Starting Selenium 🛈
+2025-11-10 03:37:49,987 - INFO - 🛈 Found Saved HTML for URL: https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html. Loading... 🛈
+2025-11-10 03:37:50,025 - INFO - 🛈 Shutting down Selenium WebDriver 🛈
+2025-11-10 03:37:50,080 - SUCCESS - ☀ Shutdown Success - Exiting Script ☀
+2025-11-10 03:38:26,786 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-10 03:38:26,787 - INFO - 🛈 Starting Selenium 🛈
+2025-11-10 03:38:27,500 - INFO - 🛈 No saved HTML for URL: https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html. Retrieving from web... 🛈
+2025-11-10 03:38:27,569 - SUCCESS - ☀ Allowed to scrape : https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html as per robots.txt ☀
+2025-11-10 03:38:30,196 - DEBUG - ⚕ Waiting for element: ('class name', 'product-detail-content')... ⚕
+2025-11-10 03:38:30,359 - INFO - 🛈 Shutting down Selenium WebDriver 🛈
+2025-11-10 03:38:30,420 - SUCCESS - ☀ Shutdown Success - Exiting Script ☀
+2025-11-12 03:42:54,912 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-12 03:42:54,913 - INFO - 🛈 Starting Selenium 🛈
+2025-11-12 03:42:56,452 - INFO - 🛈 Found Saved HTML for URL: https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html. Loading... 🛈
+2025-11-12 03:42:57,675 - INFO - 🛈 Shutting down Selenium WebDriver 🛈
+2025-11-12 03:42:57,784 - SUCCESS - ☀ Shutdown Success - Exiting Script ☀
+2025-11-12 03:43:02,440 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-12 03:43:02,441 - INFO - 🛈 Starting Selenium 🛈
+2025-11-12 03:43:02,759 - INFO - 🛈 Found Saved HTML for URL: https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html. Loading... 🛈
+2025-11-12 03:43:02,798 - INFO - 🛈 Shutting down Selenium WebDriver 🛈
+2025-11-12 03:43:02,854 - SUCCESS - ☀ Shutdown Success - Exiting Script ☀
+2025-11-12 03:44:11,297 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-12 03:44:11,297 - INFO - 🛈 Starting Selenium 🛈
+2025-11-12 03:44:11,559 - INFO - 🛈 Found Saved HTML for URL: https://www.environmentallights.com/18574-rgb-pixelcontrol-144-12-12m.html. Loading... 🛈
+2025-11-12 03:44:11,598 - INFO - 🛈 Shutting down Selenium WebDriver 🛈
+2025-11-12 03:44:11,652 - SUCCESS - ☀ Shutdown Success - Exiting Script ☀
+2025-11-12 04:06:02,061 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-12 04:06:02,063 - INFO - 🛈 Starting Selenium 🛈
+2025-11-12 04:06:02,848 - INFO - 🛈 No saved HTML for URL: https://www.environmentallights.com/20910-pln-pf-rgb30k-10m.html. Retrieving from web... 🛈
+2025-11-12 04:06:03,045 - SUCCESS - ☀ Allowed to scrape : https://www.environmentallights.com/20910-pln-pf-rgb30k-10m.html as per robots.txt ☀
+2025-11-12 04:06:47,050 - DEBUG - ⚕ Waiting for element: ('class name', 'product-detail-content')... ⚕
+2025-11-12 04:06:47,072 - INFO - 🛈 Saving HTML to file: environmentallights/20910-pln-pf-rgb30k-10m.html 🛈
+2025-11-12 04:06:47,121 - INFO - 🛈 Saved screenshot: environmentallights/20910-pln-pf-rgb30k-10m.html.png 🛈
+2025-11-12 04:06:47,160 - INFO - 🛈 Shutting down Selenium WebDriver 🛈
+2025-11-12 04:06:47,220 - SUCCESS - ☀ Shutdown Success - Exiting Script ☀
+2025-11-14 19:42:01,196 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-14 19:42:01,196 - INFO - 🛈 Starting Selenium 🛈
+2025-11-14 20:53:07,376 - INFO - 🛈 Starting requests session for Robots.txt 🛈
+2025-11-14 20:53:07,376 - INFO - 🛈 Starting Selenium 🛈
