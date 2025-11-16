@@ -65,7 +65,7 @@ FUNCTIONS:
  #!                       MAIN BLOCK                         !#
  #! ======================================================== !#
 
-#? CLASS / FUNCTION TITLE 
+#* CLASS / FUNCTION TITLE 
 
 #^ DEBUG TESTS / EXAMPLES
 

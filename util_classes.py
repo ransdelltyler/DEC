@@ -1,5 +1,5 @@
 
-#? LOGGING CLASS BLOCK
+# TODO: ADD STANDARD BLOCKS
 
 import logging
 from colorlog import ColoredFormatter
@@ -22,7 +22,7 @@ Emoji_Map = {
     logging.INFO: "🛈",
     WATCHDOG: "⛨",
     SUCCESS: "☀",
-    BORDER: ' ⌞ ___ 𓃵 ___ ⌝  ',
+    BORDER: ' ⌞ ___ 𓃵 ___ 𓃵 ___ 𓃵 ___ ⌝  ',
 }
 
 #* LOG COLOR CONFIGURATION

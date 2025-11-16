@@ -18,6 +18,8 @@ pip install sacn
 pip install lxml
 pip install selenium
 
+pip install rapidfuzz
+
 pip cache purge
 sudo apt-get update
 sudo apt-get install -y chromium chromium-driver
