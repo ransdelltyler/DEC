@@ -1,0 +1,25 @@
+pip install --upgrade pip
+
+pip install UUID
+
+pip install pyperclip
+pip install BeautifulSoup4
+pip install numpy
+
+pip install requests
+pip install responses
+
+pip install colorlog
+
+pip install PySimpleGUI
+pip install openpyxl
+
+pip install sacn
+pip install lxml
+pip install selenium
+
+pip install rapidfuzz
+
+pip cache purge
+sudo apt-get update
+sudo apt-get install -y chromium chromium-driver
