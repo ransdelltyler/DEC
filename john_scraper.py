@@ -1,35 +1,38 @@
 '''source /workspaces/DeerEatChain/.venv_dec/bin/activate
-#*-
 URL SCRAPER MODULE
 - USES BEAUTIFULSOUP TO SCRAPE WEBPAGES
 - USES REQUESTS TO FETCH WEBPAGE CONTENT
 - 
-
-#*- FUNCTIONS:
-#*    - _get_base_url() : Extracts the base URL from a full URL
-#*    - _check_robots_txt() : Checks the robots.txt file for scraping permissions
-#*    - _retrieve_url() : Retrieves the content of a URL safely considering robots.txt
-#*    - scrape_url() : Scrapes the content of a URL and returns a BeautifulSoup object
-#*    - save_html() : Saves the HTML content to a file
-#*    - load_html() : Loads HTML content from a file
-#*    - create_db_folder() : Creates a folder for storing HTML files
-
-
-
-Current Functionality:
-- Uses Selenium with headless Chrome to fetch dynamic content
-- Looks for saved HTML files before making web requests
-- Checks robots.txt before scraping
-- Waits for specific elements to load before getting HTML
-- Saves HTML to local files for caching
-- Creates folders for storing HTML files based on domain names
-- 
-
-# - DEV LOG NEXT STEPS - #
-# TODO: Scrape specific data based on keywords from keywords.py
-# TODO: 
-- 
 '''
+
+ # TODO:==================================================== ~#
+ # TODO:              TODO LIST / DEVLOG                     ~#
+ # TODO:==================================================== ~#
+ # TODO: EXCEL URL LIST
+ # TODO: CONNECT TO XLSM DATABASE OF EXISTING PRODUCTS:
+    #^ - CHECK FOR EXISTING PRODUCTS TO AVOID DUPLICATES BY URL LIST
+    #^ -    CHECK TIMESTAMPS AND DECIDE IF UPDATE IS NEEDED
+    #^ - IF UPDATE NEEDED, SCRAPE NEW DATA AND OVERWRITE EXISTING ENTRY
+    #^ - USE DATABASE OF EXISTING ENTRIES & BASIC_KEYS FOR KEYWORD MATCHING:
+    #^ -    START WITH PRODUCTS WITH MATCHING BASE URL / DOMAIN
+    #^ -        THEN CHECK FOR SIMILARITY USING RAPIDFUZZ ON PRODUCT NAMES / TITLES
+    #^ -    IF DOMAIN IS NEW, USE ALL EXISTING ENTRIES FIRST, THEN BASIC_KEYS
+    #^ - POST-RAPIDFUZZ:   
+    #^ -    ASK USER FOR ANY MISSING KEYWORD-VALUE PAIRS
+    #^ -    PRESENT DATA IN FILLABLE FORM:
+    #^ -        ANY MATCHES ABOVE 80% SIMILARITY ARE PREFILLED SUGGESTIONS IN GREEN
+    #^ -        MATCHES 50%-80% ARE PREFILLED SUGGESTIONS IN RED (USER MUST CONFIRM)
+    #^ -        BELOW 50% ARE LEFT BLANK FOR USER INPUT
+    #^ -    ON USER CONFIRMATION, SAVE NEW/UPDATED ENTRY TO XMLX DATABASE
+
+    # TODO: CHECK CERTIFICATION IDS AGAINST DATABASES FOR ACTIVE STATUS
+    #^ -    UL
+    #^ -    ETL
+    #^ -    CETL
+
+
+
+
 
 import os
 import time
@@ -52,7 +55,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import WebDriverException
 
-from util_classes import ColorLog
+from util_classes import ColorLog 
 from dataclasses import dataclass, field
 from typing import Literal
 
@@ -329,82 +332,3 @@ with JohnScraper() as scraper:
 log.success('Shutdown Success - Exiting Script')
 
  
- # TODO:==================================================== ~#
- # TODO:              TODO LIST / DEVLOG                     ~#
- # TODO:==================================================== ~#
-
- #* ENVIRIONMENTAL LIGHTS SCRAPING
- # TODO: PAGE TYPE 
-    #^ - soup.product
- # TODO: PAGE TITLE
-    #^ - soupp.title
- # TODO: MAIN IMAGE / GIF
-    #^ - soup.image
- # TODO: DESCRIPTION
-    #^ - soup.description
- # TODO: URL
-    #^ - soup.url
- # TODO: PRODUCT INFO MAIN DESCRIPTION
-    #^ - prod_features = soup.find('div', class_='product-detail-content')
-    #^ - main_desc = prod_features.find('p')
-    #^ - key_features = prod_features.find_all('li')
-    #^ - key_features_list = field.factory(default_factory=list)
-    #^ - for feature in key_features:
-    #^ -    key_features_list.append(feature.get_text(strip=True))
- # TODO: PRODUCT SPECS TABLE
-    #^ - spec_dict = field.factory(default_factory=dict)
-    #^ - spec_table = soup.find('table', id='product-specs')
-    #^ - rows = spec_table.find('tbody').find_all('tr')
-    #^ - for row in rows: 
-    #^     label = row.find('th', class_='label').get_text(strip=True)
-    #^     value = row.find('td', class_='value').get_text(strip=True)
-    #^     spec_dict[label] = value
- # TODO: BOLDED NOTICES WITHIN DESCRIPTION
-    #^ - spec_table = soup.find('table', id='product-specs')
-    #^ - bold_elements = spec_table.find_all(['b','strong'])
-    #^ - for elem in bold_elements:
-    #^     log.info(f'Bold Notice: {elem.get_text(strip=True)}')
- # TODO: RELATED PRODUCTS
-    #^ - related_section = soup.find('ol', 'class_=products list items product-items')
-    #^ - related_items = related_section.find_all(li, class_='item product product-item')
-    #^ - related_list = field.factory(default_factory=list)
-    #^ - for item in related_items:
-    #^ -    related_dict = field.factory(default_factory=dict)
-    #^ -    related_name = item.find('a', class_='product-item-link').get_text(strip=True)
-    #^ -    related_url = item.find('a', class_='product photo product-item-photo').get('href')
-    #^ -    related_image = item.find()
-    #^ -    related_part_num = item.find('dd', class_='product-item-number-value').get_text(strip=True)
-    #^ -    related_dict['name'] = related_name
-    #^ -    related_dict['url'] = related_url
-    #^ -    related_dict['part_number'] = related_part_num
-    #^ -    related_dict['image'] = related_image
-    #^ -    related_list.append(related_dict)
- # TODO: DOCUMENTATION DOWNLOADS
-    #^ - docs_section = soup.find('ul', id='product-documents')
-    #^ - docs_items = docs_section.find_all('a', class_='document-download-link')
-    #^ - docs_list = field.factory(default_factory=list)
-    #^ - for doc in docs_items:
-    #^ -    doc_dict = field.factory(default_factory=dict)
-    #^ -    doc_name = doc.get('download')
-    #^ -    doc_url = doc.get('href')
-
- # TODO: CONNECT TO XLSM DATABASE OF EXISTING PRODUCTS:
-    #^ - CHECK FOR EXISTING PRODUCTS TO AVOID DUPLICATES
-    #^ -    CHECK TIMESTAMPS AND DECIDE IF UPDATE IS NEEDED
-    #^ - IF UPDATE NEEDED, SCRAPE NEW DATA AND OVERWRITE EXISTING ENTRY
-    #^ - USE DATABASE OF EXISTING ENTRIES & BASIC_KEYS FOR KEYWORD MATCHING:
-    #^ -    START WITH PRODUCTS WITH MATCHING BASE URL / DOMAIN
-    #^ -        THEN CHECK FOR SIMILARITY USING RAPIDFUZZ ON PRODUCT NAMES / TITLES
-    #^ -    IF DOMAIN IS NEW, USE ALL EXISTING ENTRIES FIRST, THEN BASIC_KEYS
-    #^ - POST-RAPIDFUZZ:   
-    #^ -    ASK USER FOR ANY MISSING KEYWORD-VALUE PAIRS
-    #^ -    PRESENT DATA IN FILLABLE FORM:
-    #^ -        ANY MATCHES ABOVE 80% SIMILARITY ARE PREFILLED SUGGESTIONS IN GREEN
-    #^ -        MATCHES 50%-80% ARE PREFILLED SUGGESTIONS IN RED (USER MUST CONFIRM)
-    #^ -        BELOW 50% ARE LEFT BLANK FOR USER INPUT
-    #^ -    ON USER CONFIRMATION, SAVE NEW/UPDATED ENTRY TO XMLX DATABASE
-
-    # TODO: CHECK CERTIFICATION IDS AGAINST DATABASES FOR ACTIVE STATUS
-    #^ -    UL
-    #^ -    ETL
-    #^ -    CETL

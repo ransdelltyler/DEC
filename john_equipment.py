@@ -122,17 +122,19 @@ class JohnEquipDB:
     def _query_database(self, fuzzy = True):
         pass
 
-    def _check_for_existing_equip(self):
-        pass
-
     def _timestamp_row(self):
         pass
 
     def _suggest_updates(self):
         pass
 
-    def _cert_checks(self):
+    def _run_cert_checks(self):
         pass
+
+ #* QUICKLY CHECKS FOR EXISTING URL IN DB
+    def _quickcheck(self):
+        pass
+
  
  #? ======================================================== ?#
  #?                   EXTERNAL FUNCTIONS                     ?#
@@ -141,6 +143,8 @@ class JohnEquipDB:
     def load_new_xlsm(self, path):
         # TODO: ADD LAST KNOWN PATH VARIABLE
         pass
+
+
 
  #* UPDATE 1 CELL IN ALL ROWS THAT MATCH_COL VALUE = MATCH_VAL
     def update_all_match(self, ws : Worksheet, match_col, match_val, update_col, new_val):
@@ -180,6 +184,25 @@ class JohnEquipDB:
         log.warning(f" Value '{match_value}' not found in column '{match_col_name}'")
 
 
+
+ #* ADD EQUIPMENT TO DATABASE
+    def add_equipm(self):
+        pass
+    
+    def rem_equipm(self):
+        pass
+
+    def use_equipm(self):
+        pass
+
+    def edit_equipm(self):
+        pass
+
+    def get_url_matches(self):
+        pass
+    
+    def get_name_matches(self):
+        pass
 
  #! ======================================================== !#
  #!                       MAIN BLOCK                         !#
