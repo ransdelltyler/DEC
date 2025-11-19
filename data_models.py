@@ -44,7 +44,7 @@ class Voltage(Enum):
     V120 = 120
 
 class LEDProtocol(Enum):
-    UKWN = auto()
+    UNKWN = auto()
     DMX512 = auto()
     WS2811 = auto()
     WS2812 = auto()
@@ -59,7 +59,6 @@ class LEDProtocol(Enum):
     UCS8903 = auto()
     UCS8904 = auto()
     SK6812 = auto()
-
 
 class Fuse(Enum):
     UNKWN = auto()
@@ -137,12 +136,6 @@ class FinishColor(Enum):
     BEIGE = auto()
     CLEAR = auto()
     CUSTOM = auto()
-
-    UNKWN = auto()
-    PWM = auto()
-    DMX = auto()
-    SPI = auto()
-    Z0_T10 = auto()
 
 class ConnDir(Enum):
     INPUT = auto()

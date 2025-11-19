@@ -98,7 +98,11 @@ DEF_STR = {
     'anchor'    : '!ANCHOR!'
 }
 
-
+EQUIP_FIELDS = {
+    'manuf', 'vin', 'vout', 'fuse',
+    'l_mm', 'w_mm', 'h_mm',
+    'rated_watts', 'actual_watts', 'terminals'
+}
 
 #? ======================================================== ?#
 #?                    HELPER FUNCTIONS                      ?#
@@ -111,7 +115,18 @@ def base_id(*, name, comments):
         'comments' : comments or [],
     }
 
-def equipment_base(*, manuf, vin, vout, fuse, l_mm, w_mm, h_mm, rated_watts, actual_watts, terminals):
+def equipment_base(*,
+                   manuf = None,
+                   vin = None,
+                   vout = None,
+                   fuse = None,
+                   l_mm = None,
+                   w_mm = None,
+                   h_mm = None,
+                   rated_watts = None,
+                   actual_watts = None,
+                   terminals = None,
+                   ):
     return {
         'manuf' : manuf or DEF_STR['manuf'],
         'vin' : int(vin) if vin is not None else 0,
@@ -122,7 +137,7 @@ def equipment_base(*, manuf, vin, vout, fuse, l_mm, w_mm, h_mm, rated_watts, act
         'h_mm' : h_mm or 0,
         'rated_watts' : rated_watts or 0,
         'actual_watts' : actual_watts or 0,
-        'terminals' : terminals or 0,
+        'terminals' : terminals or [],
         }
 
 
@@ -165,43 +180,41 @@ def to_enum(value, enum_cls):
 #& PROJECT FACTORY
 def new_project(*,
                 #? BASE ID PARAMS
-                name : str | None=None,
-
+                name=None,
+                comments=None,
                 #? PROJECT PARAMS
-                job_id : str | None=None,
-                address : str | None=None,
-                anchors : list[Anchor] | None=None,
-                **kwargs,
-                ) -> Project:
+                job_id=None,
+                address=None,
+                anchors=None,
+                **kwargs,) -> Project:
     
     return Project(
                    #? BASE ID PARAMS
-                   **base_id(name=name,comments=kwargs.get('comments')),
-                   
+                   **base_id(name=name,comments=comments),
                    #? PROJECT PARAMS
-                   job_id=job_id or DEF_STR['jobid'],
-                   address=address or DEF_STR['jobaddr'],
-                   anchors=anchors or [],
+                   job_id = job_id or DEF_STR['jobid'],
+                   address = address or DEF_STR['jobaddr'],
+                   anchors = anchors or [],
                    )
 
 
 #& ANCHOR FACTORY
 def new_anchor(*,
                #? BASE ID PARAMS
-               name : str | None=None,
+               name = None,
+               comments = None,
                
                #? ANCHOR PARAMS
-               anchor_name:str | None=None,
-               rooms : list[Room] | None=None,
-               **kwargs,
-               ) -> Anchor:
+               anchor_name = None,
+               rooms = None,
+               **kwargs,) -> Anchor:
     
     return Anchor(
                   #? BASE ID PARAMS
-                  **base_id(name=name,comments=kwargs.get('comments')),
+                  **base_id(name=name,comments=comments),
                   
                   #? ANCHOR PARAMS
-                  anchor_name=anchor_name or DEF_STR['anchor'],
+                  anchor_name = anchor_name or DEF_STR['anchor'],
                   rooms = rooms or [],
                   )
 
@@ -209,17 +222,17 @@ def new_anchor(*,
 #& ROOM FACTORY
 def new_room(*,
              #? BASE ID PARAMS
-             name : str | None=None,
+             name = None,
+             comments = None,
 
              #? ROOM PARAMS
-             enclosures : list[Enclosure] | None=None,
-             installs : list[Install] | None=None
-             **kwargs,
-             ) -> Room:
+             enclosures = None,
+             installs = None,
+             **kwargs,) -> Room:
     
     return Room(
                 #? BASE ID PARAMS
-                **base_id(name=name,comments=kwargs.get('comments')),
+                **base_id(name=name,comments=comments),
 
                 #? ROOM PARAMS
                 enclosures=enclosures or [],
@@ -230,19 +243,17 @@ def new_room(*,
 #& INSTALL FACTORY
 def new_install(*,
                 #? BASE ID PARAMS
-                name : str | None=None,
-                comments : list[str] | None=None,
-
+                name = None,
+                comments = None,
                 #? INSTALL PARAMS
-                actual_watts : int | None=None,
-                rated_watts : int | None=None,
-                branches : list[LEDSeg] | None=None,
-                **kwargs,
-                ) -> Install:
+                actual_watts = None,
+                rated_watts = None,
+                branches = None,
+                **kwargs,) -> Install:
     
     return Install(
                 #? BASE ID PARAMS
-                **base_id(name=name,comments=kwargs.get('comments')),
+                **base_id(name=name,comments=comments),
                 
                 #? INSTALL PARAMS
                 actual_watts= int(valid_num(actual_watts) or 0),
@@ -253,56 +264,58 @@ def new_install(*,
 
 #& EQUIPMENT FACTORY
 def new_equipment(*,
-                  comments : list[str] | None=None,
-                  name : str | None=None,
-                  manuf : str | None=None,
-                  vin : int |  None=None,
-                  vout : int | None=None,
-                  fuse : int | None=None,
-                  l_mm : int | None=None,
-                  w_mm : int | None=None,
-                  h_mm : int | None=None,
-                  rated_watts : int | None=None,
-                  actual_watts : int | None=None,
-                  terminals : list[Terminal] | None=None,
-                  **kwargs,
+                  #? BASE ID PARAMS
+                  name = None,
+                  comments=None,
+                  #? EQUIPMENT PARAMS
+                  manuf = None,
+                  vin = None,
+                  vout = None,
+                  fuse = None,
+                  l_mm = None,
+                  w_mm = None,
+                  h_mm = None,
+                  rated_watts = None,
+                  actual_watts = None,
+                  terminals = None,
                   ) -> Equipment:
-
+    
     return Equipment(
                     #? BASE ID PARAMS
-                    **base_id(name=name,comments=kwargs.get('comments')),
-                    
-
-                    **equipment_base(manuf = manuf or DEF_STR['manuf'],
-                                     vin   = valid_num(vin) or Voltage.UNKWN,
-                                     vout  = valid_num(vout) or Voltage.UNKWN,
-                                     fuse  = valid_num(fuse) or Fuse.UNKWN,
-                                     l_mm  = valid_num(l_mm) or 0,
-                                     w_mm  = valid_num(w_mm) or 0,
-                                     h_mm  = valid_num(h_mm) or 0,
-                                     rated_watts  = valid_num(rated_watts) or 0,
-                                     actual_watts = valid_num(actual_watts) or 0,
-                                     terminals    = terminals or [],
-                                     ),
+                    **base_id(name=name,comments=comments),
+                    #? EQUIPMENT PARAMS
+                    **equipment_base(
+                                manuf = manuf,
+                                vin = vin,
+                                vout = vout,
+                                fuse = fuse,
+                                l_mm = l_mm,
+                                w_mm = w_mm,
+                                h_mm = h_mm,
+                                rated_watts = rated_watts,
+                                actual_watts = actual_watts,
+                                terminals = terminals,
+                            ),
                     )
 
 
 #& ENCLOSURE FACTORY
 def new_enclosure(*,
                   #? BASE ID PARAMS
-                  name : str | None=None,
-
+                  name = None,
+                  comments = None,
                   #? ENCLOSURE PARAMS
-                  ckts : list[BaseID] | None=None,
-                  nets : list[BaseID] | None=None,
-                  equipment : list[Equipment] | None=None,
-                  **kwargs,
-                ) -> Enclosure:
+                  ckts = None,
+                  nets = None,
+                  equipment = None,
+                  **kwargs,) -> Enclosure:
+    
+    equip_args = {k: kwargs.get(k) for k in EQUIP_FIELDS if k in kwargs}
 
     return Enclosure(
                     #? BASE ID PARAMS
-                    **base_id(name=name,comments=kwargs.get('comments')),                    
-                    **equipment_base(**kwargs),
+                    **base_id(name=name,comments=comments),                    
+                    **equipment_base(**equip_args),
 
                     #? ENCLOSURE PARAMS
                     ckts=ckts or [],
@@ -316,44 +329,21 @@ def new_enclosure(*,
 #& CONTROLLER FACTORY
 def new_ctrlr(*,
               #? BASE ID PARAMS
-              name : str | None=None,
-              comments : list[str] | None=None,
-              
-              #? BASE EQUIPMENT PARAMS
-              manuf : str | None=None,
-              vin : int |  None=None,
-              vout : int | None=None,
-              fuse : int | None=None,
-              l_mm : int | None=None,
-              w_mm : int | None=None,
-              h_mm : int | None=None,
-              rated_watts : int | None=None,
-              actual_watts : int | None=None,
-              terminals : list[Terminal] | None=None,
-             
+              name = None,
+              comments = None,
               #? CONTROLLER PARAMS
-              ip : str | None=None,
-              subn_mask : str | None=None,
-              ctrl_type : CTRLType | None=None,
-              outputs : list[Terminal] | None=None,
-              **kwargs,
-             ) -> Ctrlr:
-
+              ip = None,
+              subn_mask = None,
+              ctrl_type = None,
+              outputs = None,
+              **kwargs,) -> Ctrlr:
+    
+    equip_args = {k: kwargs.get(k) for k in EQUIP_FIELDS if k in kwargs}
     return Ctrlr(
                  #? BASE ID PARAMS
-                 **base_id(name=name,comments=kwargs.get('comments')),
+                 **base_id(name=name,comments=comments),
                  
-                 **equipment_base(manuf = manuf or DEF_STR['manuf'],
-                                     vin   = valid_num(vin) or Voltage.UNKWN,
-                                     vout  = valid_num(vout) or Voltage.UNKWN,
-                                     fuse  = valid_num(fuse) or Fuse.UNKWN,
-                                     l_mm  = valid_num(l_mm) or 0,
-                                     w_mm  = valid_num(w_mm) or 0,
-                                     h_mm  = valid_num(h_mm) or 0,
-                                     rated_watts  = valid_num(rated_watts) or 0,
-                                     actual_watts = valid_num(actual_watts) or 0,
-                                     terminals    = terminals or [],
-                                     ),
+                 **equipment_base(**equip_args),
                  
                  #? CONTROLLER PARAMS
                  ip=ip or '0.0.0.0',
@@ -366,73 +356,50 @@ def new_ctrlr(*,
 #& LED FIXTURE FACTORY
 def new_ledprod(*,
                 #? BASE ID PARAMS
-                name : str | None=None,
-                comments : list[str] | None=None,
-                
-                #? BASE EQUIPMENT PARAMS
-                manuf : str | None=None,
-                vin   : int | None=None,
-                vout  : int | None=None,
-                fuse  : int | None=None,
-                l_mm  : int | None=None,
-                w_mm  : int | None=None,
-                h_mm  : int | None=None,
-                rated_watts : int | None=None,
-                actual_watts : int | None=None,
-                terminals : list[Terminal] | None=None,
-                
+                name = None,
+                comments = None,            
                 #? LED PRODUCT PARAMS
-                model : str | None=None,
-                colors : str | None=None,
-                partnum : str | None=None,
-                watt_m : float | None=None,
-                watt_ft : float | None=None,
-                m_roll : float | None=None,
-                led_m : float | None=None,
-                price : float | None=None,
-                cutLen_mm : float | None=None,
-                cutLen_in : float | None=None,
-                pixPitch_m : int | None=None,
-                tapeWidth_mm : int | None=None,
-                sub_pns : list[str] | None=None,
-                shape : Shape | None=None,
-                diffusion : Diffusion | None=None,
-                viewAngle : int | None=None,
-                bendDir : BendDir | None=None,
-                cri : int | None=None,
-                cct : int | None=None,
-                fixt_l_mm : float | None=None,
-                fixt_w_mm : float | None=None,
-                fixt_h_mm : float | None=None,
-                protocol : Protocol | None=None,
-                wireCode : str | None=None,
-                url : str | None=None,
-                datasheet : str | None=None,
-                ul_list : bool | None=None,
-                ul_recog : bool | None=None,
-                cert_url : str | None=None,
-                ipRating : IPRating | None=None,
-                finish : FinishColor | None=None,
-                lumens_m : list[float] | None=None,
-                lumens_ft : list[float] | None=None,
-                **kwargs,
-                ) -> LEDFixt:
-
+                model = None,
+                colors = None,
+                partnum = None,
+                watt_m = None,
+                watt_ft = None,
+                m_roll = None,
+                led_m = None,
+                price = None,
+                cutLen_mm = None,
+                cutLen_in = None,
+                pixPitch_m = None,
+                tapeWidth_mm = None,
+                sub_pns = None,
+                shape : Shape | None = None,
+                diffusion : Diffusion | None = None,
+                viewAngle = None,
+                bendDir : BendDir | None = None,
+                cri = None,
+                cct = None,
+                fixt_l_mm = None,
+                fixt_w_mm = None,
+                fixt_h_mm = None,
+                protocol : Protocol | None = None,
+                wireCode = None,
+                url = None,
+                datasheet = None,
+                ul_list : bool | None = None,
+                ul_recog : bool | None = None,
+                cert_url=None,
+                ipRating : IPRating | None = None,
+                finish : FinishColor | None = None,
+                lumens_m : list[float] | None = None,
+                lumens_ft : list[float] | None = None,
+                **kwargs,) -> LEDFixt:
+    
+    equip_args = {k: kwargs.get(k) for k in EQUIP_FIELDS if k in kwargs}
     return LEDFixt(
                     #? BASE ID PARAMS
-                    **base_id(name=name,comments=kwargs.get('comments')),
+                    **base_id(name=name,comments=comments),
                     
-                    **equipment_base(manuf = manuf or DEF_STR['manuf'],
-                                     vin   = valid_num(vin) or Voltage.UNKWN,
-                                     vout  = valid_num(vout) or Voltage.UNKWN,
-                                     fuse  = valid_num(fuse) or Fuse.UNKWN,
-                                     l_mm  = valid_num(l_mm) or 0,
-                                     w_mm  = valid_num(w_mm) or 0,
-                                     h_mm  = valid_num(h_mm) or 0,
-                                     rated_watts  = valid_num(rated_watts) or 0,
-                                     actual_watts = valid_num(actual_watts) or 0,
-                                     terminals    = terminals or [],
-                                     ),
+                    **equipment_base(**equip_args),
 
                     #? LED FIXTURE PARAMS
                     model = model or DEF_STR['model'],
@@ -475,18 +442,16 @@ def new_ledprod(*,
 #& TERMINAL FACTORY
 def new_terminal(*,
                 #? BASE ID PARAMS
-                name : str | None=None,
-                comments : list[str] | None=None,
-
+                name = None,
+                comments = None,
                 #? TERMINAL PARAMS
-                conn_dir : ConnDir | None=None,
-                conn_type : ConnType | None=None,
-                **kwargs,
-                ) -> Terminal:
+                conn_dir = None,
+                conn_type = None,
+                **kwargs,) -> Terminal:
 
     return  Terminal(
                     #? BASE ID PARAMS
-                    **base_id(name=name,comments=kwargs.get('comments')),
+                    **base_id(name=name,comments=comments),
 
                     #? TERMINAL PARAMS
                     conn_dir= to_enum(conn_dir, ConnDir),
@@ -497,18 +462,17 @@ def new_terminal(*,
 #& CABLE FACTORY
 def new_cable(*,
             #? BASE ID PARAMS
-            name : str | None=None,
-            comments : list[str] | None=None,
+            name=None,
+            comments=None,
               
             #? CABLE PARAMS
             terminals : list['Terminal'] | None=None,
             gauge : WireSize | None=None,
-            **kwargs,
-            ) -> Cable:
+            **kwargs,) -> Cable:
 
     return Cable(
                 #? BASE ID PARAMS
-                **base_id(name=name,comments=kwargs.get('comments')),
+                **base_id(name=name,comments=comments),
                 
                 #? CABLE PARAMS
                 terminals=terminals or [],
@@ -520,17 +484,16 @@ def new_cable(*,
 #& 3D PATH FACTORY
 def new_path3d(*,
                #? BASE ID PARAMS
-               name : str | None=None,
-               comments : list[str] | None=None,
+               name=None,
+               comments=None,
                
                #? PATH3D PARAMS
                geometry : list[np.ndarray] | None=None,
-               **kwargs,
-               ) -> Path3D:
+               **kwargs,) -> Path3D:
 
     return Path3D(
                 #? BASE ID PARAMS
-                **base_id(name=name,comments=kwargs.get('comments')),
+                **base_id(name=name,comments=comments),
 
                 #? PATH3D PARAMS
                 geometry=geometry or [],
@@ -541,17 +504,16 @@ def new_path3d(*,
 #& LED BRANCH FACTORY
 def new_ledbranch(*,
                   #? BASE ID PARAMS
-                  name : str | None=None,
-                  comments : list[str] | None=None,
+                  name=None,
+                  comments=None,
                   
                   #? LED BRANCH PARAMS
                   segments : list['LEDSeg'] | None=None,
-                  **kwargs,
-                  ) -> LEDBranch:
+                  **kwargs,) -> LEDBranch:
 
     return LEDBranch(
                     #? BASE ID PARAMS
-                    **base_id(name=name,comments=kwargs.get('comments')),
+                    **base_id(name=name,comments=comments),
                     
                     #? LED BRANCH PARAMS
                     segments=segments or [],
@@ -563,17 +525,16 @@ def new_ledbranch(*,
 def new_ledsegment(*,
                    #? BASE ID PARAMS
                    name :str | None=None,
-                   comments : list[str] | None=None,
+                   comments=None,
 
                    #? LED SEGMENT PARAMS
                    led_prod : LEDFixt, #!REQUIRED
                    len_m    : float    | None=None,
-                   **kwargs,
-                   ) -> LEDSeg:
+                   **kwargs,) -> LEDSeg:
 
     return LEDSeg(
                   #? BASE ID PARAMS
-                  **base_id(name=name,comments=kwargs.get('comments')),
+                  **base_id(name=name,comments=comments),
 
                   #? LED SEGMENT PARAMS
                   led_prod=led_prod, #!REQUIRED
