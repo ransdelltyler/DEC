@@ -27,11 +27,20 @@ from enum import Enum, auto
 #^ ======================================================== ^#
 #^                    DATACLASS ENUMS                       ^#
 #^ ======================================================== ^#
+class EQCategory(Enum):
+    UNKWN = 'UNKWN'
+    GENERIC = 'GENERIC'
+    CTRLR = 'CONTROLLER'
+    LEDTAPE = 'LEDTape'
+    PSU = 'PSU'
+    FIXT = 'FIXTURE'
+    NETSW = 'NETSWITCH'
+    EQUIP = 'EQUIPMENT'
+
 class GenDescr(Enum):
     UNKWN = 'UNKWN'
     YES = 'YES'
     NO = 'NO'
-
 
 class CTRLType(Enum):
     UNKWN = auto()
@@ -268,7 +277,6 @@ class LEDFixt(Equipment):
     watt_m : float
     watt_ft : float
     m_roll : float
-    led_m : float
     price : float
     cutLen_mm : float
     cutLen_in : float
@@ -291,10 +299,16 @@ class LEDFixt(Equipment):
     ul_list : GenDescr
     ul_recog : GenDescr
     cert_url : str
-    ipRating : IPRating
+    iprating : IPRating
     finish : FinishColor
     lumens_m : list[float] = field(default_factory=list)
     lumens_ft : list[float] = field(default_factory=list)
+
+#& POWER SUPPLY
+@dataclass(slots=True,kw_only=True)
+class PSU(Equipment):
+    current_share : bool
+    circuit : str
 
 
 #& TERMINAL
@@ -337,6 +351,7 @@ class LEDSeg(BaseID):
     def cal_watts(self) -> float:
         return self.len_m * self.led_prod.watt_m
     
+
 
 
 

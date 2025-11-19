@@ -7,7 +7,162 @@
 # //////////////////////////////////////////////////////////////////////////////////////#
 
 # ------ START KEYWORD DEFINITION BLOCK ------ #
+#? ======================================================== ?#
+#?                   RAPIDFUZZ KEYWORDS                     ?#
+#? ======================================================== ?#
+FIXT_FUZZ_KEYS = {
+    'model': [
+        'Name',
+        'Title',
+    ],
+    'colors':[
+        'Light Color',
+        'Light Color Detail',
+        'LED Colors',
+        'Colors',
+    ],
+    'partnum': [
+        'Product Number',
+        'PN',
+        'Part Number',
+        'SKU',
+        'Model Number',
+    ],
+    'watt_m': [
+        'Power (Watts/m)',
+        'Watts per Meter',
+        'Watts/m',
+    ],
+    'watt_ft': [
+        'Power (Watts/ft)',
+        'Watts per Foot',
+        'Watts/ft',
+    ],
+    'm_roll': [
+        'Length(Metric)',
+        'Length Meters',
+    ],
+    'pixPitch_m': [
+        'LED Density',
+        'LEDs per Meter',
+        'LEDs per m',
+        'LEDs/m',
+        'LED qty/m',
+    ],
+    'cutLen_mm': [
+        'Min. Cutting Increment (Metric)',
+        'Cut Length (mm)',
+    ],
+    'cutLen_ft': [
+        'Min. Cutting Increment (English)',
+        'Cut Length (ft)',
+    ],
+    'beam_angle': [
+        'Beam Angle',
+        'View Angle',
+    ],
+    'cri': [
+        'CRI',
+        'Color Rendering Index',
+    ],
+    'cct': [
+        'Light Color Detail',
+        'Color Temperature'
+    ],
+    'eqproto': [
+        'Protocol',
+    ],
+    'iprating': [
+        'IP Rating',
+        'Outdoor Rating'
+    ],
+    'max_current': [
+        'Max Current',
+        'Maximum Current',
+        'Current Draw',
+        'Power Draw',
+        'Input Current'
+    ],
+    'manufacturer':[
+        'Manufacturer',
+        'Manuf.'
+    ],
+    'lumens':[
+        'Brightness',
+        'Lumens',
+        'Luminosity',
+    ],
+    'l_mm':[
+        'Length(mm)',
+        'Length(Metric)'
+    ],
+    'w_mm':[
+        'Width',
+        'Width(mm)',
+        'Width(Metric)',
+    ],
 
+}
+
+CTRLR_FUZZ_KEYS = {
+    'ctrl_type': [
+        'Product Type',
+        'Control Output',
+    ],
+}
+
+EQUIP_FUZZ_KEYS = {
+    'vin': [
+        'Input Voltage',
+        'V Input',
+        'VIN',
+    ],
+    'vout': [
+        'Output Voltage',
+        'V Output',
+        'VOUT',
+    ],
+    'fuse': [
+        'Fuse Rating',
+        'Fuse Trip Current',
+    ],
+    'l_mm': [
+        'Length (Metric)',
+        'Length mm',
+    ],
+    'w_mm': [
+        'Width (Metric)',
+        'Width mm',
+    ],
+    'h_mm': [
+        'Height (Metric)',
+        'Height mm',
+    ],
+    'rated_watts': [
+        'Input Current',
+        'Max Wattage',
+    ],
+}
+
+DEF_FUZZ_KEYS = {
+    'name': [
+        'Name',
+        'Product Name',
+        'Prod. Name',
+        'Model Name',
+        'Model',
+        'Title'
+    ],
+    'type' : [
+        'Product Type',
+        'Control Type',
+        'Fixture Type',
+    ],
+}
+
+#? ======================================================== ?#
+#?                   DATABASE KEYWORDS                      ?#
+#? ======================================================== ?#
 # KEYWORDS USED TO FIND COLUMN INDEXES | VAR : COLUMN_NAME
 # LED EQUIPMENT | ENVI_ELUXTRA_NEON_WTP_RGB30K {...}
 #               | MANUFACTURER_MODEL_TYPE_SUBTYPE_COLORS
@@ -122,7 +277,7 @@ GENERIC_KEYWORDS = {
     'url' : 'URL',
     'datasheet' : 'Datasheet',
     'unit_qty' : 'Unit Qty',
-    'comments' : 'Comments'
+    'comments' : 'Comments',
 }
 
 

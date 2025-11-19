@@ -31,7 +31,7 @@
 
 
 
-#? RETURNS A LIST OF BEAUTIFUL SOUP 
+#? RETURNS A LIST OF TEXT REPRESENTING LIST ITEMS
 def extract_list(selector):
     return lambda soup: [list_item.text for list_item in soup.select(selector)]
 
@@ -57,7 +57,7 @@ def extract_specs(selector):
          value = td.get_text(strip=True)
 
          if label and value:
-            spec_list.append({ th : td })
+            spec_list.append({ label : value })
 
       return spec_list
    return extractor

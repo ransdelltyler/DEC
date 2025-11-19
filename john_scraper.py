@@ -59,6 +59,10 @@ from util_classes import ColorLog
 from dataclasses import dataclass, field
 from typing import Literal
 
+from rapidfuzz import process, fuzz
+
+from keywords import FIXT_FUZZ_KEYS, CTRLR_FUZZ_KEYS, EQUIP_FUZZ_KEYS, GENERIC_KEYWORDS
+from data_models import EQCategory
 
 # CUSTOM LOGGING CLASS
 # - log.debug(str)
@@ -71,11 +75,54 @@ from typing import Literal
 import logging
 log = ColorLog('scrape_log', level=1)
 
+#& ======================================================== &#
+#&                      HELPER FUNCTIONS                    &#
+#& ======================================================== &#
+# RETURN TEXT AS LOWERCASE WITH NO SPACES
+def norm_text(text : str):
+    return ''.join(text.lower().split())
 
+#^ FUZZ KEYWORD CATEGORY MAP
+CATEGORY_MAP = {
+    EQCategory.CTRLR : CTRLR_FUZZ_KEYS,
+    EQCategory.FIXT : FIXT_FUZZ_KEYS,
+    EQCategory.EQUIP : EQUIP_FUZZ_KEYS,
+}
 
- #? ======================================================== ?#
- #?                     SPEC-SCRAPER CLASS                   ?#
- #? ======================================================== ?#
+#* TAKES A LABEL:STR AND USES A DEF OR GIVEN KEYWORD DICT-
+#* -TO FIND BEST MATCH 
+#* RETURNS:(LABEL/VALUE)
+def match_label(label : str, category:EQCategory|dict):
+    # CAN BE PASSED AS KEYWORD DICTIONARY: {str,[str]}
+    # OR SET BY PASSING EQCategory.<type>
+    fuzz_keys = (
+        category if isinstance(category,dict)
+        else CATEGORY_MAP.get(category, GENERIC_KEYWORDS)
+    )
+    # NORMALIZE THE TEXT FOR COMPARISSON
+    label_norm = norm_text(label)
+    
+    best_key = None
+    best_score = 0
+    for key, key_map in fuzz_keys.items():
+        result = process.extractOne(
+            label_norm,
+            [norm_text(p) for p in key_map],
+            scorer=fuzz.token_sort_ratio)
+        
+        if not result:
+            continue
+        
+        match, score, _ = result
+        if score > best_score:
+            best_key = key
+            best_score = score
+
+    return best_key, best_score
+
+#* ======================================================== *#
+#*                     SPEC-SCRAPER CLASS                   *#
+#* ======================================================== *#
 class JohnScraper:
     def __init__(self):
         
@@ -259,8 +306,6 @@ class JohnScraper:
             log.warning(f'File already exists: {filename}, not overwriting')
 
 
-
-
     #* LOAD A SAVED HTML FILE
     def load_html(self, filename : str) -> str | None:
         try:
@@ -271,7 +316,6 @@ class JohnScraper:
         except FileNotFoundError:
             log.warning(f'File not found: {filename}')
             return None
-
 
 
     #* CREATE FOLDER FOR SAVED HTML FILES
@@ -299,7 +343,6 @@ class JohnScraper:
  #? ======================================================== ?#
  #?                   SCRAPING FUNCTIONS                     ?#
  #? ======================================================== ?#
-
     #* SCRAPE HTML FOR KEYWORD VALUE PAIRS
     def scrape_html(self, html):
         pass
