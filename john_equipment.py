@@ -122,12 +122,15 @@ class JohnEquipDB:
     def _query_database(self, fuzzy = True):
         pass
 
+ #* ADD / UPDATE TIMESTAMP FOR LATEST UPDATE
     def _timestamp_row(self):
         pass
 
+ #* LOOK AT TIMESTAMPS AND RECCOMMEND UPDATES
     def _suggest_updates(self):
         pass
 
+ #* CHECK CERTIFICATION STATUSES
     def _run_cert_checks(self):
         pass
 
@@ -185,13 +188,13 @@ class JohnEquipDB:
 
 
 
- #* ADD EQUIPMENT TO DATABASE
+ #* BASIC EQUIPMENT DATABASE FUNCTIONS
     def add_equipm(self):
         pass
     
-    def rem_equipm(self):
+    def remove_equipm(self):
         pass
-
+ #* SELECT EQUIPMENT ENTRY AND RETURNS EQUIPMENT OBJ.
     def use_equipm(self):
         pass
 
