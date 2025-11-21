@@ -1,36 +1,25 @@
- #* ======================================================== *#
- #*  ENVIRONMENTALLIGHTS.COM | BEAUTIFULSOUP4 RULESET MODULE                   
- #* 
- #*
- #*
- #* ======================================================== *#
 
- # TODO:==================================================== ~#
- # TODO:              TODO LIST / DEVLOG                     ~#
- # TODO:==================================================== ~#
+#* ======================================================== *#
+#*  ENVIRONMENTALLIGHTS.COM | BEAUTIFULSOUP4 RULESET MODULE                   
+#* 
+#*
+#*
+#* ======================================================== *#
+# TODO:==================================================== ~#
+# TODO:              TODO LIST / DEVLOG                     ~#
+# TODO:==================================================== ~#
 
- #~ ======================================================== ~#
- #~                    CLASS DEFINITION                      ~#
- #~ ======================================================== ~#
 
- #? ======================================================== ?#
- #?                    HELPER FUNCTIONS                      ?#
- #? ======================================================== ?#
-
- #? ======================================================== ?#
- #?                   EXTERNAL FUNCTIONS                     ?#
- #? ======================================================== ?#
-
- #^ ======================================================== ^#
- #^                   TESTING / EXAMPLES                     ^#
- #^ ======================================================== ^#
-
- #! ======================================================== !#
- #!                       MAIN BLOCK                         !#
- #! ======================================================== !#
+#^ ======================================================== ^#
+#^                   TESTING / EXAMPLES                     ^#
+#^ ======================================================== ^#
 
 
 
+
+#? ======================================================== ?#
+#?                    HELPER FUNCTIONS                      ?#
+#? ======================================================== ?#
 #? RETURNS A LIST OF TEXT REPRESENTING LIST ITEMS
 def extract_list(selector):
     return lambda soup: [list_item.text for list_item in soup.select(selector)]
@@ -107,8 +96,9 @@ def extract_docs(selector):
    return extractor
 
 
-
-
+#~ ======================================================== ~#
+#~                    RULES DEFINITION                      ~#
+#~ ======================================================== ~#
 #* ENVIRIONMENTAL LIGHTS SCRAPING PROFILES
 DOMAIN_RULES = {
    ".environmentallights.com": {
@@ -146,66 +136,3 @@ DOMAIN_RULES = {
       ],
     }
 }
-
-
-
- # TODO:==================================================== ~#
- # TODO:              TODO LIST / DEVLOG                     ~#
- # TODO:==================================================== ~#
-
- # TODO: DETERMINE PRODUCT TYPE
-
- 
- 
- 
- #* --------- IMPLEMENTED 11/16 ---------
- #* ENVIRONMENTALLIGHTS.COM BS4 MINI-MODULE
- #! - UNTESTED 11/16
-  # TODO: PAGE TYPE 
-    #^ - soup.product
- # TODO: PAGE TITLE
-    #^ - soup.title
- # TODO: MAIN IMAGE / GIF
-    #^ - soup.image
- # TODO: DESCRIPTION
-    #^ - soup.description
- # TODO: URL
-    #^ - soup.url
- # TODO: PRODUCT INFO MAIN DESCRIPTION
-    #^ - prod_features = soup.find('div', class_='product-detail-content')
-    #^ - main_desc = prod_features.find('p')
-    #^ - key_features = prod_features.find_all('li')
-    #^ - key_features_list = field.factory(default_factory=list)
-    #^ - for feature in key_features:
-    #^ -    key_features_list.append(feature.get_text(strip=True))
- # TODO: PRODUCT SPECS TABLE
-    #^ - spec_dict = field.factory(default_factory=dict)
-    #^ - spec_table = soup.find('table', id='product-specs')
-    #^ - rows = spec_table.find('tbody').find_all('tr')
-    #^ - for row in rows: 
-    #^     label = row.find('th', class_='label').get_text(strip=True)
-    #^     value = row.find('td', class_='value').get_text(strip=True)
-    #^     spec_dict[label] = value
- # TODO: RELATED PRODUCTS
-    #^ - related_section = soup.find('ol', 'class_=products list items product-items')
-    #^ - related_items = related_section.find_all(li, class_='item product product-item')
-    #^ - related_list = field.factory(default_factory=list)
-    #^ - for item in related_items:
-    #^ -    related_dict = field.factory(default_factory=dict)
-    #^ -    related_name = item.find('a', class_='product-item-link').get_text(strip=True)
-    #^ -    related_url = item.find('a', class_='product photo product-item-photo').get('href')
-    #^ -    related_image = item.find()
-    #^ -    related_part_num = item.find('dd', class_='product-item-number-value').get_text(strip=True)
-    #^ -    related_dict['name'] = related_name
-    #^ -    related_dict['url'] = related_url
-    #^ -    related_dict['part_number'] = related_part_num
-    #^ -    related_dict['image'] = related_image
-    #^ -    related_list.append(related_dict)
- # TODO: DOCUMENTATION DOWNLOADS
-    #^ - docs_section = soup.find('ul', id='product-documents')
-    #^ - docs_items = docs_section.find_all('a', class_='document-download-link')
-    #^ - docs_list = field.factory(default_factory=list)
-    #^ - for doc in docs_items:
-    #^ -    doc_dict = field.factory(default_factory=dict)
-    #^ -    doc_name = doc.get('download')
-    #^ -    doc_url = doc.get('href')

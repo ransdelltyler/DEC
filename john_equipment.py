@@ -27,7 +27,7 @@ import os, sys, importlib.util
 
 '''- CUSTOM MODULE IMPORTS -'''
 from util_classes import *
-
+from data_models import Equipment
 
 '''- 3RD PARTY MODULE IMPORTS -'''
 #* IMPORT BEAUTIFULSOUP FOR HTML PARSING
@@ -119,8 +119,9 @@ class JohnEquipDB:
         return keyvar_map
 
  #* QUERY THE DATABASE FOR _____ | SET FUZZY TO FALSE FOR EXACT MATCHES ONLY
-    def _query_database(self, fuzzy = True):
-        pass
+    def _query_database(self, target, fuzzy = True) -> Equipment:
+        
+        return 
 
  #* ADD / UPDATE TIMESTAMP FOR LATEST UPDATE
     def _timestamp_row(self):
@@ -136,6 +137,10 @@ class JohnEquipDB:
 
  #* QUICKLY CHECKS FOR EXISTING URL IN DB
     def _quickcheck(self):
+        pass
+
+ #* CREATES AN EQUIPMENT OBJECT WHEN DB SELECTION MADE
+    def _build_equip(self) -> Equipment:
         pass
 
  

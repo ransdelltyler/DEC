@@ -220,7 +220,6 @@ class Anchor(BaseID):
 class Room(BaseID):
     enclosures : list['Enclosure'] = field(default_factory=list)
     installs : list['Install'] = field(default_factory=list)
-#~ ________________________
 
 
 #& INSTALL

@@ -1,9 +1,13 @@
-'''source /workspaces/DeerEatChain/.venv_dec/bin/activate
-URL SCRAPER MODULE
-- USES BEAUTIFULSOUP TO SCRAPE WEBPAGES
-- USES REQUESTS TO FETCH WEBPAGE CONTENT
-- 
-'''
+ #* =============================================================================== *#
+ #*                             [CLASS] - HTML RETRIEVER                 
+ #* REQUESTS + SELENIUM MINI-MODULE
+ #* - retrieve_url( url:str , wait_for_element:tuple) -> BeautifulSoup 
+ #* -   [JOHN FILES] QUERY AND RETRIEVE EXISTING SAVED HTML
+ #* -   IF NEW, CHECK ROBOTS.TXT, AND IF ALLOWED, RETRIEVE HTML
+ #* -       [JOHN_FILES] SAVE NEW HTML, IMAGES, AND FILES TO ARCHIVE
+ #* -       
+ #*
+ #* =============================================================================== *#
 
  # TODO:==================================================== ~#
  # TODO:              TODO LIST / DEVLOG                     ~#
@@ -123,7 +127,7 @@ def match_label(label : str, category:EQCategory|dict):
 #* ======================================================== *#
 #*                     SPEC-SCRAPER CLASS                   *#
 #* ======================================================== *#
-class JohnScraper:
+class HTMLRetriever:
     def __init__(self):
         
         # SET CUSTOM HEADERS FOR REQUESTS
@@ -261,10 +265,11 @@ class JohnScraper:
     #*  - REQUESTS FOR CHECKING ROBOTS.TXT
     #* RETURNS: BEAUTIFULSOUP OBJECT FOR PARSING 
     def retrieve_url(self, url:str , wait_for: tuple) -> BeautifulSoup | None:
-
-        folder_name = self._get_base_url(url).split('.')[1] # GET DOMAIN NAME FOR FOLDER
+        # GET DOMAIN NAME FOR FOLDER
+        folder_name = self._get_base_url(url).split('.')[1] 
         
-        self.create_db_folder(folder_name) # CREATES FOLDER IF NOT EXISTS
+        # CREATES FOLDER IF NOT EXISTS
+        self.create_db_folder(folder_name) 
         
         # RETRIEVE HTML CONTENT SO TITLE IS UPDATED
         html = self._safe_retrieve(url, wait_for=wait_for, ignore_robots=False)
@@ -339,29 +344,29 @@ class JohnScraper:
             except Exception as e:
                 log.warning(f'Failed to save screenshot for {filename}: {e}')
     
-
- #? ======================================================== ?#
- #?                   SCRAPING FUNCTIONS                     ?#
- #? ======================================================== ?#
-    #* SCRAPE HTML FOR KEYWORD VALUE PAIRS
-    def scrape_html(self, html):
-        pass
-    
-    
     
 
- #! ======================================================== !#
- #!                       MAIN BLOCK                         !#
- #! ======================================================== !#
+#! ======================================================== !#
+#!                       MAIN BLOCK                         !#
+#! ======================================================== !#
+# TODO: 
 
-# URL TO SCRAPE
+
+
+#^ ======================================================== ^#
+#^                    TESTING / EXAMPLES                    ^#
+#^ ======================================================== ^#
+
+#* URL TO SCRAPE
 url = 'https://www.environmentallights.com/19072-px-spi-v2.html'
 
+#* CSS ELEMENT TO WAIT FOR BEFORE SAVING THE HTML
 WAIT_FOR_ELEMENT = (By.CLASS_NAME, 'product-detail-content')
 
 #* INIT URL SCRAPER + DESTROY WHEN FINISHED
-with JohnScraper() as scraper:
-    soup = scraper.retrieve_url(url, wait_for=WAIT_FOR_ELEMENT)
+#* POSSIBLE WITH def __enter__(self)
+with HTMLRetriever() as retriever:
+    soup = retriever.retrieve_url(url, wait_for=WAIT_FOR_ELEMENT)
     if soup:
         text = soup.get_text(separator='/n', strip=True)
         log.success(f'Scraping succeeded on : {soup.title}')
