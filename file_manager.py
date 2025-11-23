@@ -129,7 +129,7 @@ class FileManager:
             setattr(self, attr, new_value)
             if log_msg and self.show_logs:
                 log.watchdog(log_msg.format(new_value))
-            return getattr(self, attr)
+            return getattr(self, attr) #!EXIT!#
         
     #* GET/UPDATE /ROOT_DIR <PATH> 
     def _root_path(self, new_path=None):
@@ -173,7 +173,7 @@ class FileManager:
             
     #? SAVE SELECTED <FILE OR FOLDER> TO NEW (<NAME> OR <LOCATION>)
     def cur_save_as(self, new_name:str, new_path:str):
-        
+        pass
 
 
 

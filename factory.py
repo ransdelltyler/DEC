@@ -22,40 +22,15 @@ import numpy as np
 from util_classes import ColorLog
 from typing import Literal
 
-from data_models import (
-    GenDescr,
-    CTRLType,
-    Voltage,
-    LEDProtocol,
-    Shape,
-    Diffusion,
-    BendDir,
-    EQProto,
-    IPRating,
-    FinishColor,
-    Fuse,
-    ConnDir,
-    ConnType,
-    WireSize,
-    CableType,
-)
+from data_models import ( GenDescr, CTRLType, Voltage, LEDProtocol,
+                          Shape, Diffusion, BendDir, EQProto, IPRating,
+                          FinishColor,Fuse,ConnDir,ConnType, WireSize,
+                          CableType, )
 
-from data_models import (
-    BaseID,
-    Project,
-    Anchor,
-    Room,
-    Install,
-    Equipment,
-    Enclosure,
-    Ctrlr,
-    LEDFixt,
-    Terminal,
-    Cable,
-    Path3D,
-    LEDBranch,
-    LEDSeg,
-)
+from data_models import ( BaseID, Project, Anchor, Room, Install,
+                          Equipment, Enclosure, Ctrlr, LEDFixt,
+                          Terminal, Cable, Path3D, LEDBranch,
+                          LEDSeg, )
 
 
 #! ======================================================== !#
