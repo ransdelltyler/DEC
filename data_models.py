@@ -292,6 +292,7 @@ class LEDFixt(Equipment):
     fixt_w_mm : float
     fixt_h_mm : float
     eqproto : EQProto
+    
     wireCode : str
     url : str
     datasheet : str

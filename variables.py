@@ -1,0 +1,4 @@
+
+
+# GLOBAL LOG MESSAGES
+LOG_MSG = True

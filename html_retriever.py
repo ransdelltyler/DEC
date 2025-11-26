@@ -59,7 +59,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import WebDriverException
 
-from util_classes import ColorLog 
 from dataclasses import dataclass, field
 from typing import Literal
 
@@ -76,7 +75,8 @@ from data_models import EQCategory
 # - log.success(str)
 # - log.watchdog(str)
 # - log.border()
-import logging
+from variables import LOG_MSG
+from util_classes import ColorLog 
 log = ColorLog('scrape_log', level=1)
 
 #& ======================================================== &#
@@ -125,64 +125,59 @@ def match_label(label : str, category:EQCategory|dict):
     return best_key, best_score
 
 #* ======================================================== *#
-#*                     SPEC-SCRAPER CLASS                   *#
+#*                    HTMLRETRIEVER CLASS                   *#
 #* ======================================================== *#
 class HTMLRetriever:
     def __init__(self):
+        from selenium import webdriver
+        from selenium.webdriver.chrome.options import Options
         
         # SET CUSTOM HEADERS FOR REQUESTS
         self.headers = {'User-Agent': 'SimpleSpec1Shot/1.0 (contact: DeerEatChain@gmail.com)'}
         
         # CREATES REQUESTS SESSION FOR CHECKING ROBOTS.TXT
-        log.info('Starting requests session for Robots.txt')
+        if LOG_MSG: log.info('Starting requests session for Robots.txt')
         self.robot_session = requests.Session()
         self.robot_session.headers.update(self.headers)
         
         # SELENIUM FOR RETRIEVING FULL HTML W/ HEADLESS CHROME
-        log.info('Starting Selenium')
-        selenium_user_agent = self.headers['User-Agent']
-        self.chrome_options = Options()
-        self.chrome_options.add_argument('--headless')
-        self.chrome_options.add_argument('--no-sandbox')
-        self.chrome_options.add_argument('--disable-dev-shm-usage')
-        self.chrome_options.add_argument(f'user-agent={selenium_user_agent}')
+        if LOG_MSG: log.info('Starting Selenium')
+        
+        options = Options()
+        options.add_argument('--headless=new')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
+        options.add_argument(f"user-agent={self.headers['User-Agent']}")
+        # Anti-detection
+        options.add_argument("--disable-gpu")
+        options.add_argument("--disable-blink-features=AutomationControlled")
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
 
-        try:
-            self.driver = webdriver.Chrome(options=self.chrome_options)
-        except WebDriverException as e:
-            log.debug(f'WebDriverException: {e}') 
-            self.driver = None
+        self.driver = webdriver.Chrome(options=options)
 
-        self.cur_driver_title = 'INVALID_TITLE'
-
- #? ======================================================== ?#
- #?               SETUP / PRE-SCRAPE FUNCTIONS.              ?#
- #? ======================================================== ?#
-    #* CLOSE SELENIUM DRIVER
-    def close_selenium(self):
-        if self.driver:
-            log.info('Shutting down Selenium WebDriver')
-            self.driver.quit()
-            self.driver = None
-
-
-    #* RETURN SCRAPER INSTANCE FOR USE IN WITH STATEMENTS
+    #^ CONTEXT MANAGER FUNCTIONS
+    #? RETURN SCRAPER INSTANCE FOR USE IN WITH STATEMENTS
     def __enter__(self):
         return self    
 
-
-    #* GUARANTEED SELENIUM CLEANUP @ EXIT 
+    #? GUARANTEED SELENIUM CLEANUP @ EXIT 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close_selenium()
-        return False
-
-
-    #* EXTRACT BASE URL FOR ROBOTS.TXT CHECK
-    def _get_base_url(self, url):
-        parsed_url = urlparse(url)
-        return urlunparse((parsed_url.scheme, parsed_url.netloc, '', '', '', ''))
+        try:
+            self.driver.quit()
+        except:
+            pass
     
-
+ #? ======================================================== ?#
+ #?               SETUP / PRE-SCRAPE FUNCTIONS.              ?#
+ #? ======================================================== ?#
+    
+    def _get_host(self, url: str) -> str:
+        return (urlparse(url).hostname or 'unkown_domain').replace("www.", "")
+    
+    def _get_origin(self, url: str) -> str:
+        p = urlparse(url)
+        return f"{p.scheme}://{p.netloc}"
+    
     #* CHECK ROBOTS.TXT FOR SCRAPING PERMISSIONS
     def _check_robots(self, robots_url : str, target_url : str) -> bool:
         rp = urllib.robotparser.RobotFileParser()
@@ -190,71 +185,56 @@ class HTMLRetriever:
         rp.read()
         
         if rp.can_fetch("*", target_url):
-            log.success(f"Allowed to scrape : {target_url} as per robots.txt")
+            if LOG_MSG: log.success(f"Allowed to scrape : {target_url} as per robots.txt")
             return True
         else:
-            log.error(f"Target URL: {target_url}, blocked by robots.txt")
+            if LOG_MSG: log.error(f"Target URL: {target_url}, blocked by robots.txt")
             return False
 
 
     #* SIMPLE FETCH URL
     def _fetch_url(self, url, wait_for: tuple | None, wait_time: int=10) -> str | None:
         if not self.driver:
-            log.critical('Webdriver not available. Cannot fetch URL')
+            if LOG_MSG: log.critical('Webdriver not available. Cannot fetch URL')
             return None
 
         try:
             self.driver.get(url)
             
             if wait_for:
-                log.debug(f'Waiting for element: {wait_for}...')
-                
+                if LOG_MSG: log.debug(f'Waiting for element: {wait_for}...')
                 WebDriverWait(self.driver, wait_time).until(
                     EC.presence_of_element_located(wait_for)
                 )
             else:
+                if LOG_MSG: log.warning(f'No wait time provided. Using default: {wait_time}sec')
                 wait_time = 2
                 time.sleep(2)
-                log.warning(f'No wait time provided. Using default: {wait_time}sec')
 
             self.cur_driver_title = self.driver.title.replace(' ', '_').replace('/', '_')
-            log.info(f'Fetched URL: {url} | Page Title: {self.cur_driver_title}')
+            if LOG_MSG: log.info(f'Fetched URL: {url} | Page Title: {self.cur_driver_title}')
             return self.driver.page_source
 
         except WebDriverException as e:
-            log.warning(f'WebDriver error during _fetch_url({url})')
+            if LOG_MSG: log.warning(f'WebDriver error during _fetch_url({url})')
             return None
 
 
     #* RETRIEVE URL CONTENT SAFELY AND CHECK ROBOTS.TXT 
     #* CALLS: self._check_robots(), self._fetch_url() | RETURNS: HTML TEXT STRING
-    def _safe_retrieve(self, url : str, wait_for : tuple | None, ignore_robots=False, **kwargs) -> str | None:
-        
-        # EXTRACT BASE URL FOR ROBOTS.TXT CHECK
-        base_url = self._get_base_url(url)
-        robots_url = base_url + '/robots.txt'
-        
-
-        # IF ALLOWED BY ROBOTS.TXT OR IGNORE_ROBOTS = TRUE, PROCEED TO FETCH
-        if not ignore_robots and not self._check_robots(robots_url, url):
-            log.error(f"Scraping blocked by robots.txt for URL: {url}")
-            log.debug(f"TRY TO FETCH ANYWAY BY ADDING ignore_robots=True to retrieve_url()")
-            log.border('')
-            return None
-        
-        log.debug(f'Wait for element parameter: {wait_for}')
-        
+    def _safe_retrieve(self, url : str, wait_for : tuple) -> str | None:
         try:
-            if wait_for is None:
-                log.debug('No wait_for_element provided, using default sleep.')
-                return self._fetch_url(url, wait_for=None, **kwargs)
-            if isinstance(wait_for, tuple):
-                log.debug(f'Using wait_for_element: {wait_for}')
-                return self._fetch_url(url, wait_for=wait_for, **kwargs)
-        except Exception as e:
-            log.warning(f"Failed to retrieve URL: {url} | {e}")
-            return None   
+            self.driver.get(url)
+            by, selector = wait_for
+            WebDriverWait(self.driver, 30).until(
+                EC.presence_of_element_located((by,selector))
+                )
 
+            self.cur_driver_title = self.driver.title.replace(" ", "_")
+            return self.driver.page_source
+        except Exception as e:
+            if LOG_MSG: log.warning(f'WEBDRIVER ERROR DURING FETCH: {e}')
+            return None
 
 
     #* LOOK FOR EXISTING SAVED HTML FILE:
@@ -264,69 +244,54 @@ class HTMLRetriever:
     #*  - REQUESTS FOR CHECKING ROBOTS.TXT
     #* RETURNS: BEAUTIFULSOUP OBJECT FOR PARSING 
     def retrieve_url(self, url:str , wait_for: tuple) -> BeautifulSoup | None:
+        
+        self.driver.get(url)
         # GET DOMAIN NAME FOR FOLDER
-        folder_name = self._get_base_url(url).split('.')[1] 
+        full_host = str(urlparse(url).hostname).replace("www.","")
+        folder = full_host.replace('.','_')
+        # CREATES FOLDER PATH(s)
+        os.makedirs(folder, exist_ok=True)
         
-        # CREATES FOLDER IF NOT EXISTS
-        self.create_db_folder(folder_name) 
+        import envir_bs4 
+        # LOAD DOMAIN RULESET
+        domain_rules = envir_bs4.DOMAIN_RULES.get(full_host,{})
+        # RUN PREPROCESSING FUNCTION FOR JS CONTENT
+        pre_fn = domain_rules.get('preprocess')
+        if callable(pre_fn):
+            
+            time.sleep(1.5)
+            if LOG_MSG: log.watchdog('PREFUNCTION RAN')
+        html = self.driver.page_source
         
-        # RETRIEVE HTML CONTENT SO TITLE IS UPDATED
-        html = self._safe_retrieve(url, wait_for=wait_for, ignore_robots=False)
+        filename = os.path.join(folder, self.driver.title)        
+        self.save_html(html,filename=filename)
 
-        if html is None:
-            log.warning(f'Initial HTML retrieval failed for URL: {url}')
-            log.border('')
-            return None
-
-
-        filename = os.path.join(folder_name, self.cur_driver_title)
-        
-        if not os.path.exists(filename):
-            log.info(f'Saving HTML to file : {filename}')
-            self.save_html(html=html, filename=filename)
-        else:
-            log.info(f'Found saved HTML file: {filename}, loading from file')
-            html = self.load_html(filename=filename)
-                        
-        if html is not None:
-            return BeautifulSoup(html, 'lxml')
-        else:
-            log.error(f'Failed to load HTML content for URL: {url}')
-            return None
-
-
+        return BeautifulSoup(html, 'lxml')
+        #return None
 
     #* STORE THE RETURNED PAGE IN FILES
     def save_html(self, html, filename: str) -> None:
-        try:
-            with open (filename, 'x', encoding='utf-8') as f:
-                f.write(html)
-                f.close()
-        except FileExistsError:
-            # TODO: ADD OVERWRITE OPTION
-            # TODO: ADD TIMESTAMP * VERSIONING
-            # TODO: ADD CHECK FOR UPDATES
-            # TODO: ADD TIMED UPDATE
-            log.warning(f'File already exists: {filename}, not overwriting')
-
+        with open (filename, 'w', encoding='utf-8') as f:
+            f.write(html)
+        if LOG_MSG: log.info(f'WRITING FILE {filename}')
 
     #* LOAD A SAVED HTML FILE
     def load_html(self, filename : str) -> str | None:
         try:
             with open (filename, 'r', encoding='utf-8') as f:
                 html = f.read()
-                f.close()
+                if LOG_MSG: log.info(f'OPENING FILE {filename}')
                 return html
         except FileNotFoundError:
-            log.warning(f'File not found: {filename}')
+            if LOG_MSG: log.warning(f'FILE NOT FOUND: {filename}')
             return None
 
-
+    # TODO: INTEGRATE WITH FILE MANAGER
     #* CREATE FOLDER FOR SAVED HTML FILES
     def create_db_folder(self, folder_name: str = 'html_db') -> str:
         if not os.path.exists(folder_name):
             os.makedirs(folder_name)
-            log.info(f'Created folder: {folder_name}')
+            if LOG_MSG: log.info(f'CREATED FOLDER: {folder_name}')
         return folder_name
 
 
@@ -334,48 +299,16 @@ class HTMLRetriever:
     #* SAVE SCREENSHOT OF THE PAGE
     def save_image(self, filename: str) -> None:
         if self.driver is None:
-            log.warning('WebDriver not available. Cannot save screenshot.')
+            if LOG_MSG: log.warning('WebDriver not available. Cannot save screenshot.')
             return
         else:
             try:
                 self.driver.save_screenshot(f'{filename}.png')
-                log.info(f'Saved screenshot: {filename}.png')
+                if LOG_MSG: log.info(f'Saved screenshot: {filename}.png')
             except Exception as e:
-                log.warning(f'Failed to save screenshot for {filename}: {e}')
+                if LOG_MSG: log.warning(f'Failed to save screenshot for {filename}: {e}')
     
     
-
-#! ======================================================== !#
-#!                       MAIN BLOCK                         !#
-#! ======================================================== !#
-# TODO: 
-
-
-
-#^ ======================================================== ^#
-#^                    TESTING / EXAMPLES                    ^#
-#^ ======================================================== ^#
-
-#* URL TO SCRAPE
-url = 'https://www.environmentallights.com/19072-px-spi-v2.html'
-
-#* CSS ELEMENT TO WAIT FOR BEFORE SAVING THE HTML
-WAIT_FOR_ELEMENT = (By.CLASS_NAME, 'product-detail-content')
-
-#* INIT URL SCRAPER + DESTROY WHEN FINISHED
-#* POSSIBLE WITH def __enter__(self)
-with HTMLRetriever() as retriever:
-    soup = retriever.retrieve_url(url, wait_for=WAIT_FOR_ELEMENT)
-    if soup:
-        text = soup.get_text(separator='/n', strip=True)
-        log.success(f'Scraping succeeded on : {soup.title}')
-
-
-
-    else:  
-        log.error(f'Scraping failed on : {soup}')
-
-
-log.success('Shutdown Success - Exiting Script')
+    
 
  
