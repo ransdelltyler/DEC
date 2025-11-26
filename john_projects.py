@@ -8,6 +8,8 @@
  #* ======================================================== *#
 
 
+from util_classes import ColorLog
+log = ColorLog('JOHN_PROJ')
 
  #~ ======================================================== ~#
  #~                    CLASS DEFINITION                      ~#

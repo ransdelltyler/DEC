@@ -55,7 +55,7 @@ print("Sys Path:", sys.path)
  #~ ======================================================== ~#
  #~                    CLASS DEFINITION                      ~#
  #~ ======================================================== ~#
-log = ColorLog('main_log', level=1)
+log = ColorLog('JOHN_EQUI', level=1)
 
 class JohnEquipDB:
     def __init(self):

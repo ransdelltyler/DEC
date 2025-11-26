@@ -51,15 +51,10 @@
     #^ - SCENE / INSTALLATION
     #^ - EQUIPMENT INSTANCE
     #^ -
- # TODO: 
-    #^ - 
-    #^ -
- # TODO: 
-    #^ -
-    #^ -
- # TODO: 
-    #^ -
-    #^ -
+
+
+from util_classes import ColorLog
+log = ColorLog('JOHN_JOHN')
 
 class GenManager:
    def __init__(self):

@@ -29,7 +29,7 @@ from pathlib import Path
 
 #* CUSTOM CLASS IMPORTS
 from util_classes import ColorLog
-log = ColorLog('john_files', level=1)
+log = ColorLog('JOHN_FILE', level=1)
 
 
 

@@ -37,7 +37,7 @@ from data_models import ( BaseID, Project, Anchor, Room, Install,
 #!                   DEFAULTS / VARIABLES                   !#
 #! ======================================================== !#
 
-log = ColorLog('Factory',level=1)
+log = ColorLog('DATA_FACT',level=1)
 
 DEF_STR = {
     #^ BASE ID

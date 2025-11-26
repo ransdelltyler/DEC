@@ -9,56 +9,13 @@
 # TODO:              TODO LIST / DEVLOG                     ~#
 # TODO:==================================================== ~#
 
-from selenium.webdriver.common.by import By
 import pprint
-from time import sleep
 
 from html_retriever import HTMLRetriever
 from util_classes import ColorLog
 from variables import LOG_MSG
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+log = ColorLog('ENVIR_BS4')
 
-
-#? ======================================================== ?#
-#?                   PRE-PROCESS FUNCTION                   ?#
-#? ======================================================== ?#
-def preprocess_envirn(driver):
-   if LOG_MSG: log.watchdog(f'RUNNING PREPROCESSOR w/ : {driver}')
-   # Wait for the initial page load
-   sleep(2)
-      
-   # Using "." instead of "text()" matches text inside nested spans (common in Magento)
-   TAB_MAP = [
-      '//*[@id="maincontent"]/div[4]/div/div[1]/section/div[1]',
-      '//*[@id="maincontent"]/div[4]/div/div[1]/section/div[3]',
-      '//*[@id="product-specifications-tab"]',
-      '//*[@id="maincontent"]/div[4]/div/div[1]/section/div[7]'
-   ]
-
-   for xpath in TAB_MAP:
-      try:
-         # 1. Wait for PRESENCE (in the DOM), not "Clickable" (visible). 
-         # This prevents timeouts if the element is off-screen or covered.
-         button = WebDriverWait(driver, 3).until(
-                EC.presence_of_element_located((By.XPATH, xpath))
-               )
-
-         # 2. Force Scroll (Centers element to avoid sticky headers)
-         driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", button)
-         sleep(0.2) 
-            
-         # 3. JavaScript Click (Bypasses "element intercepted" errors)
-         driver.execute_script("arguments[0].click();", button)
-           
-         print(f"Successfully clicked: {xpath}")
-         sleep(1) 
-            
-      except Exception as e:
-         # Log but don't crash; not all products have all tabs
-         if LOG_MSG: log.warning(f"Tab not found or clickable: {xpath}")
-
-   return driver.page_source
 #? ======================================================== ?#
 #?                    HELPER FUNCTIONS                      ?#
 #? ======================================================== ?#
@@ -85,8 +42,8 @@ def extract_specs(selector):
          if label and value:
             output.append({ label : value })
 
-      return output
-   return extractor
+      return output #!EXIT!
+   return extractor #!EXIT!
 
 
 #? RETURN A LIST OF RELATED PRODUCTS
@@ -109,8 +66,8 @@ def extract_related(selector):
             'pn' : pn,
          })
 
-      return output
-   return extractor
+      return output #!EXIT!
+   return extractor #!EXIT!
 
 
 #? RETURN A LIST OF { DOCUMENT_NAME : URL_STRING }
@@ -125,8 +82,8 @@ def extract_docs(selector):
          if name and url:
             output.append({name : url})
 
-      return output  
-   return extractor
+      return output #!EXIT!
+   return extractor #!EXIT!
 
 
 #~ ======================================================== ~#
@@ -135,7 +92,6 @@ def extract_docs(selector):
 #* ENVIRIONMENTAL LIGHTS SCRAPING PROFILES
 DOMAIN_RULES = {
    "environmentallights.com": {
-      "preprocess": preprocess_envirn, 
       "title": [
          lambda soup: soup.select_one("meta[property='og:title']").get("content"),
       ],
@@ -174,22 +130,14 @@ DOMAIN_RULES = {
     }
 }
 
-#^ ======================================================== ^#
-#^                   TESTING / EXAMPLES                     ^#
-#^ ======================================================== ^#
-
-log = ColorLog('ENV_BS4', level=1)
-
 
 def scrape_url(url):
-   WAIT_FOR = (By.TAG_NAME, "body")
-    
    with HTMLRetriever() as retriever:
-      soup = retriever.retrieve_url(url, wait_for=WAIT_FOR)
+      soup = retriever.retrieve_url(url)
       
    if not soup: 
       log.debug(f'FAILED TO LOAD PAGE: {url}')
-      return None
+      return None #!EXIT!
    
    # TODO: DOMAIN SELECTION
    domain = "environmentallights.com"
@@ -202,22 +150,23 @@ def scrape_url(url):
       
       result[field_name] = []
       for extractor in extractor_list:
-         if LOG_MSG: log.watchdog(f'ATTEMPTING TO EXTRACT: {extractor}')
-         sleep(0.5)
+         #if LOG_MSG: log.watchdog(f'ATTEMPTING TO EXTRACT: {field_name}')
          try:
             result[field_name].append(extractor(soup))
-            if LOG_MSG: log.debug(f'RESULT: {result[field_name]}')
+            #if LOG_MSG: log.debug(f'RESULT: {result[field_name]}')
          except Exception as e:
             if LOG_MSG: log.warning(f'EXTRACTOR FAILED ON: {field_name}:{e}')
             result[field_name].append(None)
-   return result
+   return result #!EXIT!
 
 
-def main():
-   url = 'https://www.environmentallights.com/20910-pln-pf-rgb30k-10m.html'
+#^ ======================================================== ^#
+#^                   TESTING / EXAMPLES                     ^#
+#^ ======================================================== ^#
+
+def test():
+   url = 'https://www.environmentallights.com/19072-px-spi-v2.html'
    data = scrape_url(url)
    #pprint.pprint(data)
 
-
-if __name__ == '__main__':
-   main()
+test()
