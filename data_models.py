@@ -351,20 +351,3 @@ class LEDSeg(BaseID):
     def cal_watts(self) -> float:
         return self.len_m * self.led_prod.watt_m
     
-
-
-
-
-#? ======================================================= ?#
-#?                     DATA - DATA CLASSES                 ?#
-#? ======================================================= ?#
-
-#& DMX PACKET
-@dataclass(slots=True, kw_only=True)
-class DMX_Packet:
-    name : str
-    id: UUID = field(default_factory=uuid4)
-    data : list[int] = field(default_factory=list)
-    prio : list[int] = field(default_factory=list)
-
-#& sACN PACKET

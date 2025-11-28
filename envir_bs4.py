@@ -167,6 +167,6 @@ def scrape_url(url):
 def test():
    url = 'https://www.environmentallights.com/19072-px-spi-v2.html'
    data = scrape_url(url)
-   #pprint.pprint(data)
+   pprint.pprint(data)
 
-test()
+#test()

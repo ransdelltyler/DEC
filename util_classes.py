@@ -23,7 +23,7 @@ Emoji_Map = {
     logging.INFO: "🛈",
     WATCHDOG: "⛨",
     SUCCESS: "☀",
-    BORDER: '| ___ 𓃵 ___ |',
+    BORDER: '𓃵 | ___ 𓃵 ___ |',
 }
 
 #* LOG COLOR CONFIGURATION
@@ -39,10 +39,8 @@ log_colors={
 }
 
 #* LOG FILE PATH
-path_log = Path("util.log")
-
 class ColorLog:
-    def __init__(self, name=__name__, level=BORDER):
+    def __init__(self, name=__name__, level=BORDER, path="main.log"):
         self.logger = logging.getLogger(name)
         self.logger.setLevel(level)
         self.name = name
@@ -57,7 +55,7 @@ class ColorLog:
             )
             console_handler.setFormatter(console_formatter)
 
-            file_handler = logging.FileHandler(path_log)
+            file_handler = logging.FileHandler(path)
             file_handler.setLevel(level)
 
             file_formatter = logging.Formatter(
@@ -75,7 +73,7 @@ class ColorLog:
     
     def success(self, message): self.logger.log(SUCCESS, f"-- {Emoji_Map[SUCCESS]} | {self.name} | {message}")
     def watchdog(self, message): self.logger.log(WATCHDOG, f"- {Emoji_Map[WATCHDOG]} | {self.name} | {message}")
-    def border(self): self.logger.log(BORDER, f"----- {Emoji_Map[BORDER]}")
+    def border(self): self.logger.log(BORDER, f"--- {Emoji_Map[BORDER]}")
 
 
 
@@ -95,4 +93,4 @@ def test():
     logger.watchdog("This is a watchdog message.")
     logger.border()
 
-test()
+#test()
