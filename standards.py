@@ -29,17 +29,18 @@ FUNCTIONS:
 #^  function_2(var=str,[objects])                - FUNCTION DESCRIPTION
 #^  function_2(var=str,[objects],*args,**kwargs) - FUNCTION DESCRIPTION
 
-# - DEV LOG - #
-# TODO: ADD FUNCTION
-# =========================
 '''
+
+
 #* ======================================================== *#
-#*                    FILE DESCRIPTION                   
-#*
-#*
-#*
-#*
-#* ======================================================== *#
+'''                    FILE DESCRIPTION                   
+
+
+
+
+
+
+'''
 # TODO:==================================================== ~#
 # TODO:              TODO LIST / DEVLOG                     ~#
 # TODO:==================================================== ~#

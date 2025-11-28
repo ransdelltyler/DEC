@@ -30,12 +30,17 @@ def func2(*, deer, eat, chain):
 #~ ======================================================== ~#
 #~                    CLASS DEFINITION                      ~#
 #~ ======================================================== ~#
-#* RETURN CLASS INSTANCE FOR WITH STATEMENTS (REQUIRES __exit__)
-def __enter__(self):
-    return self
-#* EXIT DUNDER
-def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close_selenium()
+    #& CONTEXT MANAGER 1/2
+    def __enter__(self):
+        if gvar.LOG_MSG:
+            log.border()
+            log.watchdog(' STARTING ')
+        return self
+    #& CONTEXT MANAGER 2/2
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if gvar.LOG_MSG:
+            log.watchdog(' SHUTTING DOWN ')
+            log.border()
         return False
 
 #? ======================================================== ?#

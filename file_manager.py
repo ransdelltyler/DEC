@@ -28,6 +28,7 @@ from pathlib import Path
 
 
 #* CUSTOM CLASS IMPORTS
+import variables as gvar
 from util_classes import ColorLog
 log = ColorLog('JOHN_FILE', level=1)
 
@@ -43,50 +44,62 @@ class FileManager:
     def __init__(self, path=os.getcwd, file_map=None, masterlog_path=None, settings=None):
         
         #* [ROOT] APPLICATION PATH
-        self.root_path = path
+        self.root_path = Path(path)
 
         #* [JOHN FILES] FILE MANIPULATION VARIABLES
-        self.cur_path = path
-        self.selected_file = None
+        self.cur_path = Path(path)
+        self.sel_path = Path(path)
 
         #* [FILE MAP] PATH
         self.file_map_path = file_map or self._create_if_missing('file_map.txt')
+        self.file_map_path = Path(self.file_map_path)
 
         #* [MASTER LOG] COLLECTOR PATH
         self.masterlog_path = masterlog_path or self._create_if_missing('master_log.txt')
-
-        #* [SETTINGS] PATH
-        self.settings = settings or self._create_if_missing('settings.txt')
-
-        #* [COLORLOG] ENABLE / DISABLE
-        self.show_logs = False
+        self.masterlog_path = Path(self.masterlog_path)
         
+        #* [SETTINGS] PATH
+        self.settings_path = settings or self._create_if_missing('settings.txt')
+        self.settings_path = Path(self.settings_path)
+        
+
+    #& CONTEXT MANAGER 1/2
+    def __enter__(self):
+        if gvar.LOG_MSG:
+            log.border()
+            log.watchdog(' STARTING ')
+        return self
+    #& CONTEXT MANAGER 2/2
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if gvar.LOG_MSG:
+            log.watchdog(' SHUTTING DOWN ')
+            log.border()
+        return False
+            
 
     #? SAVE OR CREATE FILE WITH OPTIONAL OVERWRITTING PERMISSION
-    def _save_file(self,doc_name: str, doc_string: str | None=None,
-                  overwrite=False):
+    def _save_file(self,doc_name: str, doc_string: str | None=None, overwrite=False):
         
         # OVERWRITES OR ENFORCES SINGLE COPY
-        if overwrite: write_mode = 'w'
-        else: write_mode = 'x'  
-        if self.show_logs: log.debug(f'WRITE MODE:{write_mode}') #^DEBUG
+        write_mode = 'w' if True else 'x'
+        if gvar.LOG_MSG: log.debug(f'WRITE MODE:{write_mode}') #^DEBUG
         
         try: # CREATE FILE
             with open(doc_name, write_mode, encoding='utf-8')as f:
                 if doc_string is not None: # WRITE DOC_STRING TO FILE
-                    if self.show_logs: log.watchdog(f'WRITING DOCSTRING: {doc_name}') #^DEBUG
+                    if gvar.LOG_MSG: log.watchdog(f'WRITING DOCSTRING: {doc_name}') #^DEBUG
                     f.write(doc_string)
                     f.close()
                 else: # ADD TIMESTAMP TO TOP OF EMPTY FILE AND CLOSE
                     f.write(f'#DOCUMENT CREATED BY SYSTEM: {time.time()}')
                     f.close()
         except FileExistsError:
-            log.warning(f'FILE ALREADY EXISTS: {doc_name}!')
+            if gvar.LOG_MSG: log.warning(f'FILE ALREADY EXISTS: {doc_name}!') #^DEBUG
 
     #? CREATE A NEW FOLDER OR FOLDER TREE FROM PATH
     def _create_folder(self, folder_path: str,exist_ok=True):
         os.makedirs(folder_path, exist_ok=exist_ok)
-        if self.show_logs: log.watchdog(f'CREATED NEW FOLDER PATH: {folder_path}')
+        if gvar.LOG_MSG: log.watchdog(f'CREATED NEW FOLDER PATH: {folder_path}')
 
     #& SETUP FUNCTIONS
     #? TRY TO FIND <FILE>, IF NOT FOUND CREATE EMPTY TEXT FILE
@@ -102,82 +115,67 @@ class FileManager:
         
         # CHECK IF NEW_PATH EXISTS
         if new_path.exists():
-            if self.show_logs:
+            if gvar.LOG_MSG:
                 log.info(f'EXISTING FILE FOUND: {new_path}')
             return str(new_path) #!EXIT!
 
         # SEARCH RECURSIVELY
-        if self.show_logs: log.warning(f'{new_path} NOT FOUND; SEARCHING {root}.')
+        if gvar.LOG_MSG: log.warning(f'{new_path} NOT FOUND; SEARCHING {root}.')
         for file in root.rglob(fname):
             if file.is_file():
-                if self.show_logs:
-                    log.debug(f'FOUND FILE: {file}')
+                if gvar.LOG_MSG: log.debug(f'FOUND FILE: {file}') #^DEBUG
                 return str(file) #!EXIT!
         
         # STILL NOT FOUND; CREATE NEW
-        if self.show_logs: log.warning(f'{new_path}: STILL NOT FOUND, CREATING...')
+        if gvar.LOG_MSG: log.warning(f'{new_path}: STILL NOT FOUND, CREATING...') #^DEBUG
         try:
-            new_path.write_text(f"{fname}.txt | CREATED: {time.time()}", encoding='utf-8')
+            new_path.write_text(f"{fname} | CREATED: {time.time()}", encoding='utf-8')
         except FileExistsError:
-            log.critical(f'{fname} FOUND AT: {new_path}')
-        
+            if gvar.LOG_MSG: log.critical(f'{fname} FOUND AT: {new_path}') #^DEBUG
         return str(new_path) #!EXIT!    
 
+
     #? UPDATE PATH ATTRIBUTES
-    def _set_path(self, attr:str, new_value=None, log_msg=None):
-        if new_value is not None:
-            setattr(self, attr, new_value)
-            if log_msg and self.show_logs:
-                log.watchdog(log_msg.format(new_value))
-            return getattr(self, attr) #!EXIT!#
-        
-    #* GET/UPDATE /ROOT_DIR <PATH> 
-    def _root_path(self, new_path=None):
-        return self._set_path(F'root_path', new_path,'FILE MANAGER - [ROOT] PATH UPDATED TO : {}')
-
-    #* GET/UPDATE MASTER_LOG.TXT <PATH> 
-    def _logs_path(self, new_path=None):
-        return self._set_path(F'root_path', new_path,'FILE MANAGER - [MASTER LOG] PATH UPDATED TO : {}')
-
-    #* GET/UPDATE FILE_MAP.TXT <PATH>
-    def _file_map(self, new_path=None):
-        return self._set_path(F'root_path', new_path,'FILE MANAGER - [FILE MAP] PATH UPDATED TO : {}')
-
-    #* GET/UPDATE SETTINGS.TXT <PATH>
-    def _load_saved_settings(self, new_path=None):
-        return self._set_path(F'settings', new_path, 'FILE MANAGER - [SETTINGS] PATH UPDATED TO : {}')
-
-    #* GET/UPDATE CURRENT POINTER PATH
-    def _cur_path(self, new_path=None):
-        return self._set_path(F'cur_path', new_path, 'FILE MANAGER - [CUR_PATH] UPDATED TO {}')
-
-
+    def __setattr__(self, name: str, value: str) -> None:
+        if 'path' in name:
+            new_path = Path(value)
+            _ = self.__getattribute__(name)
+            self._create_if_missing(value)
+            super().__setattr__(name, new_path)
+            if gvar.LOG_MSG: log.info(f'UPDATING {name} -> {value}') #^DEBUG
 
 
     #? SEARCH FOR <FILE-NAME> STARTING IN ROOT FOLDER
     def cur_find_file(self, filename:str) -> str | None:
         root = self.root_path
         
-        if self.show_logs: log.warning(f'SEARCHING {root} for {filename}')
+        if gvar.LOG_MSG: log.warning(f'SEARCHING {root} for {filename}')
         # RETURN ALL ITEMS LOWER THAN <ROOT> THAT MATCH <FILENAME>
         for file in root.rglob(filename):
             if file.is_file():
-                if self.show_logs:
-                    log.debug(f'FOUND FILE: {file}')
+                if gvar.LOG_MSG: log.debug(f'FOUND FILE: {file}') #^DEBUG
                 return str(file) #!EXIT!
         
         # FAILED TO FIND
-        if self.show_logs: log.error(f'{filename} could not be found.')
+        if gvar.LOG_MSG: log.error(f'{filename} could not be found.')
         return None #!EXIT!
 
             
     #? SAVE SELECTED <FILE OR FOLDER> TO NEW (<NAME> OR <LOCATION>)
-    def cur_save_as(self, new_name:str, new_path:str):
-        pass
+    def save_sel_as(self, new_name: str, new_path: str | Path):
+        src = self.sel_path
+        dest = Path(new_path) if isinstance(new_path, str) else new_path
+        new_path = dest / new_name
+        src.rename(new_path)
 
+    def get_subdirs(self, start_dir='.')
 
+#^ ======================================================== ^#
+#^                   TESTING / EXAMPLES                     ^#
+#^ ======================================================== ^#
 
-
- #! ======================================================== !#
- #!                       MAIN BLOCK                         !#
- #! ======================================================== !#
+def test():
+    with FileManager() as fm:
+        fm._create_folder(test)
+        
+ 
