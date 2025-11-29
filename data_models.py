@@ -1,6 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 from uuid import UUID, uuid4
+from typing import Callable, Dict, List
 
 # FOR np.ndarray (Vectors)
 import numpy as np
@@ -185,6 +186,9 @@ class CableType(Enum):
     HV120 = auto()
     LV48 = auto()
 
+
+
+#TODO: FIX NON DEFAULTED PARAMS THAT COULD BE NONE
 #? ======================================================== ?#
 #?                    ROOT ID DATACLASS                     ?#
 #? ======================================================== ?#
@@ -192,8 +196,8 @@ class CableType(Enum):
 @dataclass(slots=True, kw_only=True)
 class BaseID:
     name: str
-    id: UUID = field(default_factory=uuid4)
-    comments: list[str] = field(default_factory=list)
+    id_base: UUID = field(default_factory=uuid4)
+    comments: List[str] = field(default_factory=list)
 
 
  
@@ -204,22 +208,20 @@ class BaseID:
 @dataclass(slots=True, kw_only=True)
 class Project(BaseID):
     address : str
-    job_id : str
-    anchors : list['Anchor'] = field(default_factory=list)
+    anchors : List[Anchor] = field(default_factory=list)
 
 
 #& ANCHOR
 @dataclass(slots=True, kw_only=True)
 class Anchor(BaseID):
-    anchor_name : str
-    rooms : list['Room'] = field(default_factory=list)
+    rooms : List[Room] = field(default_factory=list)
 
 
 #& ROOM
 @dataclass(slots=True, kw_only=True)
 class Room(BaseID):
-    enclosures : list['Enclosure'] = field(default_factory=list)
-    installs : list['Install'] = field(default_factory=list)
+    enclosures : List[Enclosure] = field(default_factory=list)
+    installs : List[Install] = field(default_factory=list)
 
 
 #& INSTALL
@@ -227,7 +229,7 @@ class Room(BaseID):
 class Install(BaseID):
     rated_watts : int
     actual_watts : int
-    branches : list['LEDSeg'] = field(default_factory=list)
+    branches : List[LEDSeg] = field(default_factory=list)
 
 
 
@@ -246,15 +248,15 @@ class Equipment(BaseID):
     h_mm : int
     rated_watts : int
     actual_watts : int
-    terminals : list['Terminal'] = field(default_factory=list)
+    terminals : List[Terminal] = field(default_factory=list)
 
 
 #& ENCLOSURE
 @dataclass(slots=True, kw_only=True)
 class Enclosure(Equipment):
-    ckts : list['BaseID'] = field(default_factory=list)
-    nets : list['BaseID'] = field(default_factory=list)
-    equipment : list['Equipment'] = field(default_factory=list)
+    ckts : List[BaseID] = field(default_factory=list)
+    nets : List[BaseID] = field(default_factory=list)
+    equipment : List[Equipment] = field(default_factory=list)
 
 
 #& CTRLR
@@ -263,7 +265,7 @@ class Ctrlr(Equipment):
     ip: str
     subn_mask : str
     ctrl_type : CTRLType
-    outputs : list['Terminal'] = field(default_factory=list)
+    outputs : List[Terminal] = field(default_factory=list)
 
 
 
@@ -281,7 +283,7 @@ class LEDFixt(Equipment):
     cutLen_in : float
     pixPitch_m : int
     tapeWidth_mm : int
-    sub_pns : list[str]
+    sub_pns : List[str]
     shape : Shape
     diffusion : Diffusion
     viewAngle : int
@@ -301,8 +303,8 @@ class LEDFixt(Equipment):
     cert_url : str
     iprating : IPRating
     finish : FinishColor
-    lumens_m : list[float] = field(default_factory=list)
-    lumens_ft : list[float] = field(default_factory=list)
+    lumens_m : List[float] = field(default_factory=list)
+    lumens_ft : List[float] = field(default_factory=list)
 
 #& POWER SUPPLY
 @dataclass(slots=True,kw_only=True)
@@ -321,14 +323,14 @@ class Terminal(BaseID):
 #& CABLE
 @dataclass(slots=True, kw_only=True)
 class Cable(BaseID):
-    terminals : list['Terminal'] = field(default_factory=list)
+    terminals : List[Terminal] = field(default_factory=list)
     gauge : WireSize
 
 
 #& 3D PATH
 @dataclass (slots=True, kw_only=True)
 class Path3D(BaseID):
-    geometry : list[np.ndarray] = field(default_factory=list)
+    geometry : List[np.ndarray] = field(default_factory=list)
 
 
 
@@ -338,7 +340,7 @@ class Path3D(BaseID):
 #& LED BRANCH (HOLDS MULTIPLE SEGMENTS) (HELD BY CONTROLLERS)
 @dataclass(slots=True, kw_only=True)
 class LEDBranch(BaseID):
-    segments : list['LEDSeg'] = field(default_factory=list)
+    segments : List[LEDSeg] = field(default_factory=list)
 
 #& HOLDS LED SEGMENT DATA FOR BUILDING INSTALL
 @dataclass(slots=True, kw_only=True)

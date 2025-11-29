@@ -7,7 +7,7 @@ from util_classes import ColorLog
 log = ColorLog('JOHN_FUZZ')
 
 # RETURN TEXT AS LOWERCASE WITH NO SPACES
-def norm_text(text : str):
+def norm_text(text: str):
     return ''.join(text.lower().split())
 
 #^ FUZZ KEYWORD CATEGORY MAP
@@ -20,7 +20,7 @@ CATEGORY_MAP = {
 #* TAKES A LABEL:STR AND USES A DEF OR GIVEN KEYWORD DICT-
 #* -TO FIND BEST MATCH 
 #* RETURNS:(LABEL/VALUE)
-def match_label(label : str, category:EQCategory|dict):
+def match_label(label : str, category: EQCategory | dict):
     # CAN BE PASSED AS KEYWORD DICTIONARY: {str,[str]}
     # OR SET BY PASSING EQCategory.<type>
     fuzz_keys = (

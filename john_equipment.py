@@ -120,8 +120,7 @@ class JohnEquipDB:
 
  #* QUERY THE DATABASE FOR _____ | SET FUZZY TO FALSE FOR EXACT MATCHES ONLY
     def _query_database(self, target, fuzzy = True) -> Equipment:
-        
-        return 
+        pass
 
  #* ADD / UPDATE TIMESTAMP FOR LATEST UPDATE
     def _timestamp_row(self):

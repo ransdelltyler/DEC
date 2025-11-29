@@ -163,7 +163,6 @@ def new_project(*,
                    #? BASE ID PARAMS
                    **base_id(name=name,comments=comments),
                    #? PROJECT PARAMS
-                   job_id = job_id or DEF_STR['jobid'],
                    address = address or DEF_STR['jobaddr'],
                    anchors = anchors or [],
                    )
@@ -185,7 +184,6 @@ def new_anchor(*,
                   **base_id(name=name,comments=comments),
                   
                   #? ANCHOR PARAMS
-                  anchor_name = anchor_name or DEF_STR['anchor'],
                   rooms = rooms or [],
                   )
 

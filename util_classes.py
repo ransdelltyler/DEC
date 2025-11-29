@@ -1,5 +1,20 @@
 
-# TODO: ADD STANDARD BLOCKS
+#* ======================================================== *#
+'''                    FILE DESCRIPTION                   
+
+
+
+
+
+
+'''
+
+
+
+
+#~ ======================================================== ~#
+#~                COLOR-LOG CLASS DEFINITION                ~#
+#~ ======================================================== ~#
 
 import logging
 from colorlog import ColoredFormatter
@@ -76,10 +91,8 @@ class ColorLog:
     def border(self): self.logger.log(BORDER, f"--- {Emoji_Map[BORDER]}")
 
 
-
-
 #^ ======================================================== ^#
-#^                   TESTING / EXAMPLES                     ^#
+#^               COLORLOG TESTING / EXAMPLES                ^#
 #^ ======================================================== ^#
 def test():
     logger = ColorLog('UTIL_CLOG', level=BORDER)
@@ -94,3 +107,6 @@ def test():
     logger.border()
 
 #test()
+
+
+
