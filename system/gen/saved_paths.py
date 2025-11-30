@@ -56,3 +56,5 @@ USER_PATHS = {
     'url_user': '',
 
 }
+
+# TODO: ADD REBUILD PATHS

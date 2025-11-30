@@ -1,0 +1,26 @@
+INFO ----- 🛈 | SACN_SEND | STARTING sACN SENDER
+INFO ----- 🛈 | SACN_SEND | STARTING sACN SENDER
+BORDER --- 𓃵 | ___ 𓃵 ___ |
+WATCHDOG - ⛨ | SACN_SEND |  DMX-CTRLR STARTING 
+WATCHDOG - ⛨ | SACN_SEND |  DMX-CTRLR SHUTTING DOWN 
+BORDER --- 𓃵 | ___ 𓃵 ___ |
+SUCCESS -- ☀ | SACN_SEND | DMX-CTRLR INIT
+BORDER --- 𓃵 | ___ 𓃵 ___ |
+WATCHDOG - ⛨ | SACN_SEND |  DMX-CTRLR STARTING 
+WATCHDOG - ⛨ | SACN_SEND |  DMX-CTRLR SHUTTING DOWN 
+BORDER --- 𓃵 | ___ 𓃵 ___ |
+SUCCESS -- ☀ | SACN_SEND | DMX-CTRLR INIT
+BORDER --- 𓃵 | ___ 𓃵 ___ |
+WATCHDOG - ⛨ | SACN_SEND |  DMX-CTRLR STARTING 
+WATCHDOG - ⛨ | SACN_SEND |  DMX-CTRLR SHUTTING DOWN 
+BORDER --- 𓃵 | ___ 𓃵 ___ |
+SUCCESS -- ☀ | SACN_SEND | DMX-CTRLR INIT
+BORDER --- 𓃵 | ___ 𓃵 ___ |
+WATCHDOG - ⛨ | SACN_SEND |  DMX-CTRLR STARTING 
+WATCHDOG - ⛨ | SACN_SEND |  DMX-CTRLR SHUTTING DOWN 
+BORDER --- 𓃵 | ___ 𓃵 ___ |
+SUCCESS -- ☀ | SACN_SEND | DMX-CTRLR INIT
+BORDER --- 𓃵 | ___ 𓃵 ___ |
+WATCHDOG - ⛨ | SACN_SEND |  DMX-CTRLR STARTING 
+WATCHDOG - ⛨ | SACN_SEND |  DMX-CTRLR SHUTTING DOWN 
+BORDER --- 𓃵 | ___ 𓃵 ___ |

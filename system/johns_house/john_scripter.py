@@ -87,10 +87,6 @@ class ScriptManager:
     def __init__(self, name: str, ) -> None:
         self.uuid = uuid4()
         self.name = name or 'Script-Manager'
-        self.runs_left = 0      # SET TO -1 FOR INFINITE LOOP
-        self.trigger : UUID     # UUID OF TRIGGER
-        self.runs = 0           # TOTAL RUNS SINCE INIT
-        self.last_run : str     # DATE OF LAST RUN
         
         # LOADED MODULES, SEQUENCES, SCRIPTS
         self.modules = []

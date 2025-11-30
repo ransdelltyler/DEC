@@ -1,0 +1,8 @@
+DEBUG ---- ⚕ | UTIL_CLOG | This is a debug message.
+INFO ----- 🛈 | UTIL_CLOG | This is an info message.
+SUCCESS -- ☀ | UTIL_CLOG | This is a success message.
+WARNING -- ⚠ | UTIL_CLOG | This is a warning message.
+ERROR --- ⚠⚠ | UTIL_CLOG | This is an error message.
+CRITICAL - X | UTIL_CLOG | This is a critical message.
+WATCHDOG - ⛨ | UTIL_CLOG | This is a watchdog message.
+BORDER --- 𓃵 | ___ 𓃵 ___ |
