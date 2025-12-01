@@ -24,12 +24,12 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 from system.gen import gvars
-import cursor
 import time
 import threading
 import pystray
 from pynput import keyboard
 from PIL import Image, ImageDraw
+
 
 DEFAULT_ICON = 'DEEREATCHAIN/assets/icons/icon_tray_raven.png'
 
@@ -53,7 +53,7 @@ class JohnKeyboard:
         
         # cursor hide system
         self.auto_cur_hide_en = False
-        self.cursor_hidden = False        # <-- FIXED
+        self.cursor_hidden = False
         self.last_activity = time.time()
 
         # keyboard listener
@@ -62,17 +62,17 @@ class JohnKeyboard:
 
         # background thread
         self.auto_cur_hide = threading.Thread(target=self.ach_monitor, daemon=True)
-        self.auto_cur_hide.start()        # <-- FIXED
+        self.auto_cur_hide.start()
 
-    # CONTEXT MANAGER
+    # Context manager
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        cursor.show()
+        self.global_cur_show()     # <-- FIXED
         return False
 
-    # TRAY MENU
+    # Tray menu
     def build_tray_menu(self):
         return pystray.Menu(
             pystray.MenuItem(
@@ -90,45 +90,45 @@ class JohnKeyboard:
             ),
         )
 
-    # KEYBOARD ACTIVITY
+    # Keyboard activity
     def on_key_press(self, key):
         self.last_activity = time.time()
-        if self.auto_cur_hide_en:
-            if not self.cursor_hidden:
-                cursor.hide()
-                print("CURSOR HIDDEN")
-                self.cursor_hidden = True
+        if self.auto_cur_hide_en and not self.cursor_hidden:
+            self.global_cur_hide()
+            print("Hide return:", ctypes.windll.user32.ShowCursor(False))
+            print("CURSOR HIDDEN")
+            self.cursor_hidden = True
 
-    # TRAY: START & QUIT
+    # Tray: start + quit
     def start(self):
         self.icon.run()
 
     def quit(self, icon, item):
-        cursor.show()
+        self.global_cur_show()     # <-- FIXED
         self.icon.stop()
 
-    # ENABLE/DISABLE AUTO CURSOR HIDE
+    # Enable / disable auto hide
     def enable_ach(self):
-        while ctypes.windll.user32.ShowCursor(False) >= 0:
-            pass
+        self.auto_cur_hide_en = True
 
     def disable_ach(self):
-        while ctypes.windll.user32.ShowCursor(False) >= 0:
-            pass
+        self.auto_cur_hide_en = False
+        self.global_cur_show()     # <-- FIXED
+        self.cursor_hidden = False
 
-    # BACKGROUND INACTIVITY MONITOR
+    # Background inactivity monitor
     def ach_monitor(self):
         while True:
             if self.auto_cur_hide_en:
-                # if hidden and 3 seconds passed -> show cursor
+                # if hidden and >3s inactive → show
                 if self.cursor_hidden and (time.time() - self.last_activity > 3):
-                    cursor.show()
+                    self.global_cur_show()
                     print("CURSOR SHOWN")
                     self.cursor_hidden = False
             time.sleep(0.1)
 
-
-
+    
+        
 def test_auto_cur_hide():
     with JohnKeyboard() as jk:
         jk.enable_ach()

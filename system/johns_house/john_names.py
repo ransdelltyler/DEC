@@ -76,12 +76,18 @@ NAME_BUCKET = {
         
     ],
 }
+import os, sys
+from pathlib import Path
+# set project root to DEEREATCHAIN (two levels up from this file)
+ROOT = str(Path(__file__).resolve().parents[2])
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
 
 # GLOBAL VARIABLES IMPORT
-import variables as gvars
+from system.gen import gvars
 # CUSTOM COLORLOG CLASS
-import util_classes as util
-log = util.ColorLog('JOHN-NAME',path= 'names.txt')
+from system.utils.util_classes import ColorLog
+log = ColorLog('JOHN_KEYB')
 
 import random
 

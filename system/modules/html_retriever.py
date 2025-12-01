@@ -4,8 +4,19 @@
  #* -       
  #*
  #* =============================================================================== *#
+import os, sys
+from pathlib import Path
+# set project root to DEEREATCHAIN (two levels up from this file)
+ROOT = str(Path(__file__).resolve().parents[2])
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
 
-import os
+# GLOBAL VARIABLES IMPORT
+from system.gen import gvars
+# CUSTOM COLORLOG CLASS
+from system.utils.util_classes import ColorLog
+log = ColorLog('HTML_RETR')
+
 from time import sleep
 import urllib.robotparser
 from urllib.parse import urlparse
@@ -13,7 +24,6 @@ from urllib.parse import urlparse
 import requests
 from bs4 import BeautifulSoup
 
-from util_classes import *
 
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import WebDriverException
@@ -26,9 +36,6 @@ from selenium.common.exceptions import WebDriverException
 # - log.success(str)
 # - log.watchdog(str)
 # - log.border()
-from variables import LOG_MSG
-from util_classes import ColorLog 
-log = ColorLog('HTML_RETR')
 
 #* ======================================================== *#
 #*                    HTMLRETRIEVER CLASS                   *#
@@ -42,12 +49,12 @@ class HTMLRetriever:
         self.headers = {'User-Agent': 'SimpleSpec1Shot/1.0 (contact: DeerEatChain@gmail.com)'}
         
         # CREATES REQUESTS SESSION FOR CHECKING ROBOTS.TXT
-        if LOG_MSG: log.info('Starting requests session for Robots.txt')
+        if gvars.LOG_MSG: log.info('Starting requests session for Robots.txt')
         self.robot_session = requests.Session()
         self.robot_session.headers.update(self.headers)
         
         # SELENIUM FOR RETRIEVING FULL HTML W/ HEADLESS CHROME
-        if LOG_MSG: log.info('Starting Selenium')
+        if gvars.LOG_MSG: log.info('Starting Selenium')
         
         options = Options()
         options.add_argument('--headless=new')
@@ -93,10 +100,10 @@ class HTMLRetriever:
         rp.read()
         
         if rp.can_fetch("*", target_url):
-            if LOG_MSG: log.success(f"Allowed to scrape : {target_url} as per robots.txt")
+            if gvars.LOG_MSG: log.success(f"Allowed to scrape : {target_url} as per robots.txt")
             return True #!EXIT!
         else:
-            if LOG_MSG: log.error(f"Target URL: {target_url}, blocked by robots.txt")
+            if gvars.LOG_MSG: log.error(f"Target URL: {target_url}, blocked by robots.txt")
             return False #!EXIT!
 
 
@@ -126,34 +133,34 @@ class HTMLRetriever:
 
             return BeautifulSoup(html, 'lxml') #!EXIT!
         else:
-            if LOG_MSG: log.critical(f'ROBOTS BLOCKED ACCESS') 
+            if gvars.LOG_MSG: log.critical(f'ROBOTS BLOCKED ACCESS') 
             return #!EXIT!
 
     #* STORE THE RETURNED PAGE IN FILES
     def save_html(self, html, filename: str) -> None:
         with open (filename, 'w', encoding='utf-8') as f:
             f.write(html)
-        if LOG_MSG: log.info(f'WRITING FILE {filename}')
+        if gvars.LOG_MSG: log.info(f'WRITING FILE {filename}')
 
     #* LOAD A SAVED HTML FILE
     def load_html(self, filename : str) -> str:
         with open (filename, 'r', encoding='utf-8') as f:
             html = f.read()
-            if LOG_MSG: log.info(f'OPENING FILE {filename}')
+            if gvars.LOG_MSG: log.info(f'OPENING FILE {filename}')
             return html #!EXIT!
 
  
     #* SAVE SCREENSHOT OF THE PAGE
     def save_image(self, filename: str) -> None:
         if self.driver is None:
-            if LOG_MSG: log.warning('WebDriver not available. Cannot save screenshot.')
+            if gvars.LOG_MSG: log.warning('WebDriver not available. Cannot save screenshot.')
             return #!EXIT!
         else:
             try:
                 self.driver.save_screenshot(f'{filename}.png')
-                if LOG_MSG: log.info(f'Saved screenshot: {filename}.png')
+                if gvars.LOG_MSG: log.info(f'Saved screenshot: {filename}.png')
             except Exception as e:
-                if LOG_MSG: log.warning(f'Failed to save screenshot for {filename}: {e}')
+                if gvars.LOG_MSG: log.warning(f'Failed to save screenshot for {filename}: {e}')
     
     
     

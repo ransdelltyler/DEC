@@ -17,13 +17,22 @@
 #~     - SEQUENCES -> ORDERED MULTI-SCRIPT CALLS W/ TIMING
 #~          - SCRIPT -> SINGLE CALLABLE FUNCTION
 #~ ======================================================== ~#
-from uuid import UUID, uuid4
-from time import sleep
+import os, sys
+from pathlib import Path
+# set project root to DEEREATCHAIN (two levels up from this file)
+ROOT = str(Path(__file__).resolve().parents[2])
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
 
-import variables as gvar
-from util_classes import ColorLog
+# GLOBAL VARIABLES IMPORT
+from system.gen import gvars
+# CUSTOM COLORLOG CLASS
+from system.utils.util_classes import ColorLog
+
 log = ColorLog('_SCRIPT_', path='./logs/util_classes.txt')
 
+from uuid import UUID, uuid4
+from time import sleep
 from dataclasses import dataclass, field
 from typing import Callable, Dict, List
 from enum import Enum
@@ -97,13 +106,13 @@ class ScriptManager:
         
     #& CONTEXT MANAGER 1/2
     def __enter__(self):
-        if gvar.LOG_MSG:
+        if gvars.LOG_MSG:
             log.border()
             log.watchdog(' STARTING ')
         return self
     #& CONTEXT MANAGER 2/2
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if gvar.LOG_MSG:
+        if gvars.LOG_MSG:
             log.watchdog(' SHUTTING DOWN ')
             log.border()
         return False
@@ -150,7 +159,7 @@ class ScriptManager:
     def run_script(self, name: str):
         _ = [scr for scr in self.scripts if scr.name == name]
         if len(_) > 1:
-            if gvar.LOG_MSG: log.error(f'FOUND {len(_)} MATCHING {name}')
+            if gvars.LOG_MSG: log.error(f'FOUND {len(_)} MATCHING {name}')
             return #!EXIT!#
         else:
             _[0].run() # EXECUTE SCRIPT
@@ -158,7 +167,7 @@ class ScriptManager:
     def run_seq(self, name: str):
         _ = [seq for seq in self.sequences if seq.name == name]
         if 0 > len(_) > 1:
-            if gvar.LOG_MSG: log.error(f'FOUND {len(_)} MATCHING {name}')
+            if gvars.LOG_MSG: log.error(f'FOUND {len(_)} MATCHING {name}')
             return
         else:
             _[0].run()
@@ -168,7 +177,7 @@ class ScriptManager:
     def start_script(self, name: str, run_now=False):
         _ = [scr for scr in self.scripts if scr.name == name]
         if len(_) > 1:
-            if gvar.LOG_MSG: log.error(f'FOUND {len(_)} MATCHING {name}; CANCELLING')
+            if gvars.LOG_MSG: log.error(f'FOUND {len(_)} MATCHING {name}; CANCELLING')
             return #!EXIT!#
         else:
             if run_now: _[0].run() # EXECUTE SCRIPT
@@ -177,7 +186,7 @@ class ScriptManager:
     def start_sequence(self, name: str, run_now=False):
         _ = [seq for seq in self.sequences if seq.name == name]
         if len(_) > 1:
-            if gvar.LOG_MSG: log.error(f'FOUND {len(_)} MATCHING {name}; CANCELLING')
+            if gvars.LOG_MSG: log.error(f'FOUND {len(_)} MATCHING {name}; CANCELLING')
             return #!EXIT!#
         else:
             if run_now: _[0].run() # EXECUTE SEQUENCE

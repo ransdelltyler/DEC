@@ -25,9 +25,16 @@
 import os, sys, importlib.util
 # ^ END STANDARD MODULES ^ #
 
+import os, sys
+from pathlib import Path
+# set project root to DEEREATCHAIN (two levels up from this file)
+ROOT = str(Path(__file__).resolve().parents[2])
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+
 '''- CUSTOM MODULE IMPORTS -'''
-from util_classes import *
-from data_models import Equipment
+from system.utils.util_classes import *
+from system.utils.data_models import Equipment
 
 '''- 3RD PARTY MODULE IMPORTS -'''
 #* IMPORT BEAUTIFULSOUP FOR HTML PARSING
@@ -119,7 +126,7 @@ class JohnEquipDB:
         return keyvar_map
 
  #* QUERY THE DATABASE FOR _____ | SET FUZZY TO FALSE FOR EXACT MATCHES ONLY
-    def _query_database(self, target, fuzzy = True) -> Equipment:
+    def _query_database(self, target, fuzzy = True):
         pass
 
  #* ADD / UPDATE TIMESTAMP FOR LATEST UPDATE
@@ -139,7 +146,7 @@ class JohnEquipDB:
         pass
 
  #* CREATES AN EQUIPMENT OBJECT WHEN DB SELECTION MADE
-    def _build_equip(self) -> Equipment:
+    def _build_equip(self):
         pass
 
  

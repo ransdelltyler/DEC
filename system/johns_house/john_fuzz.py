@@ -1,10 +1,25 @@
 
-from keywords import FIXT_FUZZ_KEYS, CTRLR_FUZZ_KEYS, EQUIP_FUZZ_KEYS, GENERIC_KEYWORDS
-from data_models import EQCategory
+
+import os, sys
+from pathlib import Path
+# set project root to DEEREATCHAIN (two levels up from this file)
+ROOT = str(Path(__file__).resolve().parents[2])
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+
+# GLOBAL VARIABLES IMPORT
+from system.gen import gvars
+# CUSTOM COLORLOG CLASS
+from system.utils.util_classes import ColorLog
+log = ColorLog('JOHN_FUZZ')
+
+from system.utils.data_models import EQCategory
+
+from gen.keywords import FIXT_FUZZ_KEYS, CTRLR_FUZZ_KEYS, EQUIP_FUZZ_KEYS, GENERIC_KEYWORDS
+
 from rapidfuzz import process, fuzz
 
-from util_classes import ColorLog
-log = ColorLog('JOHN_FUZZ')
+
 
 # RETURN TEXT AS LOWERCASE WITH NO SPACES
 def norm_text(text: str):
