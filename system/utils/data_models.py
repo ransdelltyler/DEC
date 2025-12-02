@@ -8,7 +8,7 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 # GLOBAL VARIABLES IMPORT
-from system.gen import gvars
+from DEEREATCHAIN.system.gen import settings
 # CUSTOM COLORLOG CLASS
 from system.utils.util_classes import ColorLog
 
@@ -237,7 +237,6 @@ class Room(BaseID):
     enclosures : List[Enclosure] = field(default_factory=list)
     installs : List[Install] = field(default_factory=list)
 
-
 #& INSTALL
 @dataclass(slots=True, kw_only=True)
 class Install(BaseID):
@@ -285,7 +284,7 @@ class Ctrlr(Equipment):
 
 #& LED_Prod
 @dataclass(slots=True, kw_only=True)
-class LEDFixt(Equipment):
+class LEDProd(Equipment):
     model : str
     colors : str
     partnum : str
@@ -359,11 +358,10 @@ class LEDBranch(BaseID):
 #& HOLDS LED SEGMENT DATA FOR BUILDING INSTALL
 @dataclass(slots=True, kw_only=True)
 class LEDSeg(BaseID):
-    led_prod : 'LEDFixt'
+    led_prod : List[LEDProd] = field(default_factory=list)
     len_m : float
     
     #* RETURN CALCULATED WATTAGE OF SEGMENT
     @property
-    def cal_watts(self) -> float:
-        return self.len_m * self.led_prod.watt_m
-    
+    def cal_watts(self):
+        pass

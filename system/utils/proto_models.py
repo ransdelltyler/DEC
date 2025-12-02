@@ -7,7 +7,7 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 # GLOBAL VARIABLES IMPORT
-from system.gen import gvars
+from DEEREATCHAIN.system.gen import settings
 # CUSTOM COLORLOG CLASS
 from system.utils.util_classes import ColorLog
 
@@ -46,7 +46,7 @@ class Buffer512:
             else:
                 super().__setattr__(name, value) #!EXIT!#
         else:
-            if gvars.LOG_MSG: log.debug(f'SETATTR:{name} - LEN:{len(value)} FAILED.')
+            if settings.LOG_MSG: log.debug(f'SETATTR:{name} - LEN:{len(value)} FAILED.')
 
 
 @dataclass
@@ -82,12 +82,12 @@ class DMX_CTRLR:
         assert self.out is not None, log.success(f'UNIV:{self.univ} STARTED')
         self.out.multicast = False
         self.out.destination = destination # RECIEVER IP 
-        if gvars.LOG_MSG: log.success(f'DMX-CTRLR INIT')
+        if settings.LOG_MSG: log.success(f'DMX-CTRLR INIT')
         
         
     #& CONTEXT MANAGER 1/2
     def __enter__(self):
-        if gvars.LOG_MSG: 
+        if settings.LOG_MSG: 
             log.border()
             log.watchdog(' DMX-CTRLR STARTING ')
         return self
@@ -95,7 +95,7 @@ class DMX_CTRLR:
     #& CONTEXT MANAGER 2/2
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.sender.stop()
-        if gvars.LOG_MSG:
+        if settings.LOG_MSG:
             log.watchdog(f' DMX-CTRLR SHUTTING DOWN ')
             log.border()
         return False
@@ -106,7 +106,7 @@ class DMX_CTRLR:
         if univ is None: 
             if univ not in self.sender.get_active_outputs():
                 self.sender.activate_output(self.univ)
-                if gvars.LOG_MSG:
+                if settings.LOG_MSG:
                     log.success(f'ACTIVATED OUTPUT: {self.univ}')
                     log.debug(f'OUTPUTS ACTIVE: {self.sender.get_active_outputs()}')
         else:

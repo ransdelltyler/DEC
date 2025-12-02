@@ -18,7 +18,7 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 # GLOBAL VARIABLES IMPORT
-from system.gen import gvars
+from DEEREATCHAIN.system.gen import settings
 # CUSTOM COLORLOG CLASS
 from system.utils.util_classes import ColorLog
 
@@ -30,15 +30,17 @@ import numpy as np
 from util_classes import ColorLog
 from typing import Literal
 
-from DEEREATCHAIN.system.utils.data_models import ( GenDescr, CTRLType, Voltage, LEDProtocol,
-                          Shape, Diffusion, BendDir, EQProto, IPRating,
-                          FinishColor,Fuse,ConnDir,ConnType, WireSize,
-                          CableType, )
+from DEEREATCHAIN.system.utils.data_models import ( 
+                        GenDescr, CTRLType, Voltage, LEDProtocol,
+                        Shape, Diffusion, BendDir, EQProto, IPRating,
+                        FinishColor,Fuse,ConnDir,ConnType, WireSize,
+                        CableType, )
 
-from DEEREATCHAIN.system.utils.data_models import ( BaseID, Project, Anchor, Room, Install,
-                          Equipment, Enclosure, Ctrlr, LEDFixt,
-                          Terminal, Cable, Path3D, LEDBranch,
-                          LEDSeg, )
+from DEEREATCHAIN.system.utils.data_models import ( 
+                        BaseID, Project, Anchor, Room, Install,
+                        Equipment, Enclosure, Ctrlr, LEDProd,
+                        Terminal, Cable, Path3D, LEDBranch,
+                        LEDSeg, )
 
 
 #! ======================================================== !#
@@ -159,14 +161,21 @@ def to_enum(value, enum_cls):
 #& PROJECT FACTORY
 def new_project(*,
                 #? BASE ID PARAMS
-                name=None,
-                comments=None,
+                name: str,
+                comments = None,
                 #? PROJECT PARAMS
-                job_id=None,
-                address=None,
-                anchors=None,
+                job_id = None,
+                address = None,
+                anchors = None,
                 **kwargs,) -> Project:
     
+    if job_id is None:
+        job_id = str(job_id)
+        
+    if anchors is None:
+        anchors = []
+        
+        
     return Project(
                    #? BASE ID PARAMS
                    **base_id(name=name,comments=comments),
@@ -227,14 +236,14 @@ def new_install(*,
                 rated_watts = None,
                 branches = None,
                 **kwargs,) -> Install:
-    
+    # TODO : ADD ENCLOSURE MAP
     return Install(
                 #? BASE ID PARAMS
                 **base_id(name=name,comments=comments),
                 
                 #? INSTALL PARAMS
-                actual_watts= int(valid_num(actual_watts) or 0),
-                rated_watts= int(valid_num(rated_watts) or 0),
+                actual_watts = actual_watts if actual_watts is not None else 0,
+                rated_watts= rated_watts if rated_watts is not None else 0,
                 branches=branches or [],
                 )
 
@@ -421,10 +430,10 @@ def new_ledprod(*,
                 finish : FinishColor | None = None,
                 lumens_m : list[float] | None = None,
                 lumens_ft : list[float] | None = None,
-                **kwargs,) -> LEDFixt:
+                **kwargs,) -> LEDProd:
     
     
-    return LEDFixt(
+    return LEDProd(
                     #? BASE ID PARAMS
                     **base_id(name=name,comments=comments),
                     
@@ -548,7 +557,7 @@ def new_ledbranch(*,
                   comments=None,
                   
                   #? LED BRANCH PARAMS
-                  segments : list['LEDSeg'] | None=None,
+                  segments : list['LEDSeg'] | None = None,
                   **kwargs,) -> LEDBranch:
 
     return LEDBranch(
@@ -564,12 +573,12 @@ def new_ledbranch(*,
 #& LED SEGMENT FACTORY
 def new_ledsegment(*,
                    #? BASE ID PARAMS
-                   name :str | None=None,
-                   comments=None,
+                   name = None,
+                   comments = None,
 
                    #? LED SEGMENT PARAMS
-                   led_prod : LEDFixt, #!REQUIRED
-                   len_m    : float    | None=None,
+                   led_prod : list['LEDProd'] | None = None,
+                   len_m : float | None = None,
                    **kwargs,) -> LEDSeg:
 
     return LEDSeg(
@@ -577,7 +586,7 @@ def new_ledsegment(*,
                   **base_id(name=name,comments=comments),
 
                   #? LED SEGMENT PARAMS
-                  led_prod=led_prod, #!REQUIRED
+                  led_prod=led_prod or [], 
                   len_m=len_m or 0.0,
                   )
 

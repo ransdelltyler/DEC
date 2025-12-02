@@ -84,7 +84,7 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 # GLOBAL VARIABLES IMPORT
-from system.gen import gvars
+from DEEREATCHAIN.system.gen import settings
 # CUSTOM COLORLOG CLASS
 from system.utils.util_classes import ColorLog
 log = ColorLog('JOHN_KEYB')
@@ -96,7 +96,7 @@ import random
 #~ ======================================================== ~#
 class JohnNames:
     def __init__(self) -> None:
-        if gvars.LOG_MSG: log.info('STARTING JOHN-NAMES')
+        if settings.LOG_MSG: log.info('STARTING JOHN-NAMES')
 
     
     
@@ -106,7 +106,7 @@ class JohnNames:
     
     #& WITH CONTEXT MANAGER 2/2
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if gvars.LOG_MSG:
+        if settings.LOG_MSG:
             log.watchdog(f' DMX-CTRLR SHUTTING DOWN ')
             log.border()
         return False
@@ -117,7 +117,7 @@ class JohnNames:
         if name in NAME_BUCKET:
             return NAME_BUCKET.get(name)
         else:
-            if gvars.LOG_MSG: log.error(f'COULD NOT FIND: {name}')
+            if settings.LOG_MSG: log.error(f'COULD NOT FIND: {name}')
             return None
     
     #? RETURN A RANDOM WORD OF <SET> or DEFAULT
@@ -126,7 +126,7 @@ class JohnNames:
         if word_set:
             return random.choice(word_set)
         else:
-            if gvars.LOG_MSG: log.error(f'rand_word() - FAILED')
+            if settings.LOG_MSG: log.error(f'rand_word() - FAILED')
             return None
     
     # TODO: ADD DUPLICATE CHOICE CATCH

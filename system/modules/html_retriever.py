@@ -12,7 +12,7 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 # GLOBAL VARIABLES IMPORT
-from system.gen import gvars
+from DEEREATCHAIN.system.gen import settings
 # CUSTOM COLORLOG CLASS
 from system.utils.util_classes import ColorLog
 log = ColorLog('HTML_RETR')
@@ -49,12 +49,12 @@ class HTMLRetriever:
         self.headers = {'User-Agent': 'SimpleSpec1Shot/1.0 (contact: DeerEatChain@gmail.com)'}
         
         # CREATES REQUESTS SESSION FOR CHECKING ROBOTS.TXT
-        if gvars.LOG_MSG: log.info('Starting requests session for Robots.txt')
+        if settings.LOG_MSG: log.info('Starting requests session for Robots.txt')
         self.robot_session = requests.Session()
         self.robot_session.headers.update(self.headers)
         
         # SELENIUM FOR RETRIEVING FULL HTML W/ HEADLESS CHROME
-        if gvars.LOG_MSG: log.info('Starting Selenium')
+        if settings.LOG_MSG: log.info('Starting Selenium')
         
         options = Options()
         options.add_argument('--headless=new')
@@ -100,10 +100,10 @@ class HTMLRetriever:
         rp.read()
         
         if rp.can_fetch("*", target_url):
-            if gvars.LOG_MSG: log.success(f"Allowed to scrape : {target_url} as per robots.txt")
+            if settings.LOG_MSG: log.success(f"Allowed to scrape : {target_url} as per robots.txt")
             return True #!EXIT!
         else:
-            if gvars.LOG_MSG: log.error(f"Target URL: {target_url}, blocked by robots.txt")
+            if settings.LOG_MSG: log.error(f"Target URL: {target_url}, blocked by robots.txt")
             return False #!EXIT!
 
 
@@ -133,34 +133,34 @@ class HTMLRetriever:
 
             return BeautifulSoup(html, 'lxml') #!EXIT!
         else:
-            if gvars.LOG_MSG: log.critical(f'ROBOTS BLOCKED ACCESS') 
+            if settings.LOG_MSG: log.critical(f'ROBOTS BLOCKED ACCESS') 
             return #!EXIT!
 
     #* STORE THE RETURNED PAGE IN FILES
     def save_html(self, html, filename: str) -> None:
         with open (filename, 'w', encoding='utf-8') as f:
             f.write(html)
-        if gvars.LOG_MSG: log.info(f'WRITING FILE {filename}')
+        if settings.LOG_MSG: log.info(f'WRITING FILE {filename}')
 
     #* LOAD A SAVED HTML FILE
     def load_html(self, filename : str) -> str:
         with open (filename, 'r', encoding='utf-8') as f:
             html = f.read()
-            if gvars.LOG_MSG: log.info(f'OPENING FILE {filename}')
+            if settings.LOG_MSG: log.info(f'OPENING FILE {filename}')
             return html #!EXIT!
 
  
     #* SAVE SCREENSHOT OF THE PAGE
     def save_image(self, filename: str) -> None:
         if self.driver is None:
-            if gvars.LOG_MSG: log.warning('WebDriver not available. Cannot save screenshot.')
+            if settings.LOG_MSG: log.warning('WebDriver not available. Cannot save screenshot.')
             return #!EXIT!
         else:
             try:
                 self.driver.save_screenshot(f'{filename}.png')
-                if gvars.LOG_MSG: log.info(f'Saved screenshot: {filename}.png')
+                if settings.LOG_MSG: log.info(f'Saved screenshot: {filename}.png')
             except Exception as e:
-                if gvars.LOG_MSG: log.warning(f'Failed to save screenshot for {filename}: {e}')
+                if settings.LOG_MSG: log.warning(f'Failed to save screenshot for {filename}: {e}')
     
     
     

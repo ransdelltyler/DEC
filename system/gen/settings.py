@@ -1,4 +1,12 @@
 
+
+# GLOBAL LOG MESSAGES
+LOG_MSG = True
+
+
+
+
+
 #* ======================================================== *#
 #*                    FILE DESCRIPTION                   
 #* 
@@ -25,35 +33,65 @@
 import os
 root_path = os.getcwd()
 
+
+
 #* HOLDS LAST KNOWN-GOOD ROOT_PATH
 #TODO: - UPDATED BY  
 last_known_root = None
 
-
 SYS_PATHS = {
     'root' : root_path,
-    'settings' : '',
+    'settings' : [
+        ],
+    'alt_root' : [
 
+    ],
 }
 
 LIB_PATHS = {
-    'root_db' : '',
-    'excel_db' : '',
-    'datasheet_db' : '',
-    'html_db' : '',
-    'image_db' : '',
-    'model3D_db' : '',
-    'pdf_db' : '',
+    'root_db' : [
+
+    ],
+    'excel_db' : [
+
+    ],
+    'datasheet_db' : [
+
+    ],
+    'html_db' : [
+
+    ],
+    'image_db' : [
+
+    ],
+    'model3D_db' : [
+
+    ],
+    'pdf_db' : [
+
+    ],
     
 }
 
 USER_PATHS = {
-    'root_user': '',
-    'excel_user': '',
-    'image_user': '',
-    'model3D_user': '',
-    'pdf_user': '',
-    'url_user': '',
+    'root_user': [
+
+    ],
+    'excel_user': [
+
+    ],
+    'image_user': [
+
+    ],
+    'model3D_user': [
+
+    ],
+    'pdf_user': [
+
+    ],
+    'url_user': [
+
+    ],
 
 }
 

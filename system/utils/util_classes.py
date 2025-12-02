@@ -17,9 +17,7 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 # GLOBAL VARIABLES IMPORT
-from system.gen import gvars
-# CUSTOM COLORLOG CLASS
-from system.utils.util_classes import ColorLog
+from system.gen import settings
 
 
 

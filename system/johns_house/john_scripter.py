@@ -25,7 +25,7 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 # GLOBAL VARIABLES IMPORT
-from system.gen import gvars
+from DEEREATCHAIN.system.gen import settings
 # CUSTOM COLORLOG CLASS
 from system.utils.util_classes import ColorLog
 
@@ -106,13 +106,13 @@ class ScriptManager:
         
     #& CONTEXT MANAGER 1/2
     def __enter__(self):
-        if gvars.LOG_MSG:
+        if settings.LOG_MSG:
             log.border()
             log.watchdog(' STARTING ')
         return self
     #& CONTEXT MANAGER 2/2
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if gvars.LOG_MSG:
+        if settings.LOG_MSG:
             log.watchdog(' SHUTTING DOWN ')
             log.border()
         return False
@@ -159,7 +159,7 @@ class ScriptManager:
     def run_script(self, name: str):
         _ = [scr for scr in self.scripts if scr.name == name]
         if len(_) > 1:
-            if gvars.LOG_MSG: log.error(f'FOUND {len(_)} MATCHING {name}')
+            if settings.LOG_MSG: log.error(f'FOUND {len(_)} MATCHING {name}')
             return #!EXIT!#
         else:
             _[0].run() # EXECUTE SCRIPT
@@ -167,7 +167,7 @@ class ScriptManager:
     def run_seq(self, name: str):
         _ = [seq for seq in self.sequences if seq.name == name]
         if 0 > len(_) > 1:
-            if gvars.LOG_MSG: log.error(f'FOUND {len(_)} MATCHING {name}')
+            if settings.LOG_MSG: log.error(f'FOUND {len(_)} MATCHING {name}')
             return
         else:
             _[0].run()
@@ -177,7 +177,7 @@ class ScriptManager:
     def start_script(self, name: str, run_now=False):
         _ = [scr for scr in self.scripts if scr.name == name]
         if len(_) > 1:
-            if gvars.LOG_MSG: log.error(f'FOUND {len(_)} MATCHING {name}; CANCELLING')
+            if settings.LOG_MSG: log.error(f'FOUND {len(_)} MATCHING {name}; CANCELLING')
             return #!EXIT!#
         else:
             if run_now: _[0].run() # EXECUTE SCRIPT
@@ -186,7 +186,7 @@ class ScriptManager:
     def start_sequence(self, name: str, run_now=False):
         _ = [seq for seq in self.sequences if seq.name == name]
         if len(_) > 1:
-            if gvars.LOG_MSG: log.error(f'FOUND {len(_)} MATCHING {name}; CANCELLING')
+            if settings.LOG_MSG: log.error(f'FOUND {len(_)} MATCHING {name}; CANCELLING')
             return #!EXIT!#
         else:
             if run_now: _[0].run() # EXECUTE SEQUENCE
