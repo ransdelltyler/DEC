@@ -10,6 +10,7 @@
 
 
 from __future__ import annotations
+from enum import Enum
 import os, sys
 from pathlib import Path
 # set project root to DEEREATCHAIN (two levels up from this file)
@@ -23,7 +24,7 @@ from DEEREATCHAIN.system.gen import settings
 from system.utils.util_classes import ColorLog
 
 
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 import numpy as np
 
@@ -31,7 +32,7 @@ from system.utils.util_classes import ColorLog
 from typing import Literal
 
 from DEEREATCHAIN.system.utils.data_models import ( 
-                        GenDescr, CTRLType, Voltage, LEDProtocol,
+                        PSU, GenDescr, CTRLType, Voltage, LEDProtocol,
                         Shape, Diffusion, BendDir, EQProto, IPRating,
                         FinishColor,Fuse,ConnDir,ConnType, WireSize,
                         CableType, )
@@ -91,13 +92,13 @@ DEF_STR = {
 
 def base_id(*, name, comments):
     return {
-        'id' : uuid4(),
         'name' : name or DEF_STR['name'],
         'comments' : comments or [],
     }
 
 def equipment_base(*,
                    manuf = None,
+                   partnum = None,
                    vin = None,
                    vout = None,
                    fuse : Fuse | None = None,
@@ -110,8 +111,9 @@ def equipment_base(*,
                    ):
     return {
         'manuf' : manuf or DEF_STR['manuf'],
-        'vin' : int(vin) if vin is not None else 0,
-        'vout' : int(vout) if vout is not None else 0,
+        'partnum' : partnum or DEF_STR['pnum'],
+        'vin' : to_enum(vin, Voltage) if vin is not None else Voltage.UNKWN,
+        'vout' : to_enum(vout, Voltage) if vout is not None else Voltage.UNKWN,
         'fuse' : to_enum(fuse, Fuse.UNKWN),
         'l_mm' : l_mm or 0,
         'w_mm' : w_mm or 0,
@@ -135,8 +137,8 @@ def valid_num(value):
     raise ValueError("Must be >= 0")
 
 #* CATCHES STRINGS OR NONE PASSED TO ENUM PARAMETERS
-def to_enum(value, enum_cls):
-    if isinstance(value, enum_cls):
+def to_enum(value, enum_cls) -> Enum:
+    if isinstance(value, Enum):
         return value
     
     if isinstance(value, str):
@@ -351,7 +353,7 @@ def new_ctrlr(*,
               #? CONTROLLER PARAMS
               ip = None,
               subn_mask = None,
-              ctrl_type = None,
+              ctrl_type = CTRLType.UNKWN,
               outputs = None,
               **kwargs,) -> Ctrlr:
     
@@ -376,7 +378,7 @@ def new_ctrlr(*,
                  ip=ip or '0.0.0.0',
                  subn_mask=subn_mask or DEF_STR['subnet'],
                  outputs=outputs or [],
-                 ctrl_type= to_enum(ctrl_type, CTRLType),
+                 ctrl_type= ctrl_type,
                 )
 
 
@@ -408,24 +410,24 @@ def new_ledprod(*,
                 cutLen_in = None,
                 pixPitch_m = None,
                 sub_pns = None,
-                shape : Shape | None = None,
-                diffusion : Diffusion | None = None,
+                shape : Shape = Shape.UNKWN,
+                diffusion : Diffusion = Diffusion.UNKWN,
                 viewAngle = None,
-                bendDir : BendDir | None = None,
+                bendDir : BendDir = BendDir.UNKWN,
                 cri = None,
                 cct = None,
                 fixt_l_mm = None,
                 fixt_w_mm = None,
                 fixt_h_mm = None,
-                eqproto : EQProto | None = None,
+                eqproto : EQProto = EQProto.UNKWN,
                 wireCode = None,
                 url = None,
                 datasheet = None,
-                ul_list : GenDescr | None = None,
-                ul_recog : GenDescr | None = None,
+                ul_list : GenDescr = GenDescr.UNKWN,
+                ul_recog : GenDescr = GenDescr.UNKWN,
                 cert_url=None,
-                iprating : IPRating | None = None,
-                finish : FinishColor | None = None,
+                iprating : IPRating = IPRating.UNKWN,
+                finish : FinishColor = FinishColor.UNKWN,
                 lumens_m = None,
                 lumens_ft = None,
                 **kwargs,) -> LEDProd:
@@ -439,7 +441,7 @@ def new_ledprod(*,
                                 manuf = manuf,
                                 vin = vin,
                                 vout = vout,
-                                fuse = to_enum(fuse, Fuse),
+                                fuse = fuse,
                                 l_mm = l_mm,
                                 w_mm = w_mm,
                                 h_mm = h_mm,
@@ -460,28 +462,73 @@ def new_ledprod(*,
                     cutLen_in = cutLen_in or 0,
                     pixPitch_m =  pixPitch_m or 0,
                     sub_pns = sub_pns or [],
-                    shape = to_enum(shape, Shape),
-                    diffusion = to_enum(diffusion, Diffusion),
+                    shape = shape,
+                    diffusion = diffusion,
                     viewAngle = viewAngle or 0,
-                    bendDir = to_enum(bendDir, BendDir),
+                    bendDir = bendDir,
                     cri = cri or 0,
                     cct = cct or 0,
                     fixt_l_mm = fixt_l_mm or 0,
                     fixt_w_mm = fixt_w_mm or 0,
                     fixt_h_mm = fixt_h_mm or 0,
-                    eqproto = to_enum(eqproto, EQProto),
+                    eqproto = eqproto,
                     wireCode = wireCode or DEF_STR['wcode'],
                     url = url or DEF_STR['url'],
                     datasheet = datasheet  or DEF_STR['dsheet'],
-                    ul_list = to_enum(ul_list, GenDescr),
-                    ul_recog = to_enum(ul_recog, GenDescr),
+                    ul_list = ul_list,
+                    ul_recog = ul_recog,
                     cert_url = cert_url or DEF_STR['certurls'],
-                    iprating = to_enum(iprating, IPRating),
-                    finish = to_enum(finish, FinishColor),
-                    lumens_m = lumens_m or [],
-                    lumens_ft = lumens_ft or [],
+                    iprating = iprating,
+                    finish = finish,
+                    lumens_m = lumens_m or '',
+                    lumens_ft = lumens_ft or '',
                  
                  )
+    
+    
+#& POWER SUPPLY FACTORY
+def new_psu(*,
+            #? BASE ID PARAMS
+            name = None,
+            comments = None,
+            
+            #? EQUIPMENT PARAMS
+            manuf = None,
+            partnum = None,
+            vin = None,
+            vout = None,
+            fuse : Fuse = Fuse.UNKWN,
+            l_mm = None,
+            w_mm = None,
+            h_mm = None,
+            rated_watts = None,
+            actual_watts = None,
+            terminals = None,
+            #? PSU PARAMS
+            current_share : bool = False,
+            **kwargs,
+            ) -> PSU:
+    return PSU(
+                #? BASE ID PARAMS
+                **base_id(name=name,comments=comments),
+                
+                **equipment_base(
+                                manuf = manuf,
+                                partnum = partnum,
+                                vin = vin,
+                                vout = vout,
+                                fuse = fuse,
+                                l_mm = l_mm,
+                                w_mm = w_mm,
+                                h_mm = h_mm,
+                                rated_watts = rated_watts,
+                                actual_watts = actual_watts,
+                                terminals = terminals,
+                                ),
+                
+                #? PSU PARAMS
+                current_share = current_share if current_share is not None else False,
+                )
 
 
 #& TERMINAL FACTORY
@@ -491,8 +538,8 @@ def new_terminal(*,
                 comments = None,
                 
                 #? TERMINAL PARAMS
-                conn_dir = None,
-                conn_type = None,
+                conn_dir : ConnDir= ConnDir.UNKWN,
+                conn_type : ConnType = ConnType.UNKWN,
                 **kwargs,) -> Terminal:
 
     return  Terminal(
@@ -500,8 +547,8 @@ def new_terminal(*,
                     **base_id(name=name,comments=comments),
 
                     #? TERMINAL PARAMS
-                    conn_dir= to_enum(conn_dir, ConnDir),
-                    conn_type= to_enum(conn_type, ConnType),
+                    conn_dir= conn_dir,
+                    conn_type= conn_type,
                     )
 
 
@@ -513,7 +560,7 @@ def new_cable(*,
               
             #? CABLE PARAMS
             terminals : list['Terminal'] | None=None,
-            gauge : WireSize | None=None,
+            gauge : WireSize = WireSize.UNKWN,
             **kwargs,) -> Cable:
 
     return Cable(
@@ -522,7 +569,7 @@ def new_cable(*,
                 
                 #? CABLE PARAMS
                 terminals=terminals or [],
-                gauge= to_enum(gauge, WireSize)
+                gauge= gauge
 
                 )
 

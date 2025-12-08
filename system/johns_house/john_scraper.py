@@ -111,6 +111,8 @@ class JohnScraper:
  #?                   EXTERNAL FUNCTIONS                     ?#
  #? ======================================================== ?#
 
+    
+    #? FIND TYPE OF PRODUCT
     def find_type(self):
         if self.data:
             if 'strip light' in self.data['title']:
@@ -122,6 +124,8 @@ class JohnScraper:
             return 'UNKNOWN'
         return 'NO DATA'
 
+    
+    #? FIND EQUIVALENT PROTOCOL
     def find_EQProto(self):
         if self.data is not None:
             for _ in self.data['related_products']:
@@ -131,6 +135,18 @@ class JohnScraper:
                     return EQProto.DMX
         return EQProto.UNKWN
     
+    
+    #? FIND CONTROLLER TYPE
+    def find_ctrl_type(self):
+        if self.data is not None:
+            for _ in self.data['product_specs']:
+                if 'Pixel' or 'SPI' in _['name']:
+                    return CTRLType.PIXEL
+                if 'DMX' in _['name']:
+                    return CTRLType.DMX
+        return CTRLType.UNKWN
+    
+    #? UL LISTED
     def find_ullisted(self):
         if self.data is not None:
             rating = self.data['product_specs'].get('Rating', '').lower()
@@ -138,78 +154,170 @@ class JohnScraper:
                 return GenDescr.YES
         return GenDescr.NO
     
-    def find_cri(self):
+    #? FIND CRI OF PRODUCT
+    def find_cri(self) -> str:
         if self.data is not None:
             cri = self.data['product_specs'].get('CRI', 'Unknown CRI')
             return cri
         return 'DATA NOT SET'
-            
     
+    #? FIND SHAPE OF PRODUCT
+    def find_shape(self) -> Shape:
+        if self.data is not None:
+            shape = None
+            if shape is not None:
+                shape = shape.lower()
+                if 'round' in shape or 'dome' in shape:
+                    return Shape.DOMED
+                if 'square' in shape or 'flat' in shape:
+                    return Shape.SQUARE
+                if '360' in shape:
+                    return Shape.FLEX360
+        return Shape.UNKWN
+    
+    
+    #? FIND VALUE FOR KEY IN DICTIONARY LIST
+    def find_dict_val(self, key: str, datalist: list[dict]) -> str | None:
+        if self.data is not None:
+            for item in datalist:
+                if key in item:
+                    print(item[key])
+                    return item[key]
+        return None
+    
+    
+    #? CONVERT STR TO VOLTAGE ENUM
+    def volt_to_enum(self, volt_str: str) -> Voltage:
+        volt_str = volt_str.lower()
+        if '120' in volt_str:
+            return Voltage.V120
+        if '5' in volt_str:
+            return Voltage.V05
+        if '12' in volt_str:
+            return Voltage.V12
+        if '24' in volt_str:
+            return Voltage.V24
+        if '52' in volt_str or 'poe' in volt_str:
+            return Voltage.VPOE
+        return Voltage.UNKWN
+    
+    
+    #? FUZZY MATCH FIELDS
     def fuzz_match_fields(self):
         pass
     
     
-#    def build_led(self):
-#        if not self.data:
-#            if LOG_MSG: log.error('NO DATA TO BUILD LED PRODUCT FROM')
-#            return None
-#        else:
-#            new_prod = new_ledprod(
-#                name = self.data.get('title', 'Unknown LED Name')[0],
-#                manuf = self.data['product_specs'].get('manufacturer', 'Unknown Manufacturer')[0],
-#                vin = self.data['product_specs'].get('Input Voltage', 'Unknown Voltage')[0],
-#                fixt_l_mm = self.data['product_specs'].get('Length (Metric)', 'Unknown Length')[0],
-#                fixt_w_mm = self.data['product_specs'].get('Width (Metric)', 'Unknown Width')[0],
-#                fixt_h_mm = self.data['product_specs'].get('Height (Metric)', 'Unknown Height')[0],
-#                watt_ft = self.data['product_specs'].get('Power (Watts/ft)', 'Unknown Watt/ft')[0],
-#                watt_m = self.data['product_specs'].get('Power (Watts/m)', 'Unknown Watt/ft')[0],
-#                colors = self.data['product_specs'].get('Light Color', 'Unknown Colors')[0],
-#                model = self.data.get('model', ['Unknown Model'])[0], #TODO: FIX THIS
-#                partnum = self.data.get('part_number', ['Unknown Part Number'])[0], #TODO: FIX THIS
-#                url = self.data.get('url', 'No URL Provided')[0],
-#                m_roll = self.data['product_specs'].get('Power (Watts)', 'Unknown Meters/Roll')[0],
-#                price = self.data.get('price', [0.0])[0], # TODO: FIX THIS
-#                cutLen_in = self.data['product_specs'].get('Min. Cutting Increment (English)', 'Unknown Cut Length (in)')[0],
-#                cutLen_mm = self.data['product_specs'].get('Min. Cutting Increment (Metric)', 'Unknown Cut Length (mm)')[0],
-#                pixPitch_m = self.data['product_specs'].get('LED Density', 'Unknown LEDs per Meter')[0],
-#                sub_pns = self.data.get('related_products', []),
-#                shape = Shape.UNKWN, # TODO: FIX THIS
-#                diffusion = Diffusion.UNKWN, # TODO: FIX THIS
-#                viewAngle = self.data['product_specs'].get('Beam Angle', 'Unknown View Angle')[0],
-#                cri = self.find_cri(), 
-#                cct = self.data['product_specs'].get('CCT', 'Unknown CCT')[0], 
-#                eqproto = self.find_EQProto(),
-#                wireCode = '', # TODO: FIX THIS
-#                datasheet = self.data['documents'].get('**Spec', 'No Datasheet Provided')[0],
-#                ul_list = self.find_ullisted(), 
-#                ul_recog = GenDescr.NO, # TODO: FIX THIS
-#                cert_url = self.data['documents'].get('**Cert', 'No Certification URL Provided')[0], 
-#                ip_rating = self.data['product_specs'].get('IP Rating', 'Unknown IP Rating')[0], 
-#                finish = FinishColor.UNKWN, # TODO: FIX THIS
-#                lumens_m = self.data['product_specs'].get('Brightness', 'Unknown Lumens/m')[0], 
-#                lumens_ft = '' # TODO: FIX THIS
-#            )
-
+    #? CREATE LED PRODUCT OBJECT
+    def build_led(self):
+        if not self.data:
+            if LOG_MSG: log.error('NO DATA TO BUILD LED PRODUCT FROM')
+            return None
+        else:
+            specs = self.data.get('product_specs', {})
+            specs = specs[0] if isinstance(specs, list) and len(specs) > 0 else specs
+            log.info(f'Building LED product with specs: {specs}')
+            if len(specs) > 0:
+                return new_ledprod(
+                    name = self.data.get('title', 'Unknown LED Name')[0],
+                    manuf = self.find_dict_val('Manufacturer', specs) or 'Unknown Manufacturer',
+                    vin = self.volt_to_enum(self.find_dict_val('Input Voltage', specs) or ''),
+                    fixt_l_mm = self.find_dict_val('Length (Metric)', specs) or 'Unknown Length',
+                    fixt_w_mm = self.find_dict_val('Width (Metric)', specs) or 'Unknown Width',
+                    fixt_h_mm = self.find_dict_val('Height (Metric)', specs) or 'Unknown Height',
+                    watt_ft = self.find_dict_val('Power (Watts/ft)', specs) or 'Unknown Power (Watts/ft)',
+                    watt_m = self.find_dict_val('Power (Watts/m)', specs) or 'Unknown Power (Watts/m)',
+                    colors = self.find_dict_val('Light Color', specs) or 'Unknown Light Color',
+                    model = self.data.get('title', 'Unknown Model')[0].split('-',1)[0],
+                    partnum = self.data.get('part_number', ['Unknown Part Number'])[0],
+                    url = self.data.get('url', 'No URL Provided')[0],
+                    m_roll = self.find_dict_val('Meters/Roll', specs) or 'Unknown Meters/Roll',
+                    price = self.data.get('price', [0.0])[0], # TODO: FIX THIS
+                    cutLen_in = self.find_dict_val('Min. Cutting Increment (English)', specs) or 'Unknown Min. Cutting Increment (English)',
+                    cutLen_mm = self.find_dict_val('Min. Cutting Increment (Metric)', specs) or 'Unknown Min. Cutting Increment (Metric)',
+                    pixPitch_m = self.find_dict_val('LED Density', specs) or 'Unknown LED Density',
+                    sub_pns = self.data.get('related_products', []),
+                    shape = self.find_shape(),
+                    diffusion = Diffusion.UNKWN, # TODO: FIX THIS
+                    viewAngle = self.find_dict_val('Beam Angle', specs) or 'Unknown View Angle',
+                    cri = self.find_cri(), 
+                    cct = self.find_dict_val('CCT', specs) or 'Unknown CCT', 
+                    eqproto = self.find_EQProto(),
+                    wireCode = '', # TODO: FIX THIS
+                    datasheet = self.data['documents'].get('**Spec', 'No Datasheet Provided')[0],
+                    ul_list = self.find_ullisted(), 
+                    ul_recog = GenDescr.NO, # TODO: FIX THIS
+                    cert_url = self.data['documents'].get('**Cert', 'No Certification URL Provided')[0], 
+                    ip_rating = self.find_dict_val('IP Rating', specs) or 'Unknown IP Rating', 
+                    finish = FinishColor.UNKWN, # TODO: FIX THIS
+                    lumens_m = self.find_dict_val('Brightness', specs) or 'Unknown Brightness', 
+                    lumens_ft = '' # TODO: FIX THIS
+                )
     
+    #? CREATE POWER SUPPLY PRODUCT OBJECT
     def build_psu(self):
-        pass
-    
+        if not self.data:
+            if LOG_MSG: log.error('NO DATA TO BUILD POWER SUPPLY FROM')
+            return None
+        else:
+            specs = self.data.get('product_specs', {})
+            specs = specs[0] if isinstance(specs, list) and len(specs) > 0 else specs
+            log.info(f'Building power supply with specs: {specs}')
+            if specs and len(specs) > 0:
+                return new_psu(
+                    name = self.data.get('title', 'Unknown PSU Name')[0],
+                    manuf = self.find_dict_val('Manufacturer', specs) or 'Unknown Manufacturer',
+                    vin = self.volt_to_enum(self.find_dict_val('Input Voltage', specs) or ''),
+                    vout = self.volt_to_enum(self.find_dict_val('Output Voltage', specs) or ''), #TODO: FIX
+                    l_mm = self.find_dict_val('Length (Metric)', specs) or 'Unknown Length',
+                    w_mm = self.find_dict_val('Width (Metric)', specs) or 'Unknown Width',
+                    h_mm = self.find_dict_val('Height (Metric)', specs) or 'Unknown Height',
+                    rated_watts = self.find_dict_val('Power (Watts)', specs) or 'Unknown Rated Power (Watts)',
+                    power_w = self.find_dict_val('Max. Output Power (Watts)', specs) or 'Unknown Max. Output Power (Watts)',
+                    model = self.data.get('title', 'Unknown Model')[0].split('-',1)[0],
+                    partnum = self.data.get('part_number', ['Unknown Part Number'])[0],
+                    url = self.data.get('url', 'No URL Provided')[0],
+                    price = self.data.get('price', [0.0])[0], # TODO: FIX THIS
+                    documents = self.data.get('documents', {}),
+                )
+
+
+    #? CREATE CONTROLLER PRODUCT OBJECT
     def build_ctrlr(self):
-        pass
+        if not self.data:
+            if LOG_MSG: log.error('NO DATA TO BUILD CONTROLLER FROM')
+            return None
+        else:
+            specs = self.data.get('product_specs', {})
+            specs = specs[0] if isinstance(specs, list) and len(specs) > 0 else specs
+            log.info(f'Building controller with specs: {specs}')
+            if specs and len(specs) > 0:
+                return new_ctrlr(
+                    name = self.data.get('title', 'Unknown Controller Name')[0],
+                    manuf = self.find_dict_val('Manufacturer', specs) or 'Unknown Manufacturer',
+                    vin = self.volt_to_enum(self.find_dict_val('Input Voltage', specs) or ''),
+                    l_mm = self.find_dict_val('Length (Metric)', specs) or 'Unknown Length',
+                    w_mm = self.find_dict_val('Width (Metric)', specs) or 'Unknown Width',
+                    h_mm = self.find_dict_val('Height (Metric)', specs) or 'Unknown Height',
+                    rated_watts = self.find_dict_val('Power (Watts)', specs) or 'Unknown Rated Power (Watts)',
+                    ctrl_type = self.find_ctrl_type(),
+                    model = self.data.get('title', 'Unknown Model')[0].split('-',1)[0],
+                    partnum = self.data.get('part_number', ['Unknown Part Number'])[0],
+                    url = self.data.get('url', 'No URL Provided')[0],
+                    price = self.data.get('price', [0.0])[0], # TODO: FIX THIS
+                )
     
  #^ ======================================================== ^#
  #^                   TESTING / EXAMPLES                     ^#
  #^ ======================================================== ^#
 
 def test():
-    url = 'https://www.environmentallights.com/20910-pln-pf-rgb30k-10m.html'
+    url = 'https://www.environmentallights.com/20914-plnw-pf-rgb30k-10m.html'
     with JohnScraper(url) as scraper:
         if scraper.data is not None: 
-            if LOG_MSG: log.success(f'SCRAPED DATA:')
-            pprint(scraper.data)
+            if LOG_MSG: log.success(f'SCRAPED DATA:{scraper.data}')
+            pprint(scraper.build_led())
         else:
             if LOG_MSG: log.error(f'FAILED TO SCRAPE URL: {url}')
-            pprint(scraper.data)
 
 test()
  #! ======================================================== !#

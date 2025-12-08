@@ -69,7 +69,7 @@ class Voltage(Enum):
     V05 = 5
     V12 = 12
     V24 = 24
-    Vpoe = 52
+    VPOE = 52
     V120 = 120
 
 class LEDProtocol(Enum):
@@ -167,10 +167,10 @@ class FinishColor(Enum):
     CUSTOM = auto()
 
 class ConnDir(Enum):
+    UNKWN = auto()
     INPUT = auto()
     OUTPUT = auto()
     BI_DIR =  auto()
-    UNKWN = auto()
 
 class ConnType(Enum):
     UNKWN = auto()
@@ -252,6 +252,7 @@ class Install(BaseID):
 #& EQUIPMENT
 @dataclass(slots=True, kw_only=True)
 class Equipment(BaseID):
+    partnum : str
     manuf : str
     vin : int
     vout : int
@@ -322,7 +323,7 @@ class LEDProd(Equipment):
 @dataclass(slots=True,kw_only=True)
 class PSU(Equipment):
     current_share : bool
-    circuit : str
+    
 
 
 #& TERMINAL

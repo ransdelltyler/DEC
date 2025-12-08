@@ -67,6 +67,7 @@ class HTMLRetriever:
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
 
         self.driver = webdriver.Chrome(options=options)
+        log.info('driver created')
 
     #^ CONTEXT MANAGER FUNCTIONS
     #? RETURN SCRAPER INSTANCE FOR USE IN WITH STATEMENTS

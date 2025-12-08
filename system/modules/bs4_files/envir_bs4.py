@@ -112,7 +112,7 @@ DOMAIN_RULES = {
       ],
       
       "part_number": [
-         lambda soup: soup.select_one("#product-number-value").text,
+         lambda soup: soup.select_one("dd.product-number-value").text,
       ],
       
       "description": [
