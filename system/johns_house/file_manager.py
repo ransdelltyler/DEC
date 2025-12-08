@@ -14,8 +14,8 @@
  # TODO: Track current directory position
  # TODO: Change path pointer
  # TODO: Save paths to local file paths.txt
-# TODO: DEBUG MODE
-# TODO: 
+ # TODO: DEBUG MODE
+ # TODO: 
  # TODO:==================================================== ~#
 import os, sys
 from pathlib import Path
@@ -163,13 +163,14 @@ class FileManager:
         if settings.LOG_MSG: log.error(f'{filename} could not be found.')
         return None #!EXIT!
 
-            
+
     #? SAVE SELECTED <FILE OR FOLDER> TO NEW (<NAME> OR <LOCATION>)
     def save_sel_as(self, new_name: str, new_path: str | Path):
         src = self.sel_path
         dest = Path(new_path) if isinstance(new_path, str) else new_path
         new_path = dest / new_name
         src.rename(new_path)
+
 
     #? GET ALL VISIBLE SUB-DIRECTORIES
     def get_subdirs(self, start_dir='.'):

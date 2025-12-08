@@ -7,14 +7,14 @@
 import os, sys
 from pathlib import Path
 # set project root to DEEREATCHAIN (two levels up from this file)
-ROOT = str(Path(__file__).resolve().parents[2])
+ROOT = str(Path(__file__).resolve().parents[3])
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 # GLOBAL VARIABLES IMPORT
 from DEEREATCHAIN.system.gen import settings
 # CUSTOM COLORLOG CLASS
-from system.utils.util_classes import ColorLog
+from DEEREATCHAIN.system.utils.util_classes import ColorLog
 log = ColorLog('HTML_RETR')
 
 from time import sleep
@@ -84,19 +84,19 @@ class HTMLRetriever:
  #?               SETUP / PRE-SCRAPE FUNCTIONS.              ?#
  #? ======================================================== ?#
     
-    #* "WWW.HOST-DOMAIN.COM/1/2/3" -> HOST-DOMAIN
-    def _get_host(self, url: str) -> str:
+    #* "WWW.HOST-DOMAIN.COM/1/2/3" -> HOST-DOMAIN.COM
+    def get_host(self, url: str) -> str:
         return (urlparse(url).hostname or 'unkown_domain').replace("www.", "") #!EXIT!
     
     #* "WWW.HOST-DOMAIN.COM/1/2/3" -> "HTTP(S)://WWW.HOST-DOMAIN.COM"
-    def _get_origin(self, url: str) -> str:
+    def get_origin(self, url: str) -> str:
         p = urlparse(url)
         return f"{p.scheme}://{p.netloc}" #!EXIT!
     
     #* CHECK ROBOTS.TXT FOR SCRAPING PERMISSIONS
     def _check_robots(self, target_url : str) -> bool:
         rp = urllib.robotparser.RobotFileParser()
-        rp.set_url(self._get_origin(target_url))
+        rp.set_url(self.get_origin(target_url))
         rp.read()
         
         if rp.can_fetch("*", target_url):
@@ -120,10 +120,16 @@ class HTMLRetriever:
             # GET DOMAIN NAME FOR FOLDER
             full_host = str(urlparse(url).hostname).replace("www.","")
             folder = full_host.replace('.','_')
+            
             # CREATES FOLDER PATH(s)
             os.makedirs(folder, exist_ok=True)
             
-            filename = os.path.join(folder, self.driver.title)        
+            # CLEAN FILENAME FROM PAGE TITLE
+            filetitle = self.driver.title
+            filetitle = filetitle.replace(' ','_') + '.html'
+            filetitle = filetitle.replace('/','_').replace('\\','_')
+
+            filename = os.path.join('DEEREATCHAIN/system/', folder, filetitle)        
             
             if os.path.exists(filename):
                 html = self.load_html(filename)
@@ -138,7 +144,7 @@ class HTMLRetriever:
 
     #* STORE THE RETURNED PAGE IN FILES
     def save_html(self, html, filename: str) -> None:
-        with open (filename, 'w', encoding='utf-8') as f:
+        with open (filename, 'x', encoding='utf-8') as f:
             f.write(html)
         if settings.LOG_MSG: log.info(f'WRITING FILE {filename}')
 
@@ -148,7 +154,6 @@ class HTMLRetriever:
             html = f.read()
             if settings.LOG_MSG: log.info(f'OPENING FILE {filename}')
             return html #!EXIT!
-
  
     #* SAVE SCREENSHOT OF THE PAGE
     def save_image(self, filename: str) -> None:

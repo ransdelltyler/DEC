@@ -22,6 +22,7 @@
 
 
 '''- STANDARD MODULE IMPORTS -'''
+from pprint import pprint
 import os, sys, importlib.util
 # ^ END STANDARD MODULES ^ #
 
@@ -33,6 +34,8 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 '''- CUSTOM MODULE IMPORTS -'''
+from system.gen.settings import LOG_MSG
+from system.johns_house.john_scraper import JohnScraper
 from system.utils.util_classes import *
 from system.utils.data_models import Equipment
 
@@ -52,6 +55,8 @@ from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 # ^^^ 3RD PARTY MODULE IMPORTS ^^^ #
 
+from urllib.parse import urlparse
+
 #* - PRINT CURRENT WORKING DIR + SYS.PATH - #
 import sys, os
 print("Current Working Dir:", os.getcwd())
@@ -64,7 +69,7 @@ print("Sys Path:", sys.path)
  #~ ======================================================== ~#
 log = ColorLog('JOHN_EQUI', level=1)
 
-class JohnEquipDB:
+class EquipDB:
     def __init(self):
         # TODO: ADD DYNAMICALLY CREATED DICTIONARY OF:
         # TODO:  - WORKBOOKS
@@ -200,11 +205,25 @@ class JohnEquipDB:
 
 
  #* BASIC EQUIPMENT DATABASE FUNCTIONS
-    def add_equipm(self):
+    def add_equipm_man(self):
         pass
+    
+    def scrape_new_url(self, url:str):
+        with JohnScraper() as scraper:
+            scraper.url = 'https://www.environmentallights.com/19072-px-spi-v2.html'
+            
+            
+            if scraper.data is not None: 
+                if LOG_MSG: log.success(f'SCRAPED DATA: {scraper.data}')
+            else:
+                if LOG_MSG: log.error(f'FAILED TO SCRAPE URL: {url}')
+            
+
     
     def remove_equipm(self):
         pass
+    
+    
  #* SELECT EQUIPMENT ENTRY AND RETURNS EQUIPMENT OBJ.
     def use_equipm(self):
         pass

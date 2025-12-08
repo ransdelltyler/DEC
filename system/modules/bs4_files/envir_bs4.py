@@ -1,30 +1,45 @@
 
 #* ======================================================== *#
 #*  ENVIRONMENTALLIGHTS.COM | BEAUTIFULSOUP4 RULESET MODULE                   
-#* 
-#*
-#*
+'''
+BEAUTIFULSOUP4 RULESET MODULE FOR ENVIRIONMENTALLIGHTS.COM
+- DEFINES EXTRACTION RULES FOR HTMLRETRIEVER CLASS
+- USES bs4 TO PARSE HTML PAGES
+- FUNCTIONS:
+    - scrape_url(url:str) -> dict : Scrapes the given URL and returns a dictionary
+      = { 'title': str, 'description': str, 'image_url': str, 'url': str,
+          'product_info': List[str], 'product_specs': List[dict],
+          'related_products': List[dict], 'documents': List[dict] }
+'''
 #* ======================================================== *#
-# TODO:==================================================== ~#
-# TODO:              TODO LIST / DEVLOG                     ~#
-# TODO:==================================================== ~#
 
+
+
+import os, sys
+from pathlib import Path
+# set project root to DEEREATCHAIN (two levels up from this file)
+ROOT = str(Path(__file__).resolve().parents[4])
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
 import pprint
 
-from html_retriever import HTMLRetriever
-from util_classes import ColorLog
-from variables import LOG_MSG
+from DEEREATCHAIN.system.modules.html_retriever import HTMLRetriever
+from DEEREATCHAIN.system.utils.util_classes import ColorLog
+from DEEREATCHAIN.system.gen.settings import LOG_MSG
 log = ColorLog('ENVIR_BS4')
 
+
+
 #? ======================================================== ?#
-#?                    HELPER FUNCTIONS                      ?#
+#?                  INTERNAL FUNCTIONS                      ?#
 #? ======================================================== ?#
+
 #? RETURNS A LIST OF TEXT REPRESENTING LIST ITEMS
-def extract_list(selector):
+def _extract_list(selector):
     return lambda soup: [list_item.text for list_item in soup.select(selector)]
 
 #? RETURN A LIST OF { 'PARAM' : VALUE }
-def extract_specs(selector):
+def _extract_specs(selector):
    def extractor(soup):
       rows = soup.select(selector)
       output = []
@@ -47,7 +62,7 @@ def extract_specs(selector):
 
 
 #? RETURN A LIST OF RELATED PRODUCTS
-def extract_related(selector):
+def _extract_related(selector):
    def extractor(soup):
       items = soup.select(selector)
       output = []
@@ -71,7 +86,7 @@ def extract_related(selector):
 
 
 #? RETURN A LIST OF { DOCUMENT_NAME : URL_STRING }
-def extract_docs(selector):
+def _extract_docs(selector):
    def extractor(soup):
       docs = soup.select(selector)
       output = []
@@ -113,60 +128,32 @@ DOMAIN_RULES = {
          lambda soup: [p.get_text(strip=True) for p in soup.select("#product-feature-content p") if p.get_text(strip=True)],
          
          # Select list items specifically inside the "Product Features" ID
-         extract_list("#product-feature-content ul li"),
+         _extract_list("#product-feature-content ul li"),
       ],
 
       "product_specs": [
-         extract_specs("#product-specifications-content tbody tr")
+         _extract_specs("#product-specifications-content tbody tr")
       ],
 
       "related_products": [
-         extract_related("ol.product-items li.product-item")
+         _extract_related("ol.product-items li.product-item")
       ],
 
       "documents": [
-         extract_docs("ul.product-detail-download-list li a.download-document-link")
+         _extract_docs("ul.product-detail-download-list li a.download-document-link")
       ],
     }
 }
 
 
-def scrape_url(url):
-   with HTMLRetriever() as retriever:
-      soup = retriever.retrieve_url(url)
-      
-   if not soup: 
-      log.debug(f'FAILED TO LOAD PAGE: {url}')
-      return None #!EXIT!
-   
-   # TODO: DOMAIN SELECTION
-   domain = "environmentallights.com"
-   rules = DOMAIN_RULES[domain]
-   
-   result = {}
-   for field_name, extractor_list in rules.items():
-      if field_name == 'preprocess':
-         continue
-      
-      result[field_name] = []
-      for extractor in extractor_list:
-         #if LOG_MSG: log.watchdog(f'ATTEMPTING TO EXTRACT: {field_name}')
-         try:
-            result[field_name].append(extractor(soup))
-            #if LOG_MSG: log.debug(f'RESULT: {result[field_name]}')
-         except Exception as e:
-            if LOG_MSG: log.warning(f'EXTRACTOR FAILED ON: {field_name}:{e}')
-            result[field_name].append(None)
-   return result #!EXIT!
 
 
-#^ ======================================================== ^#
-#^                   TESTING / EXAMPLES                     ^#
-#^ ======================================================== ^#
 
-def test():
-   url = 'https://www.environmentallights.com/19072-px-spi-v2.html'
-   data = scrape_url(url)
-   pprint.pprint(data)
 
-#test()
+#* ======================================================== *#
+#*                   IMPLEMENTED INSIDE                     *#
+#* ======================================================== *#
+
+# TODO: TRANSFORM TO MULTIPLE DOMAIN RULESETS
+
+#* JOHN_SCRAPER
