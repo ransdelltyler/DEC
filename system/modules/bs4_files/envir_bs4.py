@@ -110,7 +110,11 @@ DOMAIN_RULES = {
       "title": [
          lambda soup: soup.select_one("meta[property='og:title']").get("content"),
       ],
-
+      
+      "part_number": [
+         lambda soup: soup.select_one("#product-number-value").text,
+      ],
+      
       "description": [
          lambda soup: soup.select_one("meta[name='description']").get("content"),
       ],

@@ -295,7 +295,6 @@ class LEDProd(Equipment):
     cutLen_mm : float
     cutLen_in : float
     pixPitch_m : int
-    tapeWidth_mm : int
     sub_pns : List[str]
     shape : Shape
     diffusion : Diffusion
@@ -316,8 +315,8 @@ class LEDProd(Equipment):
     cert_url : str
     iprating : IPRating
     finish : FinishColor
-    lumens_m : List[float] = field(default_factory=list)
-    lumens_ft : List[float] = field(default_factory=list)
+    lumens_m : str
+    lumens_ft : str
 
 #& POWER SUPPLY
 @dataclass(slots=True,kw_only=True)

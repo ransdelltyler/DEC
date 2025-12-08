@@ -27,7 +27,7 @@ from uuid import uuid4
 
 import numpy as np
 
-from util_classes import ColorLog
+from system.utils.util_classes import ColorLog
 from typing import Literal
 
 from DEEREATCHAIN.system.utils.data_models import ( 
@@ -403,12 +403,10 @@ def new_ledprod(*,
                 watt_m = None,
                 watt_ft = None,
                 m_roll = None,
-                led_m = None,
                 price = None,
                 cutLen_mm = None,
                 cutLen_in = None,
                 pixPitch_m = None,
-                tapeWidth_mm = None,
                 sub_pns = None,
                 shape : Shape | None = None,
                 diffusion : Diffusion | None = None,
@@ -428,8 +426,8 @@ def new_ledprod(*,
                 cert_url=None,
                 iprating : IPRating | None = None,
                 finish : FinishColor | None = None,
-                lumens_m : list[float] | None = None,
-                lumens_ft : list[float] | None = None,
+                lumens_m = None,
+                lumens_ft = None,
                 **kwargs,) -> LEDProd:
     
     
@@ -461,7 +459,6 @@ def new_ledprod(*,
                     cutLen_mm = cutLen_mm or 0,
                     cutLen_in = cutLen_in or 0,
                     pixPitch_m =  pixPitch_m or 0,
-                    tapeWidth_mm = tapeWidth_mm or 0,
                     sub_pns = sub_pns or [],
                     shape = to_enum(shape, Shape),
                     diffusion = to_enum(diffusion, Diffusion),

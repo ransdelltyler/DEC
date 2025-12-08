@@ -35,7 +35,7 @@ if ROOT not in sys.path:
 
 '''- CUSTOM MODULE IMPORTS -'''
 from system.gen.settings import LOG_MSG
-from system.johns_house.john_scraper import JohnScraper
+from john_scraper import JohnScraper
 from system.utils.util_classes import *
 from system.utils.data_models import Equipment
 
@@ -64,9 +64,9 @@ print("Sys Path:", sys.path)
 
 
 
- #~ ======================================================== ~#
- #~                    CLASS DEFINITION                      ~#
- #~ ======================================================== ~#
+#~ ======================================================== ~#
+#~                    CLASS DEFINITION                      ~#
+#~ ======================================================== ~#
 log = ColorLog('JOHN_EQUI', level=1)
 
 class EquipDB:
@@ -79,11 +79,11 @@ class EquipDB:
         pass
 
 
- #? ======================================================== ?#
- #?                    HELPER FUNCTIONS                      ?#
- #? ======================================================== ?#
+#? ======================================================== ?#
+#?                    HELPER FUNCTIONS                      ?#
+#? ======================================================== ?#
  
- #* SAFELY LOAD WORKBOOK
+#* SAFELY LOAD WORKBOOK
     def _load_workbook_safe(self, path : str) -> Workbook | None:
         try:
             wb = load_workbook(path, keep_vba=True)
@@ -98,7 +98,7 @@ class EquipDB:
             log.critical(f" ERROR loading workbook '{path}': {e}")
             return None
 
- #* SAFELY GET SHEETS
+#* SAFELY GET SHEETS
     def _safe_get_sheet(self, wb : Workbook, sheet_name : str):
         all_found = True
         if sheet_name not in wb.sheetnames:
@@ -108,7 +108,7 @@ class EquipDB:
         if all_found : log.success(f" Found All Sheets")
         return wb[sheet_name]
 
- #* FINDS AND RETURNS A MAP OF LOWER CASE COLUMN {NAME : INDEX}
+#* FINDS AND RETURNS A MAP OF LOWER CASE COLUMN {NAME : INDEX}
     def _build_column_map(self, ws : Worksheet):
         return {
             str(cell.value).strip().lower():cell.column
@@ -117,7 +117,7 @@ class EquipDB:
             if cell.value
         }
 
- #* BUILD AND RETURN A MAP OF MATCHED {KEYWORD VARIABLE : COLUMN INDEX}
+#* BUILD AND RETURN A MAP OF MATCHED {KEYWORD VARIABLE : COLUMN INDEX}
     def _build_keyvar_map(self, ws : Worksheet, keyword_dict : dict):
         col_map = self._build_column_map(ws)
         keyvar_map = {}
@@ -130,27 +130,27 @@ class EquipDB:
         log.success(f" All Headers in Sheet: '{ws.title}' were found!")
         return keyvar_map
 
- #* QUERY THE DATABASE FOR _____ | SET FUZZY TO FALSE FOR EXACT MATCHES ONLY
+#* QUERY THE DATABASE FOR _____ | SET FUZZY TO FALSE FOR EXACT MATCHES ONLY
     def _query_database(self, target, fuzzy = True):
         pass
 
- #* ADD / UPDATE TIMESTAMP FOR LATEST UPDATE
+#* ADD / UPDATE TIMESTAMP FOR LATEST UPDATE
     def _timestamp_row(self):
         pass
 
- #* LOOK AT TIMESTAMPS AND RECCOMMEND UPDATES
+#* LOOK AT TIMESTAMPS AND RECCOMMEND UPDATES
     def _suggest_updates(self):
         pass
 
- #* CHECK CERTIFICATION STATUSES
+#* CHECK CERTIFICATION STATUSES
     def _run_cert_checks(self):
         pass
 
- #* QUICKLY CHECKS FOR EXISTING URL IN DB
+#* QUICKLY CHECKS FOR EXISTING URL IN DB
     def _quickcheck(self):
         pass
 
- #* CREATES AN EQUIPMENT OBJECT WHEN DB SELECTION MADE
+#* CREATES AN EQUIPMENT OBJECT WHEN DB SELECTION MADE
     def _build_equip(self):
         pass
 
@@ -209,10 +209,9 @@ class EquipDB:
         pass
     
     def scrape_new_url(self, url:str):
-        with JohnScraper() as scraper:
-            scraper.url = 'https://www.environmentallights.com/19072-px-spi-v2.html'
-            
-            
+        
+        url = 'https://www.environmentallights.com/19072-px-spi-v2.html'
+        with JohnScraper(url) as scraper:
             if scraper.data is not None: 
                 if LOG_MSG: log.success(f'SCRAPED DATA: {scraper.data}')
             else:
