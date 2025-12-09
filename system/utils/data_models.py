@@ -218,6 +218,7 @@ class BaseID:
 #? ======================================================== ?#
 #?                  ABSTRACT PROJECT DATA                   ?#
 #? ======================================================== ?#
+#! TODO : MOVE TO DESIGN MODELS.PY
 #& PROJECT
 @dataclass(slots=True, kw_only=True)
 class Project(BaseID):
@@ -307,7 +308,6 @@ class LEDProd(Equipment):
     fixt_w_mm : float
     fixt_h_mm : float
     eqproto : EQProto
-    
     wireCode : str
     url : str
     datasheet : str
@@ -318,7 +318,8 @@ class LEDProd(Equipment):
     finish : FinishColor
     lumens_m : str
     lumens_ft : str
-
+    # TODO: LINKABLE UP-TO LENGTH
+    
 #& POWER SUPPLY
 @dataclass(slots=True,kw_only=True)
 class PSU(Equipment):

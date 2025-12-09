@@ -147,17 +147,17 @@ class JohnScraper:
         return CTRLType.UNKWN
     
     #? UL LISTED
-    def find_ullisted(self):
+    def find_ullisted(self, specs) -> GenDescr:
         if self.data is not None:
-            rating = self.data['product_specs'].get('Rating', '').lower()
-            if 'ul' in rating:
+            rating = self.find_dict_val('Rating', specs) or ''
+            if 'ul' in rating.lower():
                 return GenDescr.YES
         return GenDescr.NO
     
     #? FIND CRI OF PRODUCT
-    def find_cri(self) -> str:
+    def find_cri(self, specs) -> str:
         if self.data is not None:
-            cri = self.data['product_specs'].get('CRI', 'Unknown CRI')
+            cri = self.find_dict_val('CRI', specs) or ''
             return cri
         return 'DATA NOT SET'
     
@@ -184,6 +184,7 @@ class JohnScraper:
                     print(item[key])
                     return item[key]
         return None
+    
     
     
     #? CONVERT STR TO VOLTAGE ENUM
@@ -228,7 +229,7 @@ class JohnScraper:
                     watt_m = self.find_dict_val('Power (Watts/m)', specs) or 'Unknown Power (Watts/m)',
                     colors = self.find_dict_val('Light Color', specs) or 'Unknown Light Color',
                     model = self.data.get('title', 'Unknown Model')[0].split('-',1)[0],
-                    partnum = self.data.get('part_number', ['Unknown Part Number'])[0],
+                    partnum = self.data.get('part_number', 'Unknown Part Number')[0],
                     url = self.data.get('url', 'No URL Provided')[0],
                     m_roll = self.find_dict_val('Meters/Roll', specs) or 'Unknown Meters/Roll',
                     price = self.data.get('price', [0.0])[0], # TODO: FIX THIS
@@ -239,14 +240,14 @@ class JohnScraper:
                     shape = self.find_shape(),
                     diffusion = Diffusion.UNKWN, # TODO: FIX THIS
                     viewAngle = self.find_dict_val('Beam Angle', specs) or 'Unknown View Angle',
-                    cri = self.find_cri(), 
+                    cri = self.find_cri(specs), 
                     cct = self.find_dict_val('CCT', specs) or 'Unknown CCT', 
                     eqproto = self.find_EQProto(),
                     wireCode = '', # TODO: FIX THIS
-                    datasheet = self.data['documents'].get('**Spec', 'No Datasheet Provided')[0],
-                    ul_list = self.find_ullisted(), 
+                    datasheet = self.find_dict_val('**Datasheet', self.data.get('documents', {})) or 'No Datasheet Provided',
+                    ul_list = self.find_ullisted(specs), 
                     ul_recog = GenDescr.NO, # TODO: FIX THIS
-                    cert_url = self.data['documents'].get('**Cert', 'No Certification URL Provided')[0], 
+                    cert_url = self.find_dict_val('**Cert', self.data.get('documents', {})) or 'No Certification URL Provided',
                     ip_rating = self.find_dict_val('IP Rating', specs) or 'Unknown IP Rating', 
                     finish = FinishColor.UNKWN, # TODO: FIX THIS
                     lumens_m = self.find_dict_val('Brightness', specs) or 'Unknown Brightness', 
@@ -314,12 +315,17 @@ def test():
     url = 'https://www.environmentallights.com/20914-plnw-pf-rgb30k-10m.html'
     with JohnScraper(url) as scraper:
         if scraper.data is not None: 
-            if LOG_MSG: log.success(f'SCRAPED DATA:{scraper.data}')
-            pprint(scraper.build_led())
+            url_type = scraper.find_type()
+            if url_type == 'LED':
+                pprint(scraper.build_led())
+            elif url_type == 'POWER SUPPLY':
+                pprint(scraper.build_psu())
+            elif url_type == 'CONTROLLER':
+                pprint(scraper.build_ctrlr())
         else:
             if LOG_MSG: log.error(f'FAILED TO SCRAPE URL: {url}')
 
-test()
+#test()
  #! ======================================================== !#
  #!                       MAIN BLOCK                         !#
  #! ======================================================== !#

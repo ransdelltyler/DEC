@@ -50,41 +50,6 @@ from DEEREATCHAIN.system.utils.data_models import (
 
 log = ColorLog('DATA_FACT',level=1)
 
-DEF_STR = {
-    #^ BASE ID
-    'name'      : '!NAME!',
-    
-    #^ EQUIPMENT
-    'manuf'     : '!MANUFACTURER!',
-
-    #^ CONTROLLER
-    'ip'        : '!0.0.0.0!',
-    'subnet'    : '!255.0.0.0!',
-    
-    #^LED FIXTURE
-    'model'     : '!MODEL!',
-    'colors'    : '!LED-COLORS!',
-    'pnum'      : '!PART-NUM!',
-    'subpns'    : '!SUB-PNS!',
-    'shape'     : '!SHAPE!',
-    'diffu'     : '!DIFFUSSION!',
-    'bendd'     : '!BEND-DIR!',
-    'proto'     : '!PROTOCOL!',
-    'wcode'     : '!WIRE-CODE!',
-    'dsheet'    : '!DATASHEET!',
-    'url'       : '!URLS!',
-    'certurls'  : '!CERT-URL!',
-    'iprating'  : '!IP-RATING!',
-    'finishc'   : '!FINISH-COLOR!',
-
-    #^ JOB FACTORY
-    'jobid'     : '!JOB-ID!',
-    'jobaddr'   : '!JOB-ADDRESS!',
-    
-    #^ ANCHOR FACTORY
-    'anchor'    : '!ANCHOR!'
-}
-
 
 #? ======================================================== ?#
 #?                    HELPER FUNCTIONS                      ?#
@@ -92,7 +57,7 @@ DEF_STR = {
 
 def base_id(*, name, comments):
     return {
-        'name' : name or DEF_STR['name'],
+        'name' : name or '',
         'comments' : comments or [],
     }
 
@@ -110,8 +75,8 @@ def equipment_base(*,
                    terminals = None,
                    ):
     return {
-        'manuf' : manuf or DEF_STR['manuf'],
-        'partnum' : partnum or DEF_STR['pnum'],
+        'manuf' : manuf,
+        'partnum' : partnum,
         'vin' : to_enum(vin, Voltage) if vin is not None else Voltage.UNKWN,
         'vout' : to_enum(vout, Voltage) if vout is not None else Voltage.UNKWN,
         'fuse' : to_enum(fuse, Fuse.UNKWN),
@@ -167,7 +132,7 @@ def new_project(*,
                 comments = None,
                 #? PROJECT PARAMS
                 job_id = None,
-                address = None,
+                address : str,
                 anchors = None,
                 **kwargs,) -> Project:
     
@@ -182,7 +147,7 @@ def new_project(*,
                    #? BASE ID PARAMS
                    **base_id(name=name,comments=comments),
                    #? PROJECT PARAMS
-                   address = address or DEF_STR['jobaddr'],
+                   address = address,
                    anchors = anchors or [],
                    )
 
@@ -341,6 +306,7 @@ def new_ctrlr(*,
               comments = None,
               #? EQUIPMENT PARAMS
               manuf = None,
+              partnum = None,
               vin = None,
               vout = None,
               fuse : Fuse | None = None,
@@ -363,6 +329,7 @@ def new_ctrlr(*,
                  
                  **equipment_base(
                                 manuf = manuf,
+                                partnum = partnum,
                                 vin = vin,
                                 vout = vout,
                                 fuse = fuse,
@@ -376,7 +343,7 @@ def new_ctrlr(*,
                  
                  #? CONTROLLER PARAMS
                  ip=ip or '0.0.0.0',
-                 subn_mask=subn_mask or DEF_STR['subnet'],
+                 subn_mask=subn_mask or '',
                  outputs=outputs or [],
                  ctrl_type= ctrl_type,
                 )
@@ -398,10 +365,10 @@ def new_ledprod(*,
                 rated_watts = None,
                 actual_watts = None,
                 terminals = None,            
+                partnum = None,
                 #? LED PRODUCT PARAMS
                 model = None,
                 colors = None,
-                partnum = None,
                 watt_m = None,
                 watt_ft = None,
                 m_roll = None,
@@ -448,12 +415,12 @@ def new_ledprod(*,
                                 rated_watts = rated_watts,
                                 actual_watts = actual_watts,
                                 terminals = terminals,
+                                partnum = partnum,
                                 ),
 
                     #? LED FIXTURE PARAMS
-                    model = model or DEF_STR['model'],
-                    colors = colors or DEF_STR['colors'],
-                    partnum = partnum or DEF_STR['pnum'],
+                    model = model or '',
+                    colors = colors or '',
                     watt_m = watt_m or 0,
                     watt_ft = watt_ft or 0,
                     m_roll = m_roll or 0,
@@ -472,12 +439,12 @@ def new_ledprod(*,
                     fixt_w_mm = fixt_w_mm or 0,
                     fixt_h_mm = fixt_h_mm or 0,
                     eqproto = eqproto,
-                    wireCode = wireCode or DEF_STR['wcode'],
-                    url = url or DEF_STR['url'],
-                    datasheet = datasheet  or DEF_STR['dsheet'],
+                    wireCode = wireCode or '',
+                    url = url or '',
+                    datasheet = datasheet or '',
                     ul_list = ul_list,
                     ul_recog = ul_recog,
-                    cert_url = cert_url or DEF_STR['certurls'],
+                    cert_url = cert_url or '',
                     iprating = iprating,
                     finish = finish,
                     lumens_m = lumens_m or '',
