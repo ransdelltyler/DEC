@@ -142,7 +142,7 @@ class JohnScraper:
     #? FIND TYPE OF PRODUCT
     def find_type(self):
         if self.data:
-            if 'strip light' in self.data['title']:
+            if 'strip light' or 'reel' in self.data['title']:
                 return 'LED'
             if 'power supply' in self.data['title']:
                 return 'POWER SUPPLY'
