@@ -8,17 +8,16 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 # GLOBAL VARIABLES IMPORT
-from DEEREATCHAIN.system.gen import settings
+from system.gen import settings
 # CUSTOM COLORLOG CLASS
 from system.utils.util_classes import ColorLog
 
 
 from dataclasses import dataclass, field
 from uuid import UUID, uuid4
-from typing import Callable, Dict, List
+from typing import List
 
-# FOR np.ndarray (Vectors)
-import numpy as np
+
 
 
 
@@ -36,12 +35,10 @@ def convert_len(val:float, unit_in:str, unit_out:str) -> float:
     return val * (adapter[unit_in]/adapter[unit_out])
 
 
-
-
-from enum import Enum, auto
 #^ ======================================================== ^#
 #^                    DATACLASS ENUMS                       ^#
 #^ ======================================================== ^#
+from enum import Enum, auto
 class EQCategory(Enum):
     UNKWN = 'UNKWN'
     GENERIC = 'GENERIC'
@@ -202,7 +199,6 @@ class CableType(Enum):
 
 
 
-#TODO: FIX NON DEFAULTED PARAMS THAT COULD BE NONE
 #? ======================================================== ?#
 #?                    ROOT ID DATACLASS                     ?#
 #? ======================================================== ?#
@@ -214,41 +210,8 @@ class BaseID:
     comments: List[str] = field(default_factory=list)
 
 
- 
 #? ======================================================== ?#
-#?                  ABSTRACT PROJECT DATA                   ?#
-#? ======================================================== ?#
-#! TODO : MOVE TO DESIGN MODELS.PY
-#& PROJECT
-@dataclass(slots=True, kw_only=True)
-class Project(BaseID):
-    address : str
-    anchors : List[Anchor] = field(default_factory=list)
-
-
-#& ANCHOR
-@dataclass(slots=True, kw_only=True)
-class Anchor(BaseID):
-    rooms : List[Room] = field(default_factory=list)
-
-
-#& ROOM
-@dataclass(slots=True, kw_only=True)
-class Room(BaseID):
-    enclosures : List[Enclosure] = field(default_factory=list)
-    installs : List[Install] = field(default_factory=list)
-
-#& INSTALL
-@dataclass(slots=True, kw_only=True)
-class Install(BaseID):
-    rated_watts : int
-    actual_watts : int
-    branches : List[LEDSeg] = field(default_factory=list)
-
-
-
-#? ======================================================== ?#
-#?                  EQUIPMENT AND DEVICES                   ?#
+#?                  EQUIPMENT SCRAPE OBJS                   ?#
 #? ======================================================== ?#
 #& EQUIPMENT
 @dataclass(slots=True, kw_only=True)
@@ -325,44 +288,14 @@ class LEDProd(Equipment):
 class PSU(Equipment):
     current_share : bool
     
-
+#& ACCESSORY
+@dataclass(slots=True, kw_only=True)
+class Accessory(Equipment):
+    acc_type : str
+    spec_url : str
 
 #& TERMINAL
 @dataclass(slots=True, kw_only=True)
 class Terminal(BaseID): 
     conn_dir : ConnDir
     conn_type : ConnType
-
-
-#& CABLE
-@dataclass(slots=True, kw_only=True)
-class Cable(BaseID):
-    terminals : List[Terminal] = field(default_factory=list)
-    gauge : WireSize
-
-
-#& 3D PATH
-@dataclass (slots=True, kw_only=True)
-class Path3D(BaseID):
-    geometry : List[np.ndarray] = field(default_factory=list)
-
-
-
-#? ======================================================= ?#
-#?                     FIXTURE ABSTRACTS                   ?#
-#? ======================================================= ?#
-#& LED BRANCH (HOLDS MULTIPLE SEGMENTS) (HELD BY CONTROLLERS)
-@dataclass(slots=True, kw_only=True)
-class LEDBranch(BaseID):
-    segments : List[LEDSeg] = field(default_factory=list)
-
-#& HOLDS LED SEGMENT DATA FOR BUILDING INSTALL
-@dataclass(slots=True, kw_only=True)
-class LEDSeg(BaseID):
-    led_prod : List[LEDProd] = field(default_factory=list)
-    len_m : float
-    
-    #* RETURN CALCULATED WATTAGE OF SEGMENT
-    @property
-    def cal_watts(self):
-        pass

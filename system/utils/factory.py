@@ -19,7 +19,7 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 # GLOBAL VARIABLES IMPORT
-from DEEREATCHAIN.system.gen import settings
+from system.gen import settings
 # CUSTOM COLORLOG CLASS
 from system.utils.util_classes import ColorLog
 
@@ -31,18 +31,22 @@ import numpy as np
 from system.utils.util_classes import ColorLog
 from typing import Literal
 
-from DEEREATCHAIN.system.utils.data_models import ( 
+from system.utils.data_models import ( 
                         PSU, GenDescr, CTRLType, Voltage, LEDProtocol,
                         Shape, Diffusion, BendDir, EQProto, IPRating,
                         FinishColor,Fuse,ConnDir,ConnType, WireSize,
                         CableType, )
 
-from DEEREATCHAIN.system.utils.data_models import ( 
-                        BaseID, Project, Anchor, Room, Install,
+from system.utils.data_models import ( 
+                        BaseID, 
                         Equipment, Enclosure, Ctrlr, LEDProd,
-                        Terminal, Cable, Path3D, LEDBranch,
-                        LEDSeg, )
+                        )
 
+from system.utils.design_models import ( 
+                        Fixture, Controller, PowerSupply,
+                        Project, Anchor, Room, Install,
+                        Terminal, Cable, Path3D, LEDBranch,
+                        )
 
 #! ======================================================== !#
 #!                   DEFAULTS / VARIABLES                   !#
@@ -568,7 +572,7 @@ def new_ledbranch(*,
                   comments=None,
                   
                   #? LED BRANCH PARAMS
-                  segments : list['LEDSeg'] | None = None,
+                  segments : list['Fixture'] | None = None,
                   **kwargs,) -> LEDBranch:
 
     return LEDBranch(
@@ -581,25 +585,6 @@ def new_ledbranch(*,
                     )
 
 
-#& LED SEGMENT FACTORY
-def new_ledsegment(*,
-                   #? BASE ID PARAMS
-                   name = None,
-                   comments = None,
-
-                   #? LED SEGMENT PARAMS
-                   led_prod : list['LEDProd'] | None = None,
-                   len_m : float | None = None,
-                   **kwargs,) -> LEDSeg:
-
-    return LEDSeg(
-                  #? BASE ID PARAMS
-                  **base_id(name=name,comments=comments),
-
-                  #? LED SEGMENT PARAMS
-                  led_prod=led_prod or [], 
-                  len_m=len_m or 0.0,
-                  )
 
 
 

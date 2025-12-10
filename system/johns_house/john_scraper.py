@@ -3,12 +3,36 @@
  #* ======================================================== *#
  #*                    FILE DESCRIPTION                   
 '''
-Docstring for DEEREATCHAIN.system.johns_house.john_scraper
-
+    SYSTEM SCRAPER MODULE
+    - USES BEAUTIFULSOUP TO SCRAPE HTML PAGES
+    - USES DOMAIN RULES TO EXTRACT DATA FIELDS
+    - FUNCTIONS:
+        - __init__(url: str) : Initialize scraper and scrape URL
+        - get_host(url: str) : Extract host domain from URL
+        - scrape_url(url: str) : Scrape URL using domain rules
+        - find_type() : Determine type of product from scraped data
+        - find_EQProto() : Find equivalent protocol from scraped data
+        - find_ctrl_type() : Find controller type from scraped data
+        - find_ullisted(specs) : Determine if product is UL listed
+        - find_cri(specs) : Find CRI value from scraped data
+        - find_shape() : Determine shape of product from scraped data
+        - find_dict_val(key: str, datalist: list[dict]) : Find value for key in list of dictionaries
+        - volt_to_enum(volt_str: str) : Convert voltage string to Voltage enum
+        - fuzz_match_fields() : Fuzzy match fields (placeholder)
+        - build_led() : Create LED product object from scraped data
+        - build_psu() : Create Power Supply product object from scraped data
+        - build_ctrlr() : Create Controller product object from scraped data
+    - DEPENDENCIES:
+        - beautifulsoup4
+        - openpyxl
+        - system.modules.html_retriever
+        - system.utils.data_models
+        - system.utils.factory
 
 
 '''
- #* ======================================================== *#
+#*             IMPLEMENTED INSIDE JOHN_EQUIPMENT            *#
+#* ======================================================== *#
 
  # TODO:==================================================== ~#
  # TODO:              TODO LIST / DEVLOG                     ~#
@@ -44,16 +68,22 @@ log = ColorLog('JOHN_SCRAPER')
 class JohnScraper:
     def __init__(self, url: str):
         self.data = self.scrape_url(url)
-        
+        self.new_equipment = None
         if not self.data:
             if LOG_MSG: log.debug(f'NO DATA SCRAPED FROM URL: {url}')
         else:
-            self.type = self.find_type()
             if LOG_MSG:
                 log.success(f'SUCCESSFULLY SCRAPED DATA FROM URL: {url}')
-                log.info(f'ATTEMPTING FUZZ MATCHING')
             
-
+            # SET PRODUCT TYPE AND BUILD EQUIPMENT OBJECT
+            self.type = self.find_type()
+            log.debug(f'PRODUCT TYPE IDENTIFIED AS: {self.type}')
+            if self.type == 'LED':
+                self.new_equipment = self.build_led()
+            elif self.type == 'POWER SUPPLY':
+                self.new_equipment = self.build_psu()
+            elif self.type == 'CONTROLLER':
+                self.new_equipment = self.build_ctrlr()
 
      #^ CONTEXT MANAGER FUNCTIONS
     #? RETURN SCRAPER INSTANCE FOR USE IN WITH STATEMENTS
@@ -93,9 +123,6 @@ class JohnScraper:
         
         result = {}
         for field_name, extractor_list in rules.items():
-            if field_name == 'preprocess':
-                continue
-            
             result[field_name] = []
             for extractor in extractor_list:
                 if LOG_MSG: log.watchdog(f'ATTEMPTING TO EXTRACT: {field_name}')
@@ -307,25 +334,4 @@ class JohnScraper:
                     price = self.data.get('price', [0.0])[0], # TODO: FIX THIS
                 )
     
- #^ ======================================================== ^#
- #^                   TESTING / EXAMPLES                     ^#
- #^ ======================================================== ^#
 
-def test():
-    url = 'https://www.environmentallights.com/20914-plnw-pf-rgb30k-10m.html'
-    with JohnScraper(url) as scraper:
-        if scraper.data is not None: 
-            url_type = scraper.find_type()
-            if url_type == 'LED':
-                pprint(scraper.build_led())
-            elif url_type == 'POWER SUPPLY':
-                pprint(scraper.build_psu())
-            elif url_type == 'CONTROLLER':
-                pprint(scraper.build_ctrlr())
-        else:
-            if LOG_MSG: log.error(f'FAILED TO SCRAPE URL: {url}')
-
-#test()
- #! ======================================================== !#
- #!                       MAIN BLOCK                         !#
- #! ======================================================== !#
