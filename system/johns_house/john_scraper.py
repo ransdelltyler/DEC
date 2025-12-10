@@ -55,15 +55,15 @@ from system.utils.factory import *
 
 
 # GLOBAL VARIABLES IMPORT
-from DEEREATCHAIN.system.gen import settings
+from system.gen import settings
 # CUSTOM COLORLOG CLASS
 from system.utils.util_classes import ColorLog
 
 log = ColorLog('JOHN_SCRAPER')
 
- #~ ======================================================== ~#
- #~                    CLASS DEFINITION                      ~#
- #~ ======================================================== ~#
+#~ ======================================================== ~#
+#~                    CLASS DEFINITION                      ~#
+#~ ======================================================== ~#
 
 class JohnScraper:
     def __init__(self, url: str):
