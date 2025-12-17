@@ -87,6 +87,7 @@ class PowerSupply(BaseID):
 @dataclass(slots=True, kw_only=True)
 class Project(BaseID):
     address : str
+    job_id : str
     anchors : List[Anchor] = field(default_factory=list)
 
 

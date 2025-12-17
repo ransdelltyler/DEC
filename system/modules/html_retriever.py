@@ -7,14 +7,14 @@
 import os, sys
 from pathlib import Path
 # set project root to DEEREATCHAIN (two levels up from this file)
-ROOT = str(Path(__file__).resolve().parents[3])
+ROOT = str(Path(__file__).resolve().parents[2])
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 # GLOBAL VARIABLES IMPORT
-from DEEREATCHAIN.system.gen import settings
+from system.gen import settings
 # CUSTOM COLORLOG CLASS
-from DEEREATCHAIN.system.utils.util_classes import ColorLog
+from system.utils.util_classes import ColorLog
 log = ColorLog('HTML_RETR')
 
 from time import sleep
@@ -55,7 +55,6 @@ class HTMLRetriever:
         
         # SELENIUM FOR RETRIEVING FULL HTML W/ HEADLESS CHROME
         if settings.LOG_MSG: log.info('Starting Selenium')
-        
         options = Options()
         options.add_argument('--headless=new')
         options.add_argument('--no-sandbox')
@@ -171,4 +170,3 @@ class HTMLRetriever:
     
     
 
- 

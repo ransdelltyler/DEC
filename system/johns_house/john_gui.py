@@ -19,19 +19,19 @@ from dataclasses import field, fields
 
 sg.theme('DarkAmber')   # Add a touch of color
 # All the stuff inside your window.
-#layout = [  [sg.Text('Some text on Row 1')],
-#            [sg.Text('Enter something on Row 2'), sg.InputText()],
-#            [sg.Button('Ok'), sg.Button('Cancel')] ]
+# layout = [  [sg.Text('Some text on Row 1')],
+#             [sg.Text('Enter something on Row 2'), sg.InputText()],
+#             [sg.Button('Ok'), sg.Button('Cancel')] ]
 
 
 class JohnGUI:
     def __init__(self) -> None:
         self.anch = Anchor(name='TEST')
         self.layout = self.build_eqtable(self.anch)
-        self.window= sg.Window('Window Title', self.layout)
+        self.window = sg.Window('Window Title', self.layout)
         # Event Loop to process "events" and get the "values" of the inputs
         while True:
-            event, values = self.window.read() # type: ignore
+            event, values = self.window.read()  # type: ignore
             if event == sg.WIN_CLOSED or event == 'Cancel': # if user closes window or clicks cancel
                 break
             print('You entered ', values[0])
@@ -69,11 +69,17 @@ class JohnGUI:
             ]
             layout.append(row)
         return layout
-
+    
     
 
 with JohnGUI() as john:
     pass
 
-
-        
+# TODO: SCRAPER GUI LAYOUT 
+  # TODO: FORMAT / SHOW FULL SCRAPE IN RESULTS TAB
+  # TODO:    - HIGHLIGHT PARAMETERS DETERMINED TO BE PARAMS
+  # TODO: SAVE IMAGES AGAIN -> SHOW IN IMAGE
+  # TODO: WINDOW SIZE CONSTANT
+  # TODO: VISUALIZE DATABASE TAB
+  
+# TODO: DESIGNER LAYOUT

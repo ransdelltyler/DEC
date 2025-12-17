@@ -208,11 +208,16 @@ class JohnScraper:
         if self.data is not None:
             for item in datalist:
                 if key in item:
-                    print(item[key])
                     return item[key]
         return None
     
-    
+    def build_related(self, datalist: list[dict]) -> list[str]:
+        related = []
+        if self.data is not None:
+            for item in datalist[0]:
+                related.append(item['pn'])
+            return related
+        return related
     
     #? CONVERT STR TO VOLTAGE ENUM
     def volt_to_enum(self, volt_str: str) -> Voltage:
@@ -248,37 +253,43 @@ class JohnScraper:
                 return new_ledprod(
                     name = self.data.get('title', 'Unknown LED Name')[0],
                     manuf = self.find_dict_val('Manufacturer', specs) or 'Unknown Manufacturer',
-                    vin = self.volt_to_enum(self.find_dict_val('Input Voltage', specs) or ''),
-                    fixt_l_mm = self.find_dict_val('Length (Metric)', specs) or 'Unknown Length',
-                    fixt_w_mm = self.find_dict_val('Width (Metric)', specs) or 'Unknown Width',
-                    fixt_h_mm = self.find_dict_val('Height (Metric)', specs) or 'Unknown Height',
-                    watt_ft = self.find_dict_val('Power (Watts/ft)', specs) or 'Unknown Power (Watts/ft)',
-                    watt_m = self.find_dict_val('Power (Watts/m)', specs) or 'Unknown Power (Watts/m)',
-                    colors = self.find_dict_val('Light Color', specs) or 'Unknown Light Color',
                     model = self.data.get('title', 'Unknown Model')[0].split('-',1)[0],
                     partnum = self.data.get('part_number', 'Unknown Part Number')[0],
+                    vin = self.volt_to_enum(self.find_dict_val('Input Voltage', specs) or ''),
+                    fuse = None, # TODO: FIX THIS
+                    l_mm = self.find_dict_val('Length (Metric)', specs) or 'Unknown Length',
+                    w_mm = self.find_dict_val('Width (Metric)', specs) or 'Unknown Width',
+                    h_mm = self.find_dict_val('Height (Metric)', specs) or 'Unknown Height',
+                    rated_watts= self.find_dict_val('Power (Watts)', specs) or 'Unknown Rated Power (Watts)',
+                    actual_watts = self.find_dict_val('Actual Power (Watts)', specs) or 'Unknown Actual Power (Watts)',
                     url = self.data.get('url', 'No URL Provided')[0],
-                    m_roll = self.find_dict_val('Meters/Roll', specs) or 'Unknown Meters/Roll',
                     price = self.data.get('price', [0.0])[0], # TODO: FIX THIS
-                    cutLen_in = self.find_dict_val('Min. Cutting Increment (English)', specs) or 'Unknown Min. Cutting Increment (English)',
-                    cutLen_mm = self.find_dict_val('Min. Cutting Increment (Metric)', specs) or 'Unknown Min. Cutting Increment (Metric)',
-                    pixPitch_m = self.find_dict_val('LED Density', specs) or 'Unknown LED Density',
-                    sub_pns = self.data.get('related_products', []),
-                    shape = self.find_shape(),
-                    diffusion = Diffusion.UNKWN, # TODO: FIX THIS
-                    viewAngle = self.find_dict_val('Beam Angle', specs) or 'Unknown View Angle',
-                    cri = self.find_cri(specs), 
-                    cct = self.find_dict_val('CCT', specs) or 'Unknown CCT', 
                     eqproto = self.find_EQProto(),
-                    wireCode = '', # TODO: FIX THIS
                     datasheet = self.find_dict_val('**Datasheet', self.data.get('documents', {})) or 'No Datasheet Provided',
                     ul_list = self.find_ullisted(specs), 
                     ul_recog = GenDescr.NO, # TODO: FIX THIS
                     cert_url = self.find_dict_val('**Cert', self.data.get('documents', {})) or 'No Certification URL Provided',
-                    ip_rating = self.find_dict_val('IP Rating', specs) or 'Unknown IP Rating', 
+                    iprating = IPRating.UNKWN, # TODO: FIX THIS
                     finish = FinishColor.UNKWN, # TODO: FIX THIS
+                    related_pns = self.build_related(self.data.get('related_products', [])),
+                    terminals = '',
+                    colors = self.find_dict_val('Light Color', specs) or 'Unknown Light Color',
+                    watt_ft = self.find_dict_val('Power (Watts/ft)', specs) or 'Unknown Power (Watts/ft)',
+                    watt_m = self.find_dict_val('Power (Watts/m)', specs) or 'Unknown Power (Watts/m)',
+                    m_roll = self.find_dict_val('Meters/Roll', specs) or 'Unknown Meters/Roll',
+                    cutLen_mm = self.find_dict_val('Min. Cutting Increment (Metric)', specs) or 'Unknown Min. Cutting Increment (Metric)',
+                    cutLen_in = self.find_dict_val('Min. Cutting Increment (English)', specs) or 'Unknown Min. Cutting Increment (English)',
+                    pixPitch_m = self.find_dict_val('LED Density', specs) or 'Unknown LED Density',
+                    shape = self.find_shape(),
+                    diffusion = Diffusion.UNKWN, # TODO: FIX THIS
+                    viewAngle = self.find_dict_val('Beam Angle', specs) or 'Unknown View Angle',
+                    bendDir= BendDir.UNKWN, # TODO: FIX THIS
+                    cri = self.find_cri(specs), 
+                    cct = self.find_dict_val('CCT', specs) or 'Unknown CCT', 
+                    wireCode = '', # TODO: FIX THIS
                     lumens_m = self.find_dict_val('Brightness', specs) or 'Unknown Brightness', 
-                    lumens_ft = '' # TODO: FIX THIS
+                    lumens_ft = '', # TODO: FIX THIS
+                    max_length_m = '', # TODO: FIX THIS
                 )
     
     #? CREATE POWER SUPPLY PRODUCT OBJECT

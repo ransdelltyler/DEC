@@ -32,13 +32,16 @@ from pathlib import Path
 ROOT = str(Path(__file__).resolve().parents[2])
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
+ROOT = str(Path(__file__).resolve().parents[3])
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
 
 '''- CUSTOM MODULE IMPORTS -'''
 from system.utils.design_models import Controller, PowerSupply
 from system.gen.settings import LOG_MSG
 from john_scraper import JohnScraper
 from system.utils.util_classes import *
-from system.utils.data_models import Equipment, LEDProd
+from system.utils.data_models import Equipment, LEDProd, PSU, Ctrlr
 
 '''- 3RD PARTY MODULE IMPORTS -'''
 #* IMPORT BEAUTIFULSOUP FOR HTML PARSING
@@ -55,6 +58,7 @@ import sys, os
 print("Current Working Dir:", os.getcwd())
 print("Sys Path:", sys.path)
 
+from system.gen.keywords import LED_KEYWORDS, PSU_KEYWORDS, CTRLR_KEYWORDS, GENERIC_KEYWORDS
 
 
 #~ ======================================================== ~#
@@ -77,29 +81,25 @@ class EquipDB:
             log.error(f" Failed to load Workbook '{wb_path}'.")
         
         #* CHECK FOR REQUIRED SHEETS AND STORE REFERENCES
-        self.db_led_ws, self.db_psu_ws, self.db_ctrlr_ws = self._sheet_setup()
-
-
-
+        self.led_py_db = self.find_sheet(self.wb, 'led_py_db')
+        self.psu_py_db = self.find_sheet(self.wb, 'psu_py_db')
+        self.ctrlr_py_db = self.find_sheet(self.wb, 'ctrlr_py_db')
+        self.db_worksheets = [self.led_py_db,
+                              self.psu_py_db,
+                              self.ctrlr_py_db]
+        if all(sheet is not None for sheet in self.db_worksheets):
+            if LOG_MSG: log.success('All required database sheets found!')
+        
+        if self.led_py_db and self.psu_py_db and self.ctrlr_py_db:
+            self.led_keyvar_map = self._build_keyvar_map(self.led_py_db, LED_KEYWORDS, GENERIC_KEYWORDS)
+            self.psu_keyvar_map = self._build_keyvar_map(self.psu_py_db, PSU_KEYWORDS, GENERIC_KEYWORDS)
+            self.ctrlr_keyvar_map = self._build_keyvar_map(self.ctrlr_py_db, CTRLR_KEYWORDS, GENERIC_KEYWORDS)
+            
+            
 #? ======================================================== ?#
 #?                    HELPER FUNCTIONS                      ?#
 #? ======================================================== ?#
-    #* SETUP AND RETURN REQUIRED SHEETS FOR DATABASE OPERATIONS
-    def _sheet_setup(self) -> list[Worksheet]:
-        if LOG_MSG: log.info('CHECKING FOR REQUIRED PY_DB SHEETS...')
-        
-        led_db_ws = self.find_sheet(self.wb, 'led_py_db')
-        psu_db_ws = self.find_sheet(self.wb, 'psu_py_db')
-        ctrlr_db_ws = self.find_sheet(self.wb, 'ctrlr_py_db')
-        
-        if not led_db_ws or not psu_db_ws or not ctrlr_db_ws:
-            log.error(' ONE OR MORE REQUIRED SHEETS MISSING FROM WORKBOOK!')
-            return [] #!EXIT!#
-        else:
-            if LOG_MSG: log.success(' ALL REQUIRED SHEETS FOUND IN WORKBOOK!')
-            return [led_db_ws, psu_db_ws, ctrlr_db_ws] #!EXIT!#
-        
-
+    
     #* SAFELY GET SHEETS
     def find_sheet(self, wb : Workbook, sheet_name : str):
         if sheet_name not in wb.sheetnames:
@@ -117,16 +117,26 @@ class EquipDB:
         }
 
     #* BUILD AND RETURN A MAP OF MATCHED {KEYWORD VARIABLE : COLUMN INDEX}
-    def _build_keyvar_map(self, ws : Worksheet, keyword_dict : dict):
+    def _build_keyvar_map(self, ws : Worksheet, keyword_dict1 : dict, keyword_dict2: dict):
         col_map = self._build_column_map(ws)
+        log.debug(f" Column Map for Sheet '{ws.title}': {col_map}")
+        
         keyvar_map = {}
-        for key, header_name in keyword_dict.items():
+        found_all = True
+        for key, header_name in keyword_dict1.items():
             header_name_lc = header_name.lower()
             if header_name_lc in col_map:
                 keyvar_map[key.lower()] = col_map[header_name_lc]
             else:
+                for k, h in keyword_dict2.items():
+                    h_lc = h.lower()
+                    if h_lc in col_map:
+                        keyvar_map[k.lower()] = col_map[h_lc]
+                        break
+            if key.lower() not in keyvar_map:
                 if LOG_MSG: log.warning(f" Header '{header_name}' not found in sheet '{ws.title}'")
-        if LOG_MSG: log.success(f" All Headers in Sheet: '{ws.title}' were found!")
+                found_all = False
+        if LOG_MSG and found_all: log.success(f" All Headers in Sheet: '{ws.title}' were found!")
         return keyvar_map #!EXIT!#
 
 
@@ -228,27 +238,70 @@ class EquipDB:
                     if LOG_MSG:
                         #log.success(f'SCRAPED DATA: {scraper.data}')
                         log.info(f'ADDING NEW EQUIPMENT TO DATABASE...')
+                        pprint(scraper.new_equipment)
                     self.add_equipm(scraper.new_equipment) #!ADD TO DB
                     self.wb.save('DEEREATCHAIN/assets/PYDB.xlsm')
                 else:
                     if LOG_MSG: log.error(f'FAILED TO SCRAPE URL: {url}')
                     return None #!EXIT!#
 
+    #* BUILD A ROW LIST FROM EQUIPMENT OBJ FOR APPENDING TO SHEET
+    #* RETURNS A FORMATTED/ORDERED LIST OF ROW-CELL-VALUES TO BE DIRECTLY APPENDED
+    def build_row(self, equipm: Equipment, ws: Worksheet, key_map: dict) -> list:
+        row = ['!'] *len(key_map)  # PRE-FILL LIST WITH PLACEHOLDERS
+        for attr in equipm.__slots__:
+            if attr not in key_map:
+                continue #!SKIP UNMAPPED ATTRIBUTES!#
+            if attr in GENERIC_KEYWORDS:
+                col_index = key_map[attr]
+                value = str(getattr(equipm, attr))
+                log.debug(f' GEN ATTR: {attr} | COL INDEX: {col_index} | VALUE: {value}')
+                # INSERT VALUE AT CORRECT INDEX (ADJUST FOR 0-BASED LIST)
+                row.insert(col_index-1, value)
+            elif attr in LED_KEYWORDS:
+                col_index = key_map[attr]
+                value = str(getattr(equipm, attr))
+                log.debug(f' LED ATTR: {attr} | COL INDEX: {col_index} | VALUE: {value}')
+                # INSERT VALUE AT CORRECT INDEX (ADJUST FOR 0-BASED LIST)
+                row.insert(col_index-1, value)
+            elif attr in PSU_KEYWORDS:
+                col_index = key_map[attr]
+                value = str(getattr(equipm, attr))
+                log.debug(f' PSU ATTR: {attr} | COL INDEX: {col_index} | VALUE: {value}')
+                # INSERT VALUE AT CORRECT INDEX (ADJUST FOR 0-BASED LIST)
+                row.insert(col_index-1, value)
+            elif attr in CTRLR_KEYWORDS:
+                col_index = key_map[attr]
+                value = str(getattr(equipm, attr))
+                log.debug(f' CTRLR ATTR: {attr} | COL INDEX: {col_index} | VALUE: {value}')
+                # INSERT VALUE AT CORRECT INDEX (ADJUST FOR 0-BASED LIST)
+                row.insert(col_index-1, value)
+            if LOG_MSG: log.debug(f'Built Row: {row}')
+        return row
 
     #* ADD NEW EQUIPMENT OBJECT TO RESPECTIVE DATABASE (AUTO@POST-SCRAPE)
     def add_equipm(self, equipm) -> bool:
         if equipm is None:
             if LOG_MSG: log.error('ADD_EQUIPM() WAS GIVEN NONE!')
             return False #!EXIT!#
+        
+        #* DETERMINE EQUIPMENT TYPE AND APPEND TO CORRECT SHEET
         if isinstance(equipm, LEDProd):
             if LOG_MSG: log.info('ADDING NEW LED EQUIPMENT TO DATABASE...')
-            self.db_led_ws.append([getattr(equipm, attr) for attr in equipm.__slots__])
-        elif isinstance(equipm, PowerSupply):
+            if self.led_py_db: #~ CHECK SHEET EXISTS ~#
+                row = self.build_row(equipm, self.led_py_db, self.led_keyvar_map)
+                self.led_py_db.append(row) #~ APPEND NEW ROW ~#
+                pprint(row)
+        elif isinstance(equipm, PSU):
             if LOG_MSG: log.info('ADDING NEW POWER SUPPLY TO DATABASE...')
-            self.db_psu_ws.append([getattr(equipm, attr) for attr in equipm.__slots__])
-        elif isinstance(equipm, Controller):
+            if self.psu_py_db: #~ CHECK SHEET EXISTS ~#
+                row = self.build_row(equipm, self.psu_py_db, self.psu_keyvar_map)
+                self.psu_py_db.append(row) #~ APPEND NEW ROW ~#
+        elif isinstance(equipm, Ctrlr):
             if LOG_MSG: log.info('ADDING NEW CONTROLLER TO DATABASE...')
-            self.db_ctrlr_ws.append([getattr(equipm, attr) for attr in equipm.__slots__])
+            if self.ctrlr_py_db: #~ CHECK SHEET EXISTS ~#
+                row = self.build_row(equipm, self.ctrlr_py_db, self.ctrlr_keyvar_map)
+                self.ctrlr_py_db.append(row) #~ APPEND NEW ROW ~#
         return True #!EXIT!#
 
 
