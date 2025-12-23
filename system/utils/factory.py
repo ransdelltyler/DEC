@@ -32,7 +32,7 @@ from system.utils.util_classes import ColorLog
 from typing import Literal
 
 from system.utils.data_models import ( 
-                        PSU, GenDescr, CTRLType, Voltage, LEDProtocol,
+                        PSU, EQCategory, GenDescr, CTRLType, Voltage, LEDProtocol,
                         Shape, Diffusion, BendDir, EQProto, IPRating,
                         FinishColor,Fuse,ConnDir,ConnType, WireSize,
                         CableType, )
@@ -59,27 +59,41 @@ log = ColorLog('DATA_FACT',level=1)
 #?                    HELPER FUNCTIONS                      ?#
 #? ======================================================== ?#
 
-def base_id(*, name, comments):
+def base_id(*, name, description, comments):
     return {
         'name' : name or '',
+        'description' : description or '',
         'comments' : comments or [],
     }
 
 def equipment_base(*,
-                   manuf = None,
-                   partnum = None,
-                   vin = None,
-                   vout = None,
-                   fuse : Fuse | None = None,
-                   l_mm = None,
-                   w_mm = None,
-                   h_mm = None,
-                   rated_watts = None,
-                   actual_watts = None,
-                   terminals = None,
-                   ):
+                manuf = None,
+                model = None,
+                partnum = None,
+                vin = None,
+                vout = None,
+                fuse : Fuse | None = None,
+                l_mm = None,
+                w_mm = None,
+                h_mm = None,
+                rated_watts = None,
+                actual_watts = None,
+                url = None,
+                datasheet = None,
+                ul_list = None,
+                ul_recog = None,
+                cert_url = None,
+                iprating = None,
+                finish = None,
+                price = None,
+                eqproto = EQProto.UNKWN,
+                eq_category = EQCategory.UNKWN,
+                related_pns = None,
+                terminals = None,
+                ):
     return {
         'manuf' : manuf,
+        'model' : model or '',
         'partnum' : partnum,
         'vin' : to_enum(vin, Voltage) if vin is not None else Voltage.UNKWN,
         'vout' : to_enum(vout, Voltage) if vout is not None else Voltage.UNKWN,
@@ -89,6 +103,17 @@ def equipment_base(*,
         'h_mm' : h_mm or 0,
         'rated_watts' : rated_watts or 0,
         'actual_watts' : actual_watts or 0,
+        'url' : url or '',
+        'datasheet' : datasheet or '',
+        'ul_list' : ul_list or GenDescr.UNKWN,
+        'ul_recog' : ul_recog or GenDescr.UNKWN,
+        'cert_url' : cert_url or '',
+        'iprating' : to_enum(iprating, IPRating) if iprating is not None else IPRating.UNKWN,
+        'finish' : to_enum(finish, FinishColor) if finish is not None else FinishColor.UNKWN,
+        'price' : price or 0.0,
+        'eqproto' : eqproto,
+        'eq_category' : eq_category,
+        'related_pns' : related_pns or [],
         'terminals' : terminals or [],
         }
 
@@ -133,10 +158,11 @@ def to_enum(value, enum_cls) -> Enum:
 def new_project(*,
                 #? BASE ID PARAMS
                 name: str,
+                description: str,
                 comments = None,
                 #? PROJECT PARAMS
                 job_id = None,
-                address : str,
+                address = None,
                 anchors = None,
                 **kwargs,) -> Project:
     
@@ -149,9 +175,9 @@ def new_project(*,
         
     return Project(
                    #? BASE ID PARAMS
-                   **base_id(name=name,comments=comments),
+                   **base_id(name=name, description=description, comments=comments),
                    #? PROJECT PARAMS
-                   address = address,
+                   address = address or '!NONE!',
                    anchors = anchors or [],
                    )
 
@@ -159,27 +185,28 @@ def new_project(*,
 #& ANCHOR FACTORY
 def new_anchor(*,
                #? BASE ID PARAMS
-               name = None,
+               name = str,
+               description = None,
                comments = None,
                
                #? ANCHOR PARAMS
-               anchor_name = None,
                rooms = None,
                **kwargs,) -> Anchor:
     
     return Anchor(
-                  #? BASE ID PARAMS
-                  **base_id(name=name,comments=comments),
+                #? BASE ID PARAMS
+                **base_id(name=name, description=description, comments=comments),
                   
                   #? ANCHOR PARAMS
-                  rooms = rooms or [],
-                  )
+                rooms = rooms or [],
+                )
 
 
 #& ROOM FACTORY
 def new_room(*,
              #? BASE ID PARAMS
              name = None,
+             description = None,
              comments = None,
 
              #? ROOM PARAMS
@@ -189,7 +216,7 @@ def new_room(*,
     
     return Room(
                 #? BASE ID PARAMS
-                **base_id(name=name,comments=comments),
+                **base_id(name=name, description=description, comments=comments),
 
                 #? ROOM PARAMS
                 enclosures=enclosures or [],
@@ -201,6 +228,7 @@ def new_room(*,
 def new_install(*,
                 #? BASE ID PARAMS
                 name = None,
+                description = None,
                 comments = None,
                 #? INSTALL PARAMS
                 actual_watts = None,
@@ -210,7 +238,7 @@ def new_install(*,
     # TODO : ADD ENCLOSURE MAP
     return Install(
                 #? BASE ID PARAMS
-                **base_id(name=name,comments=comments),
+                **base_id(name=name, description=description, comments=comments),
                 
                 #? INSTALL PARAMS
                 actual_watts = actual_watts if actual_watts is not None else 0,
@@ -221,78 +249,132 @@ def new_install(*,
 
 #& EQUIPMENT FACTORY
 def new_equipment(*,
-                  #? BASE ID PARAMS
-                  name = None,
-                  comments=None,
-                  #? EQUIPMENT PARAMS
-                  manuf = None,
-                  vin = None,
-                  vout = None,
-                  fuse : Fuse | None = None,
-                  l_mm = None,
-                  w_mm = None,
-                  h_mm = None,
-                  rated_watts = None,
-                  actual_watts = None,
-                  terminals = None,
+                #? BASE ID PARAMS
+                name = None,
+                description = None,
+                comments=None,
+                #? EQUIPMENT PARAMS
+                manuf = None,
+                model = None,
+                partnum = None,
+                vin = None,
+                vout = None,
+                fuse = None,
+                l_mm = None,
+                w_mm = None,
+                h_mm = None,
+                rated_watts = None,
+                actual_watts = None,
+                url = None,
+                datasheet = None,
+                ul_list = None,
+                ul_recog = None,
+                cert_url = None,
+                iprating = None,
+                finish = None,
+                price = None,
+                eqproto : EQProto,
+                eq_category : EQCategory = EQCategory.UNKWN,
+                related_pns = None,
+                terminals = None,
                   **kwargs,) -> Equipment:
     
     return Equipment(
                     #? BASE ID PARAMS
-                    **base_id(name=name,comments=comments),
+                    **base_id(name=name, description=description, comments=comments),
                     #? EQUIPMENT PARAMS
                     **equipment_base(
-                                manuf = manuf,
-                                vin = vin,
-                                vout = vout,
-                                fuse = fuse,
-                                l_mm = l_mm,
-                                w_mm = w_mm,
-                                h_mm = h_mm,
-                                rated_watts = rated_watts,
-                                actual_watts = actual_watts,
-                                terminals = terminals,
+                            manuf = manuf,
+                            model = model or '',
+                            partnum = partnum,
+                            vin = vin,
+                            vout = vout,
+                            fuse = fuse,
+                            l_mm = l_mm,
+                            w_mm = w_mm,
+                            h_mm = h_mm,
+                            rated_watts = rated_watts,
+                            actual_watts = actual_watts,
+                            url = url or '',
+                            datasheet = datasheet or '',
+                            ul_list = ul_list,
+                            ul_recog = ul_recog,
+                            cert_url = cert_url or '',
+                            iprating = iprating,
+                            finish = finish,
+                            price = price,
+                            eqproto = eqproto,
+                            eq_category = eq_category,
+                            related_pns = related_pns or [],
+                            terminals = terminals,
                             ),
                     )
 
 
 #& ENCLOSURE FACTORY
 def new_enclosure(*,
-                  #? BASE ID PARAMS
-                  name = None,
-                  comments = None,
-                  #? EQUIPMENT PARAMS
-                  manuf = None,
-                  vin = None,
-                  vout = None,
-                  fuse : Fuse | None = None,
-                  l_mm = None,
-                  w_mm = None,
-                  h_mm = None,
-                  rated_watts = None,
-                  actual_watts = None,
-                  terminals = None,
-                  #? ENCLOSURE PARAMS
-                  ckts = None,
-                  nets = None,
-                  equipment = None,
-                  **kwargs,) -> Enclosure:
+                #? BASE ID PARAMS
+                name = None,
+                description = None,
+                comments = None,
+                #? EQUIPMENT PARAMS
+                manuf = None,
+                model = None,
+                partnum = None,
+                vin = None,
+                vout = None,
+                fuse = None,
+                l_mm = None,
+                w_mm = None,
+                h_mm = None,
+                rated_watts = None,
+                actual_watts = None,
+                url = None,
+                datasheet = None,
+                ul_list = None,
+                ul_recog = None,
+                cert_url = None,
+                iprating = None,
+                finish = None,
+                price = None,
+                eqproto : EQProto,
+                eq_category : EQCategory,
+                related_pns = None,
+                terminals = None,
+                #? ENCLOSURE PARAMS
+                ckts = None,
+                nets = None,
+                equipment = None,
+                **kwargs,) -> Enclosure:
     
     return Enclosure(
                     #? BASE ID PARAMS
-                    **base_id(name=name,comments=comments),                    
+                    **base_id(name=name, description=description, comments=comments),                    
                     **equipment_base(
-                                manuf = manuf,
-                                vin = vin,
-                                vout = vout,
-                                fuse = fuse,
-                                l_mm = l_mm,
-                                w_mm = w_mm,
-                                h_mm = h_mm,
-                                rated_watts = rated_watts,
-                                actual_watts = actual_watts,
-                                terminals = terminals,
-                                ),
+                            manuf = manuf,
+                            model = model or '',
+                            partnum = partnum,
+                            vin = vin,
+                            vout = vout,
+                            fuse = fuse,
+                            l_mm = l_mm,
+                            w_mm = w_mm,
+                            h_mm = h_mm,
+                            rated_watts = rated_watts,
+                            actual_watts = actual_watts,
+                            url = url or '',
+                            datasheet = datasheet or '',
+                            ul_list = ul_list,
+                            ul_recog = ul_recog,
+                            cert_url = cert_url or '',
+                            iprating = iprating,
+                            finish = finish,
+                            price = price,
+                            eqproto = eqproto,
+                            eq_category = eq_category,
+                            related_pns = related_pns or [],
+                            terminals = terminals,
+                            ),
 
                     #? ENCLOSURE PARAMS
                     ckts=ckts or [],
@@ -305,45 +387,70 @@ def new_enclosure(*,
 
 #& CONTROLLER FACTORY
 def new_ctrlr(*,
-              #? BASE ID PARAMS
-              name = None,
-              comments = None,
-              #? EQUIPMENT PARAMS
-              manuf = None,
-              partnum = None,
-              vin = None,
-              vout = None,
-              fuse : Fuse | None = None,
-              l_mm = None,
-              w_mm = None,
-              h_mm = None,
-              rated_watts = None,
-              actual_watts = None,
-              terminals = None,
-              #? CONTROLLER PARAMS
-              ip = None,
-              subn_mask = None,
-              ctrl_type = CTRLType.UNKWN,
-              outputs = None,
-              **kwargs,) -> Ctrlr:
+            #? BASE ID PARAMS
+            name = None,
+            description = None,
+            comments = None,
+            #? EQUIPMENT PARAMS
+            manuf = None,
+            model = None,
+            partnum = None,
+            vin = None,
+            vout = None,
+            fuse : Fuse | None = None,
+            l_mm = None,
+            w_mm = None,
+            h_mm = None,
+            rated_watts = None,
+            actual_watts = None,
+            url = None,
+            datasheet = None,
+            ul_list : GenDescr = GenDescr.UNKWN,
+            ul_recog : GenDescr = GenDescr.UNKWN,
+            cert_url=None,
+            iprating : IPRating = IPRating.UNKWN,
+            finish : FinishColor = FinishColor.UNKWN,
+            price = None,
+            eqproto : EQProto = EQProto.UNKWN,
+            eq_category : EQCategory = EQCategory.CTRLR,
+            related_pns = None,
+            terminals = None,            
+            #? CONTROLLER PARAMS
+            ip = None,
+            subn_mask = None,
+            ctrl_type = CTRLType.UNKWN,
+            outputs = None,
+            **kwargs,) -> Ctrlr:
     
     return Ctrlr(
                  #? BASE ID PARAMS
-                 **base_id(name=name,comments=comments),
+                 **base_id(name=name, description=description, comments=comments),
                  
                  **equipment_base(
-                                manuf = manuf,
-                                partnum = partnum,
-                                vin = vin,
-                                vout = vout,
-                                fuse = fuse,
-                                l_mm = l_mm,
-                                w_mm = w_mm,
-                                h_mm = h_mm,
-                                rated_watts = rated_watts,
-                                actual_watts = actual_watts,
-                                terminals = terminals,
-                                ),
+                            manuf = manuf,
+                            model = model or '',
+                            partnum = partnum,
+                            vin = vin,
+                            vout = vout,
+                            fuse = fuse,
+                            l_mm = l_mm,
+                            w_mm = w_mm,
+                            h_mm = h_mm,
+                            rated_watts = rated_watts,
+                            actual_watts = actual_watts,
+                            url = url or '',
+                            datasheet = datasheet or '',
+                            ul_list = ul_list,
+                            ul_recog = ul_recog,
+                            cert_url = cert_url or '',
+                            iprating = iprating,
+                            finish = finish,
+                            price = price,
+                            eqproto = eqproto,
+                            eq_category = eq_category,
+                            related_pns = related_pns or [],
+                            terminals = terminals,
+                            ),
                  
                  #? CONTROLLER PARAMS
                  ip=ip or '0.0.0.0',
@@ -357,41 +464,19 @@ def new_ctrlr(*,
 def new_ledprod(*,
                 #? BASE ID PARAMS
                 name = None,
+                description = None,
                 comments = None,
                 #? EQUIPMENT PARAMS
                 manuf = None,
+                model = None,
+                partnum = None,
                 vin = None,
-                vout = None,
                 fuse : Fuse | None = None,
                 l_mm = None,
                 w_mm = None,
                 h_mm = None,
                 rated_watts = None,
                 actual_watts = None,
-                terminals = None,            
-                partnum = None,
-                #? LED PRODUCT PARAMS
-                model = None,
-                colors = None,
-                watt_m = None,
-                watt_ft = None,
-                m_roll = None,
-                price = None,
-                cutLen_mm = None,
-                cutLen_in = None,
-                pixPitch_m = None,
-                sub_pns = None,
-                shape : Shape = Shape.UNKWN,
-                diffusion : Diffusion = Diffusion.UNKWN,
-                viewAngle = None,
-                bendDir : BendDir = BendDir.UNKWN,
-                cri = None,
-                cct = None,
-                fixt_l_mm = None,
-                fixt_w_mm = None,
-                fixt_h_mm = None,
-                eqproto : EQProto = EQProto.UNKWN,
-                wireCode = None,
                 url = None,
                 datasheet = None,
                 ul_list : GenDescr = GenDescr.UNKWN,
@@ -399,61 +484,79 @@ def new_ledprod(*,
                 cert_url=None,
                 iprating : IPRating = IPRating.UNKWN,
                 finish : FinishColor = FinishColor.UNKWN,
+                price = None,
+                eqproto : EQProto = EQProto.UNKWN,
+                eq_category : EQCategory = EQCategory.LEDTAPE,
+                related_pns = None,
+                terminals = None,            
+                #? LED PRODUCT PARAMS
+                colors = None,
+                watt_m = None,
+                watt_ft = None,
+                m_roll = None,
+                cutLen_mm = None,
+                cutLen_in = None,
+                pixPitch_m = None,
+                shape : Shape = Shape.UNKWN,
+                diffusion : Diffusion = Diffusion.UNKWN,
+                viewAngle = None,
+                bendDir : BendDir = BendDir.UNKWN,
+                cri = None,
+                cct = None,
+                wireCode = None,
                 lumens_m = None,
                 lumens_ft = None,
+                max_length_m = None,
                 **kwargs,) -> LEDProd:
     
     
     return LEDProd(
                     #? BASE ID PARAMS
-                    **base_id(name=name,comments=comments),
+                    **base_id(name=name, description=description, comments=comments),
                     
                     **equipment_base(
                                 manuf = manuf,
+                                model = model or '',
+                                partnum = partnum,
                                 vin = vin,
-                                vout = vout,
                                 fuse = fuse,
                                 l_mm = l_mm,
                                 w_mm = w_mm,
                                 h_mm = h_mm,
                                 rated_watts = rated_watts,
                                 actual_watts = actual_watts,
+                                url = url or '',
+                                datasheet = datasheet or '',
+                                ul_list = ul_list,
+                                ul_recog = ul_recog,
+                                cert_url = cert_url or '',
+                                iprating = iprating,
+                                finish = finish,
+                                price = price,
+                                eqproto = eqproto,
+                                eq_category = eq_category,
+                                related_pns = related_pns or [],
                                 terminals = terminals,
-                                partnum = partnum,
                                 ),
 
                     #? LED FIXTURE PARAMS
-                    model = model or '',
                     colors = colors or '',
                     watt_m = watt_m or 0,
                     watt_ft = watt_ft or 0,
                     m_roll = m_roll or 0,
-                    price = price or 0,
                     cutLen_mm = cutLen_mm or 0,
                     cutLen_in = cutLen_in or 0,
                     pixPitch_m =  pixPitch_m or 0,
-                    sub_pns = sub_pns or [],
                     shape = shape,
                     diffusion = diffusion,
                     viewAngle = viewAngle or 0,
                     bendDir = bendDir,
                     cri = cri or 0,
                     cct = cct or 0,
-                    fixt_l_mm = fixt_l_mm or 0,
-                    fixt_w_mm = fixt_w_mm or 0,
-                    fixt_h_mm = fixt_h_mm or 0,
-                    eqproto = eqproto,
                     wireCode = wireCode or '',
-                    url = url or '',
-                    datasheet = datasheet or '',
-                    ul_list = ul_list,
-                    ul_recog = ul_recog,
-                    cert_url = cert_url or '',
-                    iprating = iprating,
-                    finish = finish,
                     lumens_m = lumens_m or '',
                     lumens_ft = lumens_ft or '',
-                 
+                    max_length_m = max_length_m or 0,
                  )
     
     
@@ -461,30 +564,47 @@ def new_ledprod(*,
 def new_psu(*,
             #? BASE ID PARAMS
             name = None,
+            description = None,
             comments = None,
-            
             #? EQUIPMENT PARAMS
             manuf = None,
+            model = None,
             partnum = None,
             vin = None,
             vout = None,
-            fuse : Fuse = Fuse.UNKWN,
+            fuse : Fuse | None = None,
             l_mm = None,
             w_mm = None,
             h_mm = None,
             rated_watts = None,
             actual_watts = None,
-            terminals = None,
+            url = None,
+            datasheet = None,
+            ul_list : GenDescr = GenDescr.UNKWN,
+            ul_recog : GenDescr = GenDescr.UNKWN,
+            cert_url=None,
+            iprating : IPRating = IPRating.UNKWN,
+            finish : FinishColor = FinishColor.UNKWN,
+            price = None,
+            eqproto : EQProto = EQProto.UNKWN,
+            eq_category : EQCategory = EQCategory.PSU,
+            related_pns = None,
+            terminals = None,            
             #? PSU PARAMS
+            amps_port = None,
+            p_class = None,
+            efficiency = None,
+            dimming = None,
             current_share : bool = False,
             **kwargs,
             ) -> PSU:
     return PSU(
                 #? BASE ID PARAMS
-                **base_id(name=name,comments=comments),
+                **base_id(name=name, description=description, comments=comments),
                 
                 **equipment_base(
                                 manuf = manuf,
+                                model = model or '',
                                 partnum = partnum,
                                 vin = vin,
                                 vout = vout,
@@ -494,10 +614,25 @@ def new_psu(*,
                                 h_mm = h_mm,
                                 rated_watts = rated_watts,
                                 actual_watts = actual_watts,
+                                url = url or '',
+                                datasheet = datasheet or '',
+                                ul_list = ul_list,
+                                ul_recog = ul_recog,
+                                cert_url = cert_url or '',
+                                iprating = iprating,
+                                finish = finish,
+                                price = price,
+                                eqproto = eqproto,
+                                eq_category = eq_category,
+                                related_pns = related_pns or [],
                                 terminals = terminals,
                                 ),
                 
                 #? PSU PARAMS
+                amps_port = amps_port or 0.0,
+                p_class = p_class or '',
+                efficiency = efficiency or '',
+                dimming = dimming or '',
                 current_share = current_share if current_share is not None else False,
                 )
 
@@ -506,6 +641,7 @@ def new_psu(*,
 def new_terminal(*,
                 #? BASE ID PARAMS
                 name = None,
+                description = None,
                 comments = None,
                 
                 #? TERMINAL PARAMS
@@ -515,7 +651,7 @@ def new_terminal(*,
 
     return  Terminal(
                     #? BASE ID PARAMS
-                    **base_id(name=name,comments=comments),
+                    **base_id(name=name, description=description, comments=comments),
 
                     #? TERMINAL PARAMS
                     conn_dir= conn_dir,
@@ -527,6 +663,7 @@ def new_terminal(*,
 def new_cable(*,
             #? BASE ID PARAMS
             name=None,
+            description=None,
             comments=None,
               
             #? CABLE PARAMS
@@ -536,7 +673,7 @@ def new_cable(*,
 
     return Cable(
                 #? BASE ID PARAMS
-                **base_id(name=name,comments=comments),
+                **base_id(name=name, description=description, comments=comments),
                 
                 #? CABLE PARAMS
                 terminals=terminals or [],
@@ -549,6 +686,7 @@ def new_cable(*,
 def new_path3d(*,
                #? BASE ID PARAMS
                name=None,
+               description=None,
                comments=None,
                
                #? PATH3D PARAMS
@@ -557,7 +695,7 @@ def new_path3d(*,
 
     return Path3D(
                 #? BASE ID PARAMS
-                **base_id(name=name,comments=comments),
+                **base_id(name=name, description=description, comments=comments),
 
                 #? PATH3D PARAMS
                 geometry=geometry or [],
@@ -569,6 +707,7 @@ def new_path3d(*,
 def new_ledbranch(*,
                   #? BASE ID PARAMS
                   name=None,
+                  description=None,
                   comments=None,
                   
                   #? LED BRANCH PARAMS
@@ -577,7 +716,7 @@ def new_ledbranch(*,
 
     return LEDBranch(
                     #? BASE ID PARAMS
-                    **base_id(name=name,comments=comments),
+                    **base_id(name=name, description=description, comments=comments),
                     
                     #? LED BRANCH PARAMS
                     segments=segments or [],

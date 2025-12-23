@@ -206,6 +206,7 @@ class CableType(Enum):
 @dataclass(slots=True, kw_only=True)
 class BaseID:
     name: str
+    description: str
     id_base: UUID = field(default_factory=uuid4)
     comments: List[str] = field(default_factory=list)
 
@@ -216,8 +217,13 @@ class BaseID:
 #& EQUIPMENT
 @dataclass(slots=True, kw_only=True)
 class Equipment(BaseID):
-    partnum : str
+    # BASEID FIELDS
+    # name : str
+    # id_base : UUID
+    # comments : List[str]
     manuf : str
+    model : str
+    partnum : str
     vin : int
     vout : int
     fuse : Fuse
@@ -226,6 +232,17 @@ class Equipment(BaseID):
     h_mm : int
     rated_watts : int
     actual_watts : int
+    url : str
+    datasheet : str
+    ul_list : GenDescr
+    ul_recog : GenDescr
+    cert_url : str
+    iprating : IPRating
+    finish : FinishColor
+    price : float
+    eqproto : EQProto
+    eq_category : EQCategory
+    related_pns : List[str] = field(default_factory=list)
     terminals : List[Terminal] = field(default_factory=list)
 
 
@@ -246,46 +263,35 @@ class Ctrlr(Equipment):
     outputs : List[Terminal] = field(default_factory=list)
 
 
-
 #& LED_Prod
 @dataclass(slots=True, kw_only=True)
 class LEDProd(Equipment):
-    model : str
     colors : str
-    partnum : str
     watt_m : float
     watt_ft : float
     m_roll : float
-    price : float
     cutLen_mm : float
     cutLen_in : float
     pixPitch_m : int
-    sub_pns : List[str]
     shape : Shape
     diffusion : Diffusion
     viewAngle : int
     bendDir : BendDir
     cri : int
     cct : int
-    fixt_l_mm : float
-    fixt_w_mm : float
-    fixt_h_mm : float
-    eqproto : EQProto
     wireCode : str
-    url : str
-    datasheet : str
-    ul_list : GenDescr
-    ul_recog : GenDescr
-    cert_url : str
-    iprating : IPRating
-    finish : FinishColor
     lumens_m : str
     lumens_ft : str
-    # TODO: LINKABLE UP-TO LENGTH
+    max_length_m : float
+
     
 #& POWER SUPPLY
 @dataclass(slots=True,kw_only=True)
 class PSU(Equipment):
+    amps_port : float
+    p_class : str
+    efficiency : str
+    dimming : str
     current_share : bool
     
 #& ACCESSORY
@@ -299,3 +305,9 @@ class Accessory(Equipment):
 class Terminal(BaseID): 
     conn_dir : ConnDir
     conn_type : ConnType
+    
+    
+#& RELATED EQUIPMENT
+@dataclass(slots=True, kw_only=True)
+class SubPN(BaseID):
+    type_desc : str
