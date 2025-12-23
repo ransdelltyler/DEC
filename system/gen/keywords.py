@@ -231,6 +231,7 @@ GENERIC_KEYWORDS = {
     'ul_list' : 'ULListed',
     'ul_recog' : 'ULRecognized',
     'cert_url' : 'CertURL',
+    'eqproto' : 'Protocol',
     'related_pns' : 'RelatedPNs',
     'terminals' : 'Terminals',
 }

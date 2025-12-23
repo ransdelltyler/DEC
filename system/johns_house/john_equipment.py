@@ -22,10 +22,6 @@
 
 
 '''- STANDARD MODULE IMPORTS -'''
-from pprint import pprint
-import os, sys, importlib.util
-# ^ END STANDARD MODULES ^ #
-
 import os, sys
 from pathlib import Path
 # set project root to DEEREATCHAIN (two levels up from this file)
@@ -52,11 +48,12 @@ from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 # ^^^ 3RD PARTY MODULE IMPORTS ^^^ #
 
+from dataclasses import fields
 
 #* - PRINT CURRENT WORKING DIR + SYS.PATH - #
 import sys, os
-print("Current Working Dir:", os.getcwd())
-print("Sys Path:", sys.path)
+print("John Equipment - Current Working Dir:", os.getcwd())
+print("John Equipment - Sys Path:", sys.path)
 
 from system.gen.keywords import LED_KEYWORDS, PSU_KEYWORDS, CTRLR_KEYWORDS, GENERIC_KEYWORDS
 
@@ -123,52 +120,22 @@ class EquipDB:
         
         keyvar_map = {}
         found_all = True
-        for key, header_name in keyword_dict1.items():
+        
+        all_keys = {**keyword_dict1, **keyword_dict2}
+        
+        for key, header_name in all_keys.items():
+            key_lc = key.lower()
             header_name_lc = header_name.lower()
+            
             if header_name_lc in col_map:
-                keyvar_map[key.lower()] = col_map[header_name_lc]
+                keyvar_map[key_lc] = col_map[header_name_lc]
+                log.debug(f" Mapping KeyVar '{key_lc}' to Header '{header_name_lc}'")
             else:
-                for k, h in keyword_dict2.items():
-                    h_lc = h.lower()
-                    if h_lc in col_map:
-                        keyvar_map[k.lower()] = col_map[h_lc]
-                        break
-            if key.lower() not in keyvar_map:
                 if LOG_MSG: log.warning(f" Header '{header_name}' not found in sheet '{ws.title}'")
                 found_all = False
         if LOG_MSG and found_all: log.success(f" All Headers in Sheet: '{ws.title}' were found!")
+        log.debug(f" KeyVar Map for Sheet '{ws.title}': {keyvar_map}")
         return keyvar_map #!EXIT!#
-
-
-    #* QUERY THE DATABASE FOR _____ | SET FUZZY TO FALSE FOR EXACT MATCHES ONLY
-    def _query_database(self, target, fuzzy = True):
-        pass
-
-
-    #* ADD / UPDATE TIMESTAMP FOR LATEST UPDATE
-    def _timestamp_row(self):
-        pass
-
-
-    #* LOOK AT TIMESTAMPS AND RECCOMMEND UPDATES
-    def _suggest_updates(self):
-        pass
-
-
-    #* CHECK CERTIFICATION STATUSES
-    def _run_cert_checks(self):
-        pass
-
-
-    #* CHECKS FOR EXISTING URL IN DB
-    def url_check(self, url: str):
-        pass
-    
-
-    #* CHECKS FOR EXISTING NAME IN DB
-    def name_check(self, name: str):
-        pass
-
 
 
  
@@ -238,7 +205,6 @@ class EquipDB:
                     if LOG_MSG:
                         #log.success(f'SCRAPED DATA: {scraper.data}')
                         log.info(f'ADDING NEW EQUIPMENT TO DATABASE...')
-                        pprint(scraper.new_equipment)
                     self.add_equipm(scraper.new_equipment) #!ADD TO DB
                     self.wb.save('DEEREATCHAIN/assets/PYDB.xlsm')
                 else:
@@ -248,36 +214,36 @@ class EquipDB:
     #* BUILD A ROW LIST FROM EQUIPMENT OBJ FOR APPENDING TO SHEET
     #* RETURNS A FORMATTED/ORDERED LIST OF ROW-CELL-VALUES TO BE DIRECTLY APPENDED
     def build_row(self, equipm: Equipment, ws: Worksheet, key_map: dict) -> list:
-        row = ['!'] *len(key_map)  # PRE-FILL LIST WITH PLACEHOLDERS
-        for attr in equipm.__slots__:
-            if attr not in key_map:
+        # 1. Determine the maximum column index to size the list correctly
+        # Use key_map.values() to ensure the list is wide enough for the sheet
+        max_col = max(key_map.values()) if key_map else 0
+        row = ['!'] * max_col
+        
+        log.debug(f'key_map: {key_map}')
+
+        # 2. Iterate through slots
+        for attr in fields(equipm):
+            if attr.name.lower() not in key_map:
+                log.debug(f' UNMAPPED ATTR: {attr.name} | SKIPPING...')
                 continue #!SKIP UNMAPPED ATTRIBUTES!#
-            if attr in GENERIC_KEYWORDS:
-                col_index = key_map[attr]
-                value = str(getattr(equipm, attr))
-                log.debug(f' GEN ATTR: {attr} | COL INDEX: {col_index} | VALUE: {value}')
-                # INSERT VALUE AT CORRECT INDEX (ADJUST FOR 0-BASED LIST)
-                row.insert(col_index-1, value)
-            elif attr in LED_KEYWORDS:
-                col_index = key_map[attr]
-                value = str(getattr(equipm, attr))
-                log.debug(f' LED ATTR: {attr} | COL INDEX: {col_index} | VALUE: {value}')
-                # INSERT VALUE AT CORRECT INDEX (ADJUST FOR 0-BASED LIST)
-                row.insert(col_index-1, value)
-            elif attr in PSU_KEYWORDS:
-                col_index = key_map[attr]
-                value = str(getattr(equipm, attr))
-                log.debug(f' PSU ATTR: {attr} | COL INDEX: {col_index} | VALUE: {value}')
-                # INSERT VALUE AT CORRECT INDEX (ADJUST FOR 0-BASED LIST)
-                row.insert(col_index-1, value)
-            elif attr in CTRLR_KEYWORDS:
-                col_index = key_map[attr]
-                value = str(getattr(equipm, attr))
-                log.debug(f' CTRLR ATTR: {attr} | COL INDEX: {col_index} | VALUE: {value}')
-                # INSERT VALUE AT CORRECT INDEX (ADJUST FOR 0-BASED LIST)
-                row.insert(col_index-1, value)
-            if LOG_MSG: log.debug(f'Built Row: {row}')
+
+            # Get the target column (converting 1-based Excel index to 0-based Python index)
+            col_idx = key_map[attr.name.lower()] - 1
+            value = str(getattr(equipm, attr.name))
+
+            # 3. Direct Assignment (Overwrites the placeholder instead of shifting)
+            row[col_idx] = value
+        
+            # Categorized logging
+            category = "GEN"
+            if attr.name in LED_KEYWORDS: category = "LED"
+            elif attr.name in PSU_KEYWORDS: category = "PSU"
+            elif attr.name in CTRLR_KEYWORDS: category = "CTRLR"
+            log.debug(f' {category} ATTR: {attr.name} | COL INDEX: {key_map[attr.name.lower()]} | VALUE: {value}')
+        if LOG_MSG: 
+            log.debug(f'Built Row: {row}')
         return row
+
 
     #* ADD NEW EQUIPMENT OBJECT TO RESPECTIVE DATABASE (AUTO@POST-SCRAPE)
     def add_equipm(self, equipm) -> bool:
@@ -291,7 +257,6 @@ class EquipDB:
             if self.led_py_db: #~ CHECK SHEET EXISTS ~#
                 row = self.build_row(equipm, self.led_py_db, self.led_keyvar_map)
                 self.led_py_db.append(row) #~ APPEND NEW ROW ~#
-                pprint(row)
         elif isinstance(equipm, PSU):
             if LOG_MSG: log.info('ADDING NEW POWER SUPPLY TO DATABASE...')
             if self.psu_py_db: #~ CHECK SHEET EXISTS ~#
@@ -321,12 +286,12 @@ class EquipDB:
     
 
 
- #^ ======================================================== ^#
- #^                   TESTING / EXAMPLES                     ^#
- #^ ======================================================== ^#
+
+
+
  
 def test():
-    db_path = 'DEEREATCHAIN/assets/ENCL.xlsm'
+    db_path = 'DEEREATCHAIN/assets/PYDB.xlsm'
     equip_db = EquipDB(db_path)
      
     # TEST SCRAPING AND ADDING NEW EQUIPMENT
