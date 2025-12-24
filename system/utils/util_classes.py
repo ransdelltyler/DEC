@@ -30,6 +30,15 @@ import logging
 from colorlog import ColoredFormatter
 from pathlib import Path
 
+#? MAXIMUM ONE-LINE MSG CHARS
+MAX_CHARS = 150
+#? 
+
+#? MULTI-LINE NESTED INDENT SPACES
+DEF_INDENT = 4
+#? FILLER CHAR(2)
+FILLER = ' -'
+
 #* CUSTOM LOG STATUSES
 SUCCESS = 25
 WATCHDOG = 100
@@ -75,7 +84,7 @@ class ColorLog:
             console_handler.setLevel(level)
 
             console_formatter = ColoredFormatter(
-                "%(log_color)s %(levelname)s %(message)s",
+                "%(log_color)s %(levelname)s %(msg)s",
                 log_colors=log_colors
             )
             console_handler.setFormatter(console_formatter)
@@ -84,21 +93,85 @@ class ColorLog:
             file_handler.setLevel(level)
 
             file_formatter = logging.Formatter(
-                "%(levelname)s %(message)s"
+                "%(levelname)s %(msg)s"
             )
             file_handler.setFormatter(file_formatter)
             self.logger.addHandler(console_handler)
             self.logger.addHandler(file_handler)
+            
     
-    def debug(self, message): self.logger.debug(f"---- {Emoji_Map[logging.DEBUG]} | {self.name} | {message}")
-    def info(self, message): self.logger.info(f"----- {Emoji_Map[logging.INFO]} | {self.name} | {message}")
-    def warning(self, message): self.logger.warning(f"-- {Emoji_Map[logging.WARNING]} | {self.name} | {message}")
-    def error(self, message): self.logger.error(f"--- {Emoji_Map[logging.ERROR]} | {self.name} | {message}")
-    def critical(self, message): self.logger.critical(f"- {Emoji_Map[logging.CRITICAL]} | {self.name} | {message}")
+    #? CHECKS MSG LENGTH TO MAX_CHAR
+    #? CUT OFF OR FILL TO END -> STR (SINGLE-LINE)
+    def cut_or_fill(self, msg : str) -> str:
+        #? CALCULATE NUMBER OF FILLER STR TO ADD
+        fillmult = (MAX_CHARS - len(msg)) - len(FILLER)
+        
+        #? CUT OVER-LENGTH MSG
+        if len(msg) > MAX_CHARS:
+            output = msg[:MAX_CHARS-2] + ' |'
+        #? FILL UNDER-LENGTH MSG
+        else:
+            output = msg + (FILLER*fillmult)
+        return output
     
-    def success(self, message): self.logger.log(SUCCESS, f"-- {Emoji_Map[SUCCESS]} | {self.name} | {message}")
-    def watchdog(self, message): self.logger.log(WATCHDOG, f"- {Emoji_Map[WATCHDOG]} | {self.name} | {message}")
-    def border(self): self.logger.log(BORDER, f"--- {Emoji_Map[BORDER]}")
+    
+    #? CLEANS OR REJECTS MSG INPUT
+    def clean_msg(self, msg: str | list[str] | list[tuple]) -> str:
+        #? STRING MSG
+        if isinstance(msg, str):
+            clean_msg = self.cut_or_fill(msg=msg)
+            return clean_msg
+        
+        #? LIST MSG
+        elif isinstance(msg, list):
+            output = ''
+            for text in msg:
+                if isinstance(text, str):
+                    clean_msg = self.clean_msg(msg=text)
+                    clean_msg += clean_msg + '\n'
+                    
+                #? LIST OF TUPLES
+                elif isinstance(text, tuple):
+                    clean_msg = self.cut_or_fill(msg=text[1])
+                    if text[0] == 'BORDER':
+                        clean_msg += clean_msg + '\n'
+            return output
+    
+    
+    
+    def debug(self, msg):
+        
+        self.logger.debug(f"---- {Emoji_Map[logging.DEBUG]} | {self.name} | {msg}")
+
+    def info(self, msg):
+        
+        self.logger.info(f"----- {Emoji_Map[logging.INFO]} | {self.name} | {msg}")
+
+    def warning(self, msg):
+        
+        self.logger.warning(f"-- {Emoji_Map[logging.WARNING]} | {self.name} | {msg}")
+
+    def error(self, msg):
+        
+        self.logger.error(f"--- {Emoji_Map[logging.ERROR]} | {self.name} | {msg}")
+
+    def critical(self, msg):
+        
+        self.logger.critical(f"- {Emoji_Map[logging.CRITICAL]} | {self.name} | {msg}")
+
+    
+    def success(self, msg):
+        
+        self.logger.log(SUCCESS, f"-- {Emoji_Map[SUCCESS]} | {self.name} | {msg}")
+
+    def watchdog(self, msg):
+        
+        self.logger.log(WATCHDOG, f"- {Emoji_Map[WATCHDOG]} | {self.name} | {msg}")
+
+    def border(self, msg : str | None=None):
+        
+        self.logger.log(BORDER, f"--- {Emoji_Map[BORDER]} | {self.name} | [{msg}]")
+
 
 
 #^ ======================================================== ^#
@@ -107,13 +180,13 @@ class ColorLog:
 def test():
     logger = ColorLog('UTIL_CLOG', level=BORDER)
 
-    logger.debug("This is a debug message.")
-    logger.info("This is an info message.")
-    logger.success("This is a success message.")
-    logger.warning("This is a warning message.")
-    logger.error("This is an error message.")
-    logger.critical("This is a critical message.")
-    logger.watchdog("This is a watchdog message.")
+    logger.debug("This is a debug msg.")
+    logger.info("This is an info msg.")
+    logger.success("This is a success msg.")
+    logger.warning("This is a warning msg.")
+    logger.error("This is an error msg.")
+    logger.critical("This is a critical msg.")
+    logger.watchdog("This is a watchdog msg.")
     logger.border()
 
 #test()

@@ -25,6 +25,8 @@ log = ColorLog('SACN_CTRL', level=1)
 
 import sacn  #? LIBRARY: [sACN TX / RX]
 import uuid  #? LIBRARY: UNIVERSAL UNIQUE ID GEN
+import threading
+from time import sleep
 
 #? FREE-SIMPLE-GUI + THEME
 import FreeSimpleGUI as sg
@@ -32,13 +34,17 @@ sg.theme('DarkAmber')
 
 #& DEFAULT EMPTY UNIVERSE OF DATA
 EMPTY_UNIV = bytearray(512)
-
+DEF_NAME = '- PYTHON SACN CTRLR -'
+DEF_UNIV = 1
+DEF_IN_DELAY = 1/30
+DEF_OUT_DELAY = 1/30
+DEF_GUI_TIMEOUT = 100
 
 class sACNCtrlr:
-    def __init__(self, name) -> None:
+    def __init__(self, name : str = DEF_NAME, univ : int = 1, ) -> None:
                 
         #* CONTROLLER NAME
-        self.name = name or 'DEFAULT SACN CTRLR'
+        self.name = name
         if LOG_MSG: log.info(f'CREATING: {self.name}')
         
         #* GUI SETUP
@@ -46,43 +52,121 @@ class sACNCtrlr:
         self.layout = self.build_layout()
         self.window = sg.Window('DEC > sACN Controller', self.layout)
 
-        #* SACN SENDER SETUP VARIABLES
-        self.source_name = '- PYTHON -'
-        if LOG_MSG: log.info(f' -> STARTING SENDER: {self.source_name}')
+
+        #* SACN TRANSMITTER INIT
+        #? TX VARIABLES
+        self.source_name = self.name
+        if LOG_MSG: log.info(f' -> STARTING SACN_TX: {self.source_name}')
         self.multicast = False
         self.unicast_ip = '10.101.33.33'
         self.cid = uuid.UUID('1ACAA578-60C3-22D4-AA6F-577E7724B769').bytes
-        self.universe = 1
+        self.universe = DEF_UNIV
+        self.tx_delay = DEF_OUT_DELAY
+        #? TX CREATION
+        self.sacn_tx = sacn.sACNsender(source_name=self.source_name, cid=tuple(self.cid))
+        self.sacn_tx.start()
+        if self.sacn_tx and LOG_MSG: log.success(
+            f'|+sACN TRANSMITTER CREATED \n' + 
+            f'||SOURCE-NAME:{self.source_name}|MCAST:{self.multicast}|UCAST IP:{self.unicast_ip}|\n'
+            f'||')
+
+        #* SACN RECIEVER INIT
+        #? RX VARIABLES
+        self.rx_bind_addr = ''
+        self.rx_delay = DEF_IN_DELAY
+        #? RX CREATION
+        self.sacn_rx = sacn.sACNreceiver(bind_address=self.rx_bind_addr)
+        self.sacn_rx.start()
+        if self.sacn_rx and LOG_MSG: log.success(
+            f'+ sACN RECEIVER CREATED \n' +
+            f'||BOUND-INPUT-ID:{self.rx_bind_addr}|UPDATE-DELAY:{self.rx_delay}')
+        # TODO: COLORLOG [STRING] FORMATTING
         
-        #* CREATE SENDER
-        self.sender = sacn.sACNsender(source_name=self.source_name, cid=tuple(self.cid))
-        self.sender.start()
-        
-        #* UNIVERSE DATA BUFFER LIST
-        #* { UNIV : BYTEARRAY(512) }
-        self.data_buffers = {}
-        
-        # TODO: SACN THREAD
-        
-        
-    # CONTEXT MANAGERS
-    def __enter__(self):
-        return self
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.sender.stop()
-        return False
+        #* UNIVERSE DATA BUFFER LISTS
+        #? { UNIV : BYTEARRAY(512) }
+        self.output_buffers = {}
+        self.input_buffers = {}
     
+        
+        
+     #^ CONTEXT MANAGER FUNCTIONS
+    #? RETURN SCRAPER INSTANCE FOR USE IN WITH STATEMENTS
+    def __enter__(self):
+        self.running = False
+        return self
+
+    #? GUARANTEED SELENIUM CLEANUP @ EXIT 
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        #? STOP GUI
+        self.gui_runs = False
+        
+        #? CLEAN SHUTDOWN TX + RX THREADS
+        if hasattr(self, 'sacnRX_thread') and self.sacnRX_thread.is_alive():
+            # WAIT FOR RX TO FINISH ACTIVE LOOP THEN SHUT DOWN
+            self.sacnRX_thread.join(timeout=1.0)
+            self.sacn_tx.stop()
+        if hasattr(self, 'sacnTX_thread') and self.sacnTX_thread.is_alive():
+            # WAIT FOR TX TO FINISH ACTIVE LOOP THEN SHUT DOWN
+            self.sacnTX_thread.join(timeout=1.0)
+            self.sacn_rx.stop()
+        
+    
+    
+    #? START SACN_TX NETWORK SACN RX + TX THREADS
+    def start_netw(self):
+        #? SACN_TX INPUT - SACN RECIEVERS
+        self.sacnRX_thread = threading.Thread( target=self.loop_sacnRX(), daemon=True)
+        self.sacnRX_thread.start()
+        if self.sacnRX_thread: self.rx_ON = True
+        
+        #? SACN_TX OUTPUT - SACN TRANSMITTERS
+        self.sacnTX_thread = threading.Thread( target=self.loop_sacnTX(), daemon=True)
+        self.sacnTX_thread.start()
+        if self.sacnTX_thread: self.tx_ON = True
+        
+    
+    
+    #? SACN RECIEVER LOOP
+    def loop_sacnRX(self):
+        while self.tx_ON:
+            active_univs = []
+            for univ in active_univs:
+                # TODO: GET INPUT DATA FRAMES
+                pass
+            sleep(self.tx)
+    
+    #? SACN UPDATE <SACN_TX> WITH 
+    def loop_sacnTX(self):
+        while self.rx_ON:
+            active_univs = self.sacn_tx.get_active_outputs()
+            for univ in active_univs:
+                if univ in self.data_buffers:
+                    self.update_univ_data(univ)
+            sleep(self.packet_delay)
+    
+    # TODO: INFINITE DAEMONS
     
     #* START GUI LOOP
     def run(self):
+        # TRUE WHILE GUI IS ACTIVE
+        self.gui_runs = True
+        
+        if LOG_MSG: log.success(f'STARTED THREADS')
+        
         while True:
-            event, values = self.window.read() # type: ignore
+            #? GET EVENTS FROM GUI, (sg.WINDOW_CLOSED REQUIRED)
+            event, values = self.window.read(timeout=DEF_GUI_TIMEOUT) # type: ignore
             if event == sg.WINDOW_CLOSED or event  == 'Cancel':
                 break
             
+            if event == 'START-OUTPUT':
+                self.update_buffer(univ=1, lvls=1)
+        
+        
+        self.gui_runs = False
     
 #? ======================================================== ?#
-#?                    HELPER FUNCTIONS                      ?#
+#?                     GUI FUNCTIONS                        ?#
 #? ======================================================== ?#
     
     #* SETUP INITIAL GUI LAYOUT
@@ -93,19 +177,20 @@ class sACNCtrlr:
 
 
 #? ======================================================== ?#
-#?                   EXTERNAL FUNCTIONS                     ?#
+#?                  SACN-CTRLR FUNCTIONS                    ?#
 #? ======================================================== ?#
 
+    
     #* ACTIVATE <UNIV>, ADD <UNIV> BUFFER
     def start_univ(self, univ : int) -> None:
         # CHECK IF UNIV IS ALREADY ACTIVE
-        if univ in self.sender.get_active_outputs():
+        if univ in self.sacn_tx.get_active_outputs():
             if LOG_MSG: log.info(f'UNIV: {univ} IS ALREADY ACTIVE.')
 
         else: # UNIVERSE NOT ACTIVE 
             if LOG_MSG: log.info(f'ACTIVATING UNIV:{univ}...')
             #? START <UNIVERSE> OUTPUT
-            self.sender.activate_output(univ)
+            self.sacn_tx.activate_output(univ)
         
         #? ADD BUFFER (CHECKS FOR DUPLICATES)
         self.new_buffer(univ=univ)
@@ -133,55 +218,56 @@ class sACNCtrlr:
     #* ( BYTES, BYTEARRAY, LIST, TUPLE ) -> UPDATE ALL OR START_ADDR FORWARD
     #* ( INT ) -> UPDATE START_ADDR LEVEL
     #* ( DICT ) -> UPDATE MULTIPLE ADDRESS LEVELS { ADDR : LEVEL, ... }
-    def update_buffer(self, univ : int, data, start_addr : int = 1) -> None:
+    def update_buffer(self, univ : int, lvls, start_addr : int = 1) -> None:
         #? ADD BUFFER FOR <UNIV> (CATCHES DUPLICATES)
         self.new_buffer(univ)
         start_index = start_addr - 1  # NORMALIZE ADDR INDEX
         
         #? ~LIST -> UPDATE FULL DMX FRAME
-        if isinstance(data, (bytes, bytearray, list, tuple)):
-            length = min( len(data), 512 - start_index ) # CAP DATA COPY TO UNIV LENGTH
-            self.data_buffers[univ][start_index : start_index + length] = data[:length] #& UPDATE &#
+        if isinstance(lvls, (bytes, bytearray, list, tuple)):
+            length = min( len(lvls), 512 - start_index ) # CAP DATA COPY TO UNIV LENGTH
+            self.data_buffers[univ][start_index : start_index + length] = lvls[:length] #& UPDATE &#
 
         #? INTEGER -> UPDATE SINGLE ADDRESS
-        elif isinstance(data, int):
-            data = max(0, min(255, data)) # CLAMP TO VALID LEVEL
-            self.data_buffers[univ][start_index] = data #& UPDATE &#
+        elif isinstance(lvls, int):
+            lvls = max(0, min(255, lvls)) # CLAMP TO VALID LEVEL
+            self.data_buffers[univ][start_index] = lvls #& UPDATE &#
         
         #? DICT -> UPDATE SPECIFIC ADDRESSES
-        elif isinstance(data, dict):
-            for addr, lvl in data.items():
+        elif isinstance(lvls, dict):
+            for addr, lvl in lvls.items():
                 if 0 <= addr-1 < 512: # CHECK FOR VALID DMX ADDRESS
                     lvl = max(0, min(255, lvl)) # CLAMP TO VALID LEVEL
                     self.data_buffers[univ][addr-1] = lvl #& UPDATE &#
-        else: #? UNKNOWN -> SKIP
-            if LOG_MSG: log.error(f'DATA IS UNSUPPORTED TYPE: {type(data)}')
+        #? UNKNOWN -> SKIP
+        else:
+            if LOG_MSG: log.error(f'DATA IS UNSUPPORTED TYPE: {type(lvls)}')
+        
 
-
-    #* APPLY <BUFFER_DATA[<UNIV>]> TO <SELF.SENDER[UNIV]>
+    #* APPLY <BUFFER_DATA[<UNIV>]> TO <SELF.SACN_TX[UNIV]>
     def update_univ_data(self, univ : int) -> None:
         #? CHECK <UNIV> OUTPUT IS ACTIVE
-        if univ in self.sender.get_active_outputs():
-            universe = self.sender[univ]
+        if univ in self.sacn_tx.get_active_outputs():
+            universe = self.sacn_tx[univ]
             if universe:
                 #? CHECK FOR DATA BUFFER
                 if univ in self.data_buffers:
                     if LOG_MSG: log.info(f'FOUND UNIV:{univ} BUFFER')
                     # MANUAL_FLUSH SHOULD ONLY BE TRUE DURING DATA UPDATES, NEVER LEFT ON
-                    #self.sender.manual_flush = True
+                    #self.sacn_tx.manual_flush = True
                     #& !! - UPDATE OUTPUT UNIV DATA - !! &#
                     universe.dmx_data = self.data_buffers[univ]
-                    #self.sender.manual_flush = False
+                    #self.sacn_tx.manual_flush = False
 
                 else:
                     if LOG_MSG: log.warning(f'UNIV:{univ} BUFFER DOES NOT EXIST... IGNORING UPDATE')
             else:
-                if LOG_MSG: log.warning(f'SELF.SENDER[{univ}] ACTIVE, BAD <UNIVERSE=SELF.SENDER[{univ}]>')
+                if LOG_MSG: log.warning(f'SELF.SACN_TX[{univ}] ACTIVE, BAD <UNIVERSE=SELF.SACN_TX[{univ}]>')
         else: 
             if LOG_MSG: log.error(f'UNIV:{univ} NOT ACTIVE, IGNORING UPDATE')
 
 
     
-
-
-
+def test():
+    with sACNCtrlr(name = '- PYTHON sACNCTRLR -') as ctrlr:
+        ctrlr.
