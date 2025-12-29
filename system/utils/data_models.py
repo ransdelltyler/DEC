@@ -217,10 +217,6 @@ class BaseID:
 #& EQUIPMENT
 @dataclass(slots=True, kw_only=True)
 class Equipment(BaseID):
-    # BASEID FIELDS
-    # name : str
-    # id_base : UUID
-    # comments : List[str]
     manuf : str
     model : str
     partnum : str
