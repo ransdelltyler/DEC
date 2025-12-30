@@ -182,7 +182,7 @@ def test():
     print(log_list)
     logger.debug(log_list)
 
-test()
+#test()
 
 
 

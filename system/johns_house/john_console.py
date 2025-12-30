@@ -93,6 +93,54 @@ class DEV_CMDS(Enum):
     DEVICE_IMPORT  = 'dev_import'
     DEVICE_MERGE   = 'dev_merge'
 
+class FIXT_CMDS(Enum):
+    FIXTURE_NEW     = 'fixt_new'
+    FIXTURE_LOAD    = 'fixt_load'
+    FIXTURE_SAVE    = 'fixt_save'
+    FIXTURE_CLOSE   = 'fixt_close'
+    FIXTURE_LIST    = 'fixt_list'
+    FIXTURE_DELETE  = 'fixt_delete'
+    FIXTURE_EXPORT  = 'fixt_export'
+    FIXTURE_IMPORT  = 'fixt_import'
+    FIXTURE_GROUP   = 'fixt_group'
+
+class SEL_CMDS(Enum):
+    SELECT_ALL      = 'sel_all'
+    SELECT_NONE     = 'sel_none'
+    SELECT_INVERT   = 'sel_invert'
+    SELECT_BY_TYPE  = 'sel_type'
+    SELECT_BY_NAME  = 'sel_name'
+    SELECT_BY_ID    = 'sel_id'
+    SELECT_EVEN     = 'sel_even'
+    SELECT_ODD      = 'sel_odd'
+    SELECT_OFFSET   = 'sel_offset'
+    SELECT_RANGE    = 'sel_range'
+    
+class ACT_CMDS(Enum):
+    ACTION_RUN        = 'act_run'
+    ACTION_STOP       = 'act_stop'
+    ACTION_PAUSE      = 'act_pause'
+    ACTION_RESUME     = 'act_resume'
+    ACTION_ADD        = 'act_add'
+    ACTION_DELETE     = 'act_delete'
+    ACTION_CONFIG     = 'act_config'
+    ACTION_SET        = 'act_set'
+    ACTION_GET        = 'act_get'
+    ACTION_EXPORT     = 'act_export'
+    ACTION_IMPORT     = 'act_import'
+    ACTION_MERGE      = 'act_merge'
+    
+class LVL_CMDS(Enum):
+    LEVEL_SET         = 'lvl_set'
+    LEVEL_GET         = 'lvl_get'
+    LEVEL_INCREASE    = 'lvl_increase'
+    LEVEL_DECREASE    = 'lvl_decrease'
+    LEVEL_MAX         = 'lvl_max'
+    LEVEL_MIN         = 'lvl_min'
+    LEVEL_FADE        = 'lvl_fade'
+    LEVEL_STROBE      = 'lvl_strobe'
+    LEVEL_FULL        = 'lvl_full'
+    LEVEL_OFF         = 'lvl_off'
     
 #~ ======================================================== ~#
 #~                    CLASS DEFINITION                      ~#
