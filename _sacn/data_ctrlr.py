@@ -64,12 +64,59 @@ class Layer:
 #* - WINDOW INCLUDES BASIC CONTROLS FOR UNIV DATA
 # TODO: INPUT SOURCES 
 
+from enum import Enum, auto
+class ID_LAYOUT_BY(Enum):
+    SIMPLE = auto()
+    DETAILED = auto()
+    POWER = auto()
+    CONTROLS = auto()
+    PHYSICAL = auto()
+    SECRET = auto()
+
+class MiniMap:
+    def __init__(self):
+        self.value_ids = {} # Dictionary to store text IDs
+
+    def draw_grid(self, graph_element):
+        for i in range(1, 513):
+            x = (i % 50) * 20  # Calculate coordinates
+            y = (i // 50) * 30
+            
+            # Draw the static channel number and line
+            graph_element.draw_text(str(i), (x, y-10), font='Any 6', color='grey')
+            graph_element.draw_line((x-8, y), (x+8, y), color='grey')
+            
+            # Draw the value and SAVE the ID to update it later
+            text_id = graph_element.draw_text('0', (x, y+10), font='Any 10', color='white')
+            self.value_ids[i] = text_id
+
+    def update_value(self, window, ch_num, new_val):
+        # Update specific text WITHOUT redrawing the whole grid
+        window['-GRAPH-'].change_item(self.value_ids[ch_num], text=str(new_val))
+
+
+#* ID CARD CLASS : DISPLAYS EQUIPMENT / CONTROLLER INFO
+#* ADJUSTABLE LAYOUT TYPES AND OPTIONS
+class ID_Card:
+    def __init__(self):
+        
+        pass
+    
+    def draw(self):
+        pass
+    
+    def layout_by(self):
+        pass
+
+#*
+
+
 class UnivCtrlr:
     def __init__(self, name : str | None = DEF_CTRL_NAME,) -> None:
         self.ctrlr_name = name
         self.universe = DEF_UNIV
         self.layers = []
-        self.channel_check_index = 1
+        self.channel_check_index = 100
         
         #? FLAG: GUI RUNNING
         self.running = False
@@ -80,8 +127,11 @@ class UnivCtrlr:
 
         #? BUILD GUI
         #self.layout = self.build_layout()
-        self.layout = self.build_check_layout()
-        self.window = sg.Window('- UNIVERSE CONTROLLER -', layout=self.layout)
+        #self.layout = self.build_check_layout()
+        self.layout = self.build_mini_map()
+        self.window = sg.Window('- UNIVERSE CONTROLLER -', layout=self.layout, finalize=True, keep_on_top=True)
+        
+        self.mini_map.draw_grid(self.window['-GRAPH-'])
         
                
     #* CONTEXT MANAGER - @INIT FUNCTION
@@ -103,7 +153,7 @@ class UnivCtrlr:
             # UPDATE FLAG
             self.running = True
             while True:
-                event, values = self.window.read(timeout=0.1) # type: ignore
+                event, values = self.window.read(timeout=3) # type: ignore
                 # QUIT WINDOW
                 if event in (sg.WIN_CLOSED, '-QUIT-'):
                     break
@@ -131,6 +181,8 @@ class UnivCtrlr:
             self.running = False
     
     
+    #& LAYOUT BUILDER FUNCTIONS ---------------------------- *#    
+
     #* LAYOUT:RETURNS GRAPHIC INTERFACE FOR USER INPUT
     def build_layout(self) -> list:
         return [
@@ -171,29 +223,66 @@ class UnivCtrlr:
             [sg.VPush()],
             [sg.Text(
                 text=str(self.channel_check_index),
-                font=('Roboto', 40, 'bold'),
+                font=('Roboto', 48, 'bold'),
                 key='-INDEX-',
-                justification='right',
-                # Removed expand_y/x and relief from here
+                justification='center',
+                expand_x=True,
+                expand_y=True,
+                relief=sg.RELIEF_SUNKEN,
+                border_width=1,
+
             )],
             [sg.VPush()]
         ],
-            size=(120, 120),
-            element_justification='center', # Centers text horizontally
-            pad=(5, 20)
+            size=(200, 80),
+            element_justification= 'center',
+            justification='right',
+            pad = (5,10),
+            
         )
 
-        buttons = [
-            sg.Button('START', k='-START-', size=(6, 2)),
-            sg.Button('STOP', k='-STOP-', size=(6, 2)),
-            sg.Button('QUIT', k='-QUIT-', size=(6, 2)),
-            sg.Button('▲', k='-UP-', size=(4, 2)),
-            sg.Button('▼', k='-DOWN-', size=(4, 2))
-        ]
+        buttons = [ [sg.VPush()], [sg.Push()],
+            sg.Button('START', k='-START-', font=('Roboto', 8)),
+            sg.Button('STOP', k='-STOP-', font=('Roboto', 8)),
+            sg.Button('QUIT', k='-QUIT-', font=('Roboto', 8)),
+            sg.Button('▲', k='-UP-', font=('Roboto', 8)),
+            sg.Button('▼', k='-DOWN-', font=('Roboto', 8)),
+        sg.Push() ]
 
         # Use Push() to center the indicator row horizontally in the window
-        return [[sg.Push(), indicator], buttons]
+        return [[sg.Push()], [indicator], [sg.Push()] + buttons]
         
+    
+    #* LAYOUT: MINI MAP OF 512 CHANNELS   
+    def build_mini_map(self,) -> list:
+        self.mini_map = MiniMap()
+        graph = sg.Graph(
+                canvas_size=(1000, 620),
+                graph_bottom_left=(0, 0),
+                graph_top_right=(1000, 620),
+                key='-GRAPH-',)
+        return [[graph,]]
+        
+        
+    #& SUB-LAYOUT BUILDER FUNCTIONS -------------------------- *#
+
+    #* BUILD A SINGLE FADER (VERTICAL SLIDER WITH LABEL)
+    def build_fader(self, name: str) -> list:
+        return [
+            [sg.Text(name, size=(3, 1), justification='center', pad=(0, 0))],
+            [sg.Slider(range=(0, 255),
+                    disable_number_display=True, 
+                    orientation='v', 
+                    size=(10, 20), # Adjusted size for better scaling
+                    default_value=0, 
+                    key=name,
+                    pad=(5, 0))] # Horizontal padding keeps sliders apart
+        ]
+        
+       
+    #* SUB: 
+    
+    #& LAYER MANAGEMENT FUNCTIONS -------------------------- *#
     
     #* CREATE NEW LAYER WITH NAME OR NEXT INDEX
     #? LAYERS ARE ALWAYS FULL 512CH DMX FRAMES

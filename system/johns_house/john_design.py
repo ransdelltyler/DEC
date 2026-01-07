@@ -29,7 +29,7 @@ if ROOT not in sys.path:
 
 from uuid import uuid4, UUID
 from ast import Dict
-from dataclasses import field
+from dataclasses import fields, dataclass, field
 from typing import ClassVar
 from system.gen.settings import LOG_MSG
 from system.utils.data_models import PSU, Accessory, Enclosure, Terminal
@@ -147,7 +147,7 @@ class JohnDesigner:
         
         for key, value in kwargs.items():
             if key in valid_fields: setattr(element, key, value)
-            elif: LOG_MSG: log.warning(f'PARAMETER {key}:{value} MISSING FROM ELEM.')
+            elif LOG_MSG: log.warning(f'PARAMETER {key}:{value} MISSING FROM ELEM.')
             
     
  
